@@ -1,0 +1,126 @@
+.section {
+  padding-block: var(--spacing-8);
+  background-color: var(--bg-main);
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-block: var(--spacing-16);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column-reverse;
+  background-color: var(--color-primary);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 768px) {
+  .card {
+    flex-direction: row;
+  }
+}
+
+.content {
+  flex: 1;
+  padding: var(--spacing-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  color: var(--neutral-50);
+}
+
+@media (min-width: 1024px) {
+  .content {
+    padding: var(--spacing-12);
+  }
+}
+
+.iconWrapper {
+  width: 48px;
+  height: 48px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-6);
+}
+
+.iconWrapper svg {
+  width: 24px;
+  height: 24px;
+  color: var(--color-gold);
+}
+
+.title {
+  font-family: var(--font-arabic-heading);
+  font-weight: 400;
+  font-size: 28px;
+  margin-bottom: var(--spacing-4);
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .title {
+  font-family: var(--font-arabic-heading);
+  font-weight: 400;
+    font-size: 36px;
+  }
+}
+
+.subtitle {
+  font-size: 16px;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: var(--spacing-8);
+  max-width: 400px;
+}
+
+.ctaBtn {
+  color: var(--neutral-50);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ctaBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.imageWrapper {
+  flex: 1;
+  position: relative;
+  min-height: 250px;
+}
+
+@media (min-width: 768px) {
+  .imageWrapper {
+    min-height: auto;
+  }
+}
+
+.image {
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(23, 63, 53, 0.9) 0%, transparent 100%);
+}
+
+@media (min-width: 768px) {
+  html[dir="ltr"] .overlay {
+    background: linear-gradient(to right, rgba(23, 63, 53, 1) 0%, transparent 100%);
+  }
+  
+  html[dir="rtl"] .overlay {
+    background: linear-gradient(to left, rgba(23, 63, 53, 1) 0%, transparent 100%);
+  }
+}

@@ -1,0 +1,120 @@
+.accountContainer {
+  padding: 0 0 calc(var(--bottom-nav-height) + var(--spacing-6));
+  min-height: 100vh;
+  background-color: var(--bg-main);
+}
+
+.header {
+  padding: var(--spacing-6) var(--spacing-4);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-4);
+}
+
+.title {
+  font-family: var(--font-arabic-heading);
+  font-weight: 400;
+  font-size: var(--text-2xl);
+}
+
+:global([dir="ltr"]) .title {
+  font-family: var(--font-arabic-heading);
+  font-weight: 400;
+  font-family: var(--font-english-display);
+}
+
+.profileCard {
+  background: var(--bg-surface);
+  border-radius: 16px;
+  padding: var(--spacing-6);
+  margin: 0 var(--spacing-4) var(--spacing-6);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.profileInfo h2 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin-bottom: var(--spacing-1);
+}
+
+.profileInfo p {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+.menuList {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background var(--transition-fast);
+}
+
+.menuItem:last-child {
+  border-bottom: none;
+}
+
+.menuItem:hover {
+  background: rgba(0,0,0,0.02);
+}
+
+:global([data-theme="dark"]) .menuItem:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+.menuIcon {
+  color: var(--text-secondary);
+}
+
+.menuLabel {
+  flex: 1;
+  font-weight: 600;
+}
+
+.menuChevron {
+  color: var(--border-color);
+}
+
+:global([dir="ltr"]) .menuChevron {
+  transform: rotate(180deg);
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  color: var(--color-error);
+  font-weight: 600;
+  width: 100%;
+  text-align: right;
+}
+
+:global([dir="ltr"]) .logoutBtn {
+  text-align: left;
+}

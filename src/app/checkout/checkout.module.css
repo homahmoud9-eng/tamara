@@ -1,0 +1,220 @@
+.checkoutContainer {
+  padding: 0 0 calc(var(--bottom-nav-height) + var(--spacing-24));
+  min-height: 100vh;
+  background-color: var(--bg-main);
+}
+
+.header {
+  padding: var(--spacing-6) var(--spacing-4);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-4);
+}
+
+.title {
+  font-family: var(--font-arabic-heading);
+  font-weight: 400;
+  font-size: var(--text-2xl);
+}
+
+:global([dir="ltr"]) .title {
+  font-family: var(--font-arabic-heading);
+  font-weight: 400;
+  font-family: var(--font-english-display);
+}
+
+.section {
+  background: var(--bg-surface);
+  padding: var(--spacing-6) var(--spacing-4);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-4);
+}
+
+.sectionTitle {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin-bottom: var(--spacing-4);
+}
+
+.inputGroup {
+  margin-bottom: var(--spacing-4);
+}
+
+.label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-bottom: var(--spacing-2);
+  color: var(--text-secondary);
+}
+
+.input {
+  width: 100%;
+  padding: var(--spacing-3);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-size: var(--text-base);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-3);
+  font-size: var(--text-sm);
+}
+
+.summaryTotal {
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--brand-primary);
+  margin-top: var(--spacing-4);
+  padding-top: var(--spacing-4);
+  border-top: 1px dashed var(--border-color);
+}
+
+.paymentMethods {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.paymentCard {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.paymentCardActive {
+  border-color: var(--brand-primary);
+  background: rgba(23, 63, 53, 0.05);
+}
+
+.paymentIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--brand-primary);
+}
+
+.paymentName {
+  font-weight: 600;
+}
+
+.paymentDesc {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.disabledCard {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stickyFooter {
+  position: fixed;
+  bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+  left: 0;
+  right: 0;
+  padding: var(--spacing-4);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  z-index: 20;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+}
+
+.placeOrderBtn {
+  width: 100%;
+  background: var(--brand-primary);
+  color: white;
+  border-radius: 99px;
+  padding: var(--spacing-4);
+  font-weight: 700;
+  font-size: var(--text-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+}
+
+.placeOrderBtn:disabled {
+  background: var(--border-color);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.successState {
+  text-align: center;
+  padding: var(--spacing-12) var(--spacing-4);
+  min-height: 100vh;
+  background: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.successIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-6);
+}
+
+.successTitle {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-2);
+}
+
+:global([dir="ltr"]) .successTitle {
+  font-family: var(--font-english-display);
+}
+
+.successDesc {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-8);
+  line-height: 1.6;
+}
+
+.trackBtn {
+  display: inline-block;
+  width: 100%;
+  background: var(--brand-primary);
+  color: white;
+  padding: var(--spacing-4);
+  border-radius: 99px;
+  font-weight: 700;
+  text-decoration: none;
+  margin-bottom: var(--spacing-4);
+}
+
+.whatsappBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  width: 100%;
+  background: #25D366;
+  color: white;
+  padding: var(--spacing-4);
+  border-radius: 99px;
+  font-weight: 700;
+  text-decoration: none;
+}

@@ -1,0 +1,223 @@
+.offerSection {
+  padding-block: var(--spacing-16);
+  background-color: var(--bg-main);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-8);
+}
+
+.title {
+  font-family: var(--font-arabic-heading);
+  font-weight: 400;
+  font-size: 28px;
+}
+
+.controls {
+  display: none;
+  gap: var(--spacing-2);
+}
+
+@media (min-width: 768px) {
+  .controls {
+    display: flex;
+  }
+}
+
+.controlBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.controlBtn:hover {
+  background-color: var(--bg-surface-elevated);
+}
+
+.controlBtn:active {
+  transform: scale(0.95);
+}
+
+.controlBtn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.railWrapper {
+  /* To allow full bleed on mobile while keeping padding */
+}
+
+.rail {
+  display: flex;
+  gap: var(--spacing-4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-inline: var(--spacing-4);
+  /* Hide scrollbar */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 391px) {
+  .rail {
+    padding-inline: var(--spacing-5);
+  }
+}
+
+@media (min-width: 768px) {
+  .rail {
+    padding-inline: max(var(--spacing-6), calc((100vw - var(--max-width)) / 2 + var(--spacing-6)));
+    scroll-padding-inline: max(var(--spacing-6), calc((100vw - var(--max-width)) / 2 + var(--spacing-6)));
+    gap: var(--spacing-6);
+  }
+}
+
+.offerCard {
+  flex: 0 0 85vw;
+  scroll-snap-align: start;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 4/5;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  cursor: pointer;
+}
+
+.offerCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 768px) {
+  .offerCard {
+    flex: 0 0 380px;
+    aspect-ratio: 3/4;
+  }
+}
+
+.imageWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 6s ease-out;
+}
+
+.offerCard:hover .image {
+  transform: scale(1.05);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to top, 
+    rgba(7, 17, 14, 0.95) 0%, 
+    rgba(7, 17, 14, 0.4) 50%, 
+    transparent 100%
+  );
+  z-index: 1;
+}
+
+.badge {
+  position: absolute;
+  top: var(--spacing-4);
+  left: var(--spacing-4);
+  background-color: var(--color-primary); /* bright primary color */
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 800;
+  z-index: 3;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: var(--spacing-6);
+  z-index: 2;
+  color: #F7F0E3;
+}
+
+.cardTitle {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-2);
+}
+
+:global([dir="ltr"]) .cardTitle {
+  font-family: var(--font-english-display);
+}
+
+.cardSubtitle {
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: var(--spacing-4);
+  line-height: 1.4;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-weight: 700;
+  font-size: 15px;
+  color: #F7F0E3;
+  transition: gap var(--transition-normal);
+}
+
+.offerCard:hover .cta {
+  gap: var(--spacing-4);
+  color: var(--color-gold);
+}
+
+.ctaIcon {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--transition-normal);
+}
+
+html[dir="rtl"] .ctaIcon {
+  transform: rotate(180deg);
+}
+
+.offerCard:hover html[dir="rtl"] .ctaIcon {
+  transform: rotate(180deg) translateX(4px);
+}
+
+.spacer {
+  flex: 0 0 1px;
+}

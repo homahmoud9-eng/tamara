@@ -1,0 +1,30 @@
+.fallbackContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.fallbackInner {
+  opacity: 0.15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Dark theme adjustment for the logo visibility if needed */
+}
+
+[data-theme="dark"] .fallbackInner {
+  filter: brightness(0) invert(1);
+  opacity: 0.1;
+}
+
+.fallbackLogo {
+  object-fit: contain;
+  max-width: 60%;
+  max-height: 60%;
+}

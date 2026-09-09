@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+
+@font-face {
+  font-family: 'STC';
+  src: url('/fonts/STC-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Brand Colors */
+  --brand-primary: #173F35;
+  --brand-primary-light: #1f5446;
+  --brand-primary-bright: #173F35; /* Same as primary in light mode */
+  --brand-secondary: #B85C38;
+  --brand-accent: #C69A52;
+
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+
+  /* Typography */
+  --font-stc: 'STC', sans-serif;
+  --font-arabic-display: 'Cairo', sans-serif;
+  --font-arabic-heading: 'STC', sans-serif;
+  --font-arabic-body: 'Cairo', sans-serif;
+  --font-english-display: 'STC', sans-serif;
+  --font-english-body: 'Cairo', sans-serif;
+
+  /* Fluid Typography Scale */
+  /* Fluid range: 360px to 1440px viewport */
+  --text-xs: clamp(0.75rem, 0.7315rem + 0.0823vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 0.8565rem + 0.0823vw, 0.9375rem);
+  --text-base: clamp(1rem, 0.963rem + 0.1646vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1.0509rem + 0.3292vw, 1.375rem);
+  --text-xl: clamp(1.25rem, 1.0648rem + 0.823vw, 1.875rem);
+  --text-2xl: clamp(1.5rem, 1.1296rem + 1.6461vw, 2.75rem);
+  --text-3xl: clamp(1.75rem, 1.0463rem + 3.1276vw, 4.125rem);
+  --text-4xl: clamp(2rem, 0.7407rem + 5.5967vw, 6.25rem);
+
+  /* Layout */
+  --header-height: 60px;
+  --bottom-nav-height: 64px;
+  --max-width: 1280px;
+
+  /* Spacing Grid (4/8 hybrid) */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+
+  /* Mobile Intentional Spacing */
+  --mob-spacing-sm: 8px;
+  --mob-spacing-md: 16px;
+  --mob-spacing-lg: 24px;
+  --mob-spacing-section: 48px;
+
+  /* Safe Area Variables */
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-top: env(safe-area-inset-top, 0px);
+
+  /* Z-Index */
+  --z-header: 110;
+  --z-bottom-nav: 100;
+  --z-modal: 1000;
+  --z-toast: 1100;
+
+  /* Motion */
+  --transition-fast: 150ms ease-out;
+  --transition-normal: 250ms ease-out;
+  --transition-slow: 350ms ease-out;
+  --spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Light Theme Variables */
+:root, [data-theme="light"] {
+  --bg-primary: #F7F0E3;
+  --bg-secondary: #EBE1D1;
+  --bg-main: var(--bg-primary); /* For backward compatibility */
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #FFFFFF;
+  --bg-elevated: var(--bg-surface-elevated);
+  --text-primary: #18211E;
+  --text-secondary: #66706B;
+  --border-color: rgba(23, 63, 53, 0.10);
+  --border-subtle: rgba(23, 63, 53, 0.05);
+  
+  --color-primary: #173F35;
+  --color-secondary: #B85C38;
+  --color-gold: #C69A52;
+  --color-success: #2E7D57;
+  --color-warning: #B87B27;
+  --color-error: #B33A32;
+
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --surface-glass: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  
+  /* Glow Tokens */
+  --glow-gold: rgba(198, 154, 82, 0.15);
+  --glow-terracotta: rgba(184, 92, 56, 0.15);
+  --glow-green: rgba(23, 63, 53, 0.15);
+
+  --shadow-sm: 0 2px 8px rgba(23, 63, 53, 0.04);
+  --shadow-md: 0 8px 24px rgba(23, 63, 53, 0.08);
+}
+
+/* Dark Theme Variables */
+[data-theme="dark"] {
+  --bg-primary: #111614;
+  --bg-secondary: #171D1B;
+  --bg-main: var(--bg-primary);
+  --bg-surface: #1E2523;
+  --bg-surface-elevated: #262E2C;
+  --bg-elevated: var(--bg-surface-elevated);
+  --text-primary: #FFFFFF;
+  --text-secondary: #E0E5E2;
+  --border-color: rgba(247, 240, 227, 0.11);
+  --border-subtle: rgba(247, 240, 227, 0.05);
+
+  --color-primary: #173F35;
+  --brand-primary-bright: #3de0bd; /* Bright vibrant green for text on dark background */
+  --color-secondary: #B85C38;
+  --color-gold: #C69A52;
+  --color-success: #2E7D57;
+  --color-warning: #B87B27;
+  --color-error: #B33A32;
+
+  --glass-bg: rgba(30, 37, 35, 0.85);
+  --surface-glass: rgba(20, 30, 25, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  
+  /* Glow Tokens */
+  --glow-gold: rgba(198, 154, 82, 0.25);
+  --glow-terracotta: rgba(184, 92, 56, 0.25);
+  --glow-green: rgba(23, 63, 53, 0.25);
+
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 14px 50px rgba(0, 0, 0, 0.4);
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-arabic-body);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html[dir="ltr"] {
+  font-family: var(--font-english-body);
+}
+
+/* Typography Utility Classes */
+.font-display {
+  font-family: var(--font-arabic-display);
+}
+
+html[dir="ltr"] .font-display {
+  font-family: var(--font-english-display);
+}
+
+.font-heading {
+  font-family: var(--font-arabic-heading);
+  font-weight: 400; /* Assuming the STC font might need normal weight for optimal display */
+}
+
+html[dir="ltr"] .font-heading {
+  font-family: var(--font-english-display);
+}
+
+.font-body {
+  font-family: var(--font-arabic-body);
+}
+
+html[dir="ltr"] .font-body {
+  font-family: var(--font-english-body);
+}
+
+/* Form inputs & buttons should inherit body font */
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+}
+
+/* Responsive Container */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--mob-spacing-md);
+  padding-bottom: var(--safe-area-bottom);
+}
+
+@media (min-width: 391px) {
+  .container {
+    padding-inline: var(--spacing-5);
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: var(--spacing-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-height: 72px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Global Interactive Glow */
+.btn, .glass-panel, .hover-glow {
+  position: relative;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+}
+
+.hover-glow:hover, .btn:hover, .glass-panel:hover {
+  box-shadow: 0 0 60px rgba(16, 185, 129, 0.3) !important;
+  z-index: 10;
+}
+
+[data-theme="dark"] .hover-glow:hover, [data-theme="dark"] .btn:hover, [data-theme="dark"] .glass-panel:hover {
+  box-shadow: 0 0 80px rgba(16, 185, 129, 0.45) !important;
+}
+
+.btn:active, .glass-panel:active, .hover-glow:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.6) !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}

@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tamara_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tamara_kitchen
+    ports:
+      - "5433:5432"
+    volumes:
+      - tamara_postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  tamara_postgres_data:

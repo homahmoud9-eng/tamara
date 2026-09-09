@@ -1,0 +1,225 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  overflow: hidden;
+}
+
+.layoutWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.visualHalf {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.imageGallery {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.heroImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+  /* Soft masking around the edges */
+  mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 95%);
+}
+
+.heroImage.active {
+  opacity: 1;
+}
+
+.imageElement {
+  object-fit: cover;
+  object-position: center; /* LTR default */
+}
+
+/* RTL Focal Points */
+html[dir="rtl"] .imageElement {
+  object-position: 60% center;
+}
+
+/* Desktop focal points */
+@media (min-width: 1024px) {
+  .imageElement {
+    object-position: center 30%;
+  }
+  
+  html[dir="rtl"] .imageElement {
+    object-position: 70% 30%;
+  }
+  
+  .heroImage {
+    mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  /* Bottom fade to seamlessly transition into content area */
+  background: linear-gradient(to top, var(--bg-main) 0%, rgba(0,0,0,0.1) 40%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Content Half (Mobile Bottom) */
+.contentHalf {
+  flex: 1;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: var(--mob-spacing-lg);
+  padding-bottom: calc(var(--bottom-nav-height) + var(--mob-spacing-section));
+  margin-top: -10vh; /* Smooth overlap over the mask */
+}
+
+.textContent {
+  max-width: 600px;
+  width: 100%;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background-color: var(--bg-surface-elevated);
+  color: var(--brand-accent);
+  border: 1px solid var(--border-subtle);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: var(--spacing-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.headline {
+  font-family: var(--font-cairo);
+  font-size: clamp(28px, 8vw, 36px);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-4);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+:global([lang="en"]) .headline {
+  font-family: var(--font-dm-serif-display);
+  font-weight: 400;
+}
+
+.headlineLine {
+  display: block;
+}
+
+.subtitle {
+  font-family: var(--font-cairo);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-8);
+  font-weight: 500;
+  max-width: 480px;
+}
+
+:global([lang="en"]) .subtitle {
+  font-family: var(--font-inter);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+.primaryBtn, .secondaryBtn {
+  width: 100%;
+}
+
+/* Desktop Asymmetric Layout */
+@media (min-width: 1024px) {
+  .hero {
+    min-height: 85vh;
+  }
+  
+  .layoutWrapper {
+    flex-direction: row;
+    min-height: 85vh;
+  }
+
+  .visualHalf {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60%;
+    height: 100%;
+    margin-top: 0;
+  }
+  
+  html[dir="rtl"] .visualHalf {
+    right: auto;
+    left: 0;
+  }
+  
+  .overlay {
+    background: radial-gradient(ellipse at 70% 50%, transparent 20%, var(--bg-main) 80%);
+  }
+  
+  html[dir="rtl"] .overlay {
+    background: radial-gradient(ellipse at 30% 50%, transparent 20%, var(--bg-main) 80%);
+  }
+
+  .contentHalf {
+    width: 50%;
+    margin-top: 0;
+    padding-top: var(--spacing-16);
+    padding-bottom: var(--spacing-16);
+    justify-content: center;
+    padding-inline-end: var(--spacing-12);
+    /* Align with the main container edge instead of centering in the 50% width */
+    margin-inline: 0 auto; /* Overrides the .container's margin-inline: auto */
+    padding-inline-start: max(var(--spacing-6), calc((100vw - var(--max-width)) / 2));
+  }
+
+  .headline {
+    font-size: 64px;
+    margin-bottom: var(--spacing-6);
+  }
+
+  .subtitle {
+    font-size: 18px;
+    max-width: 480px;
+  }
+
+  .actions {
+    flex-direction: row;
+    width: auto;
+  }
+
+  .primaryBtn, .secondaryBtn {
+    width: auto;
+    min-width: 200px;
+  }
+}
+

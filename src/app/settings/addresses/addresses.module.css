@@ -1,0 +1,253 @@
+.container {
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  padding-top: calc(var(--header-height, 60px) + var(--spacing-6));
+  padding-bottom: calc(var(--bottom-nav-height) + var(--spacing-12));
+}
+
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-4);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-8);
+  position: relative;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  position: absolute;
+  right: 0;
+}
+
+:global([dir="ltr"]) .backBtn {
+  right: auto;
+  left: 0;
+  transform: rotate(180deg);
+}
+
+.backBtn:hover {
+  background: var(--bg-main);
+}
+
+.title {
+  font-family: var(--font-arabic-heading);
+  font-size: var(--text-2xl);
+  color: var(--text-primary);
+  text-align: center;
+  width: 100%;
+}
+
+.addressesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-8);
+}
+
+.addressCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: var(--spacing-5);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-4);
+  position: relative;
+  transition: border-color var(--transition-fast);
+}
+
+.defaultAddress {
+  border-color: var(--brand-primary);
+  background-color: rgba(23, 63, 53, 0.02);
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-primary);
+  flex-shrink: 0;
+}
+
+.addressInfo {
+  flex: 1;
+}
+
+.addressTitle {
+  font-weight: 700;
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-1);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.defaultBadge {
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--brand-primary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.addressDetails {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--spacing-2);
+}
+
+.addressPhone {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  padding: var(--spacing-1);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.actionBtn:hover {
+  color: var(--brand-primary);
+}
+
+.deleteBtn:hover {
+  color: #ff5630;
+}
+
+.addBtn {
+  width: 100%;
+  padding: var(--spacing-4);
+  border-radius: 16px;
+  background: none;
+  border: 2px dashed var(--border-color);
+  color: var(--brand-primary);
+  font-weight: 600;
+  font-size: var(--text-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.addBtn:hover {
+  border-color: var(--brand-primary);
+  background: rgba(23, 63, 53, 0.02);
+}
+
+.formContainer {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: var(--spacing-6);
+  margin-top: var(--spacing-4);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.formGroup {
+  margin-bottom: var(--spacing-4);
+}
+
+.formGroup label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-bottom: var(--spacing-2);
+  color: var(--text-primary);
+}
+
+.formInput {
+  width: 100%;
+  padding: var(--spacing-3);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-family: inherit;
+  transition: border-color var(--transition-fast);
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  margin-top: var(--spacing-2);
+}
+
+.formActions {
+  display: flex;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-6);
+}
+
+.saveBtn, .cancelBtn {
+  flex: 1;
+  padding: var(--spacing-3);
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.saveBtn {
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+}
+
+.saveBtn:hover {
+  background: var(--brand-primary-bright);
+}
+
+.cancelBtn {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.cancelBtn:hover {
+  background: var(--bg-main);
+}

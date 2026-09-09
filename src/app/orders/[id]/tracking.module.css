@@ -1,0 +1,214 @@
+.trackingContainer {
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.header {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header .container {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 var(--spacing-4);
+  gap: var(--spacing-4);
+}
+
+.backBtn {
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-family: var(--font-arabic-heading);
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+:global([lang="en"]) .title {
+  font-family: var(--font-arabic-heading);
+  font-weight: 400;
+  font-family: var(--font-english-display);
+}
+
+.mapPlaceholder {
+  height: 30vh;
+  background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-main) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mapContent {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.mapIcon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: var(--spacing-2);
+}
+
+.statusSection {
+  margin-top: -30px;
+  padding: 0 var(--spacing-4);
+  position: relative;
+  z-index: 2;
+}
+
+.statusCard {
+  background: var(--bg-surface);
+  border-radius: 16px;
+  padding: var(--spacing-5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-6);
+}
+
+.statusHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-5);
+}
+
+.statusIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(228, 168, 83, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.statusTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+:global([lang="en"]) .statusTitle {
+  font-family: var(--font-english-display);
+}
+
+.statusDesc {
+  color: var(--brand-accent);
+  font-size: 14px;
+  margin: 0;
+}
+
+.progressBar {
+  height: 6px;
+  background: var(--bg-main);
+  border-radius: 99px;
+  margin-bottom: var(--spacing-6);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--brand-accent);
+  transition: width 0.5s ease;
+}
+
+.driverInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--border-color);
+}
+
+.driverAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.driverDetails {
+  flex: 1;
+}
+
+.driverName {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 2px 0;
+}
+
+.driverMeta {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.callBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(228, 168, 83, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 20px;
+}
+
+.orderDetails {
+  background: var(--bg-surface);
+  border-radius: 16px;
+  padding: var(--spacing-5);
+  border: 1px solid var(--border-color);
+}
+
+.detailsTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-4) 0;
+}
+
+:global([lang="en"]) .detailsTitle {
+  font-family: var(--font-english-display);
+}
+
+.summaryItem {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.summaryItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.summaryValue {
+  color: var(--text-primary);
+  font-weight: 500;
+}

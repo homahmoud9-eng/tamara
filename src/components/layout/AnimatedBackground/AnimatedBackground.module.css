@@ -1,0 +1,68 @@
+.backgroundContainer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: transparent;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.7;
+  animation: float 20s infinite ease-in-out alternate;
+}
+
+[data-theme="dark"] .orb {
+  opacity: 0.4; /* Subtle glow in dark mode */
+}
+
+/* Primary Brand Color Orb */
+.orb1 {
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, var(--color-success) 0%, transparent 70%);
+  animation-duration: 25s;
+  animation-delay: 0s;
+}
+
+/* Accent Gold Color Orb */
+.orb2 {
+  bottom: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, var(--color-gold) 0%, transparent 70%);
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+/* Secondary Terracotta Color Orb */
+.orb3 {
+  top: 40%;
+  left: 30%;
+  width: 40vw;
+  height: 40vw;
+  background: radial-gradient(circle, var(--color-secondary) 0%, transparent 70%);
+  animation-duration: 35s;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(5%, 10%) scale(1.1);
+  }
+  66% {
+    transform: translate(-5%, 5%) scale(0.9);
+  }
+  100% {
+    transform: translate(0, -5%) scale(1.05);
+  }
+}

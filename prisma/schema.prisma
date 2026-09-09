@@ -1,0 +1,542 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// 1. ADMINS, ROLES, & PERMISSIONS
+// ==========================================
+
+model Admin {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String   // Hashed
+  roleId    String
+  role      Role     @relation(fields: [roleId], references: [id])
+  status    String   @default("ACTIVE") // ACTIVE, DISABLED
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  activities ActivityLog[]
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  admins      Admin[]
+  permissions Permission[]
+}
+
+model Permission {
+  id     String @id @default(cuid())
+  action String @unique 
+  roles  Role[]
+}
+
+// ==========================================
+// 2. CUSTOMERS
+// ==========================================
+
+model Customer {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String   @unique
+  email        String?  @unique
+  password     String?  
+  avatar       String?
+  status       String   @default("ACTIVE")
+  firstOrderAt DateTime?
+  lastOrderAt  DateTime?
+  totalOrders  Int      @default(0)
+  totalSpent   Float    @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  addresses    Address[]
+  orders       Order[]
+  reviews      Review[]
+}
+
+model Address {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  label       String   
+  addressText String
+  latitude    Float?
+  longitude   Float?
+  building    String?
+  floor       String?
+  apartment   String?
+  landmark    String?
+  isDefault   Boolean  @default(false)
+}
+
+// ==========================================
+// 3. CATALOG
+// ==========================================
+
+model Category {
+  id            String   @id @default(cuid())
+  nameAr        String
+  nameEn        String
+  slug          String   @unique
+  descriptionAr String?
+  descriptionEn String?
+  image         String?
+  titleImage    String?
+  sortOrder     Int      @default(0)
+  isActive      Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  products      Product[]
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id])
+  
+  nameAr        String
+  nameEn        String
+  descriptionAr String?
+  descriptionEn String?
+  
+  basePrice     Float    @default(0)
+  primaryImage  String?
+  
+  isActive      Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
+  isBestseller  Boolean  @default(false)
+  availability  String   @default("AVAILABLE") // AVAILABLE, OUT_OF_STOCK
+  prepTime      Int?     // minutes
+  
+  rating        Float    @default(0)
+  reviewCount   Int      @default(0)
+  sortOrder     Int      @default(0)
+  sku           String?  @unique
+  
+  seoTitleAr    String?
+  seoTitleEn    String?
+  seoDescAr     String?
+  seoDescEn     String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  variants      Variant[]
+  addonGroups   AddonGroup[]
+  reviews       Review[]
+  gallery       ProductGallery[]
+  packageItems  PackageItem[]
+}
+
+model ProductGallery {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  image     String
+  sortOrder Int     @default(0)
+}
+
+model Variant {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  nameAr        String
+  nameEn        String
+  price         Float
+  image         String?
+  servingDescAr String?
+  servingDescEn String?
+  
+  isDefault     Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  availability  String   @default("AVAILABLE")
+  sortOrder     Int      @default(0)
+  
+  gallery       VariantGallery[]
+}
+
+model VariantGallery {
+  id        String  @id @default(cuid())
+  variantId String
+  variant   Variant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  image     String
+  sortOrder Int     @default(0)
+}
+
+model AddonGroup {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  nameAr      String
+  nameEn      String
+  isRequired  Boolean  @default(false)
+  minSelect   Int      @default(0)
+  maxSelect   Int      @default(1)
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+
+  addons      Addon[]
+}
+
+model Addon {
+  id          String     @id @default(cuid())
+  groupId     String
+  group       AddonGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  
+  nameAr      String
+  nameEn      String
+  price       Float      @default(0)
+  isActive    Boolean    @default(true)
+  sortOrder   Int        @default(0)
+}
+
+// ==========================================
+// 4. MARKETING
+// ==========================================
+
+model Offer {
+  id            String   @id @default(cuid())
+  titleAr       String
+  titleEn       String
+  descriptionAr String?
+  descriptionEn String?
+  image         String?
+  
+  discountType  String   // PERCENTAGE, FIXED
+  discountValue Float
+  minOrder      Float?
+  maxDiscount   Float?
+  
+  ctaTextAr     String?
+  ctaTextEn     String?
+  ctaLink       String?
+  
+  startDate     DateTime?
+  endDate       DateTime?
+  isActive      Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
+}
+
+model Package {
+  id            String   @id @default(cuid())
+  nameAr        String
+  nameEn        String
+  descriptionAr String?
+  descriptionEn String?
+  image         String?
+  
+  packagePrice  Float
+  originalValue Float?
+  
+  isActive      Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
+  sortOrder     Int      @default(0)
+
+  items         PackageItem[]
+}
+
+model PackageItem {
+  id        String  @id @default(cuid())
+  packageId String
+  package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
+}
+
+model Coupon {
+  id             String   @id @default(cuid())
+  code           String   @unique
+  discountType   String   // PERCENTAGE, FIXED
+  discountValue  Float
+  minOrder       Float?
+  maxDiscount    Float?
+  usageLimit     Int?
+  perCustomerLim Int?
+  startDate      DateTime?
+  expiryDate     DateTime?
+  isActive       Boolean  @default(true)
+}
+
+model FirstOrderPromotion {
+  id            String   @id @default("1") 
+  isEnabled     Boolean  @default(false)
+  discountType  String   // PERCENTAGE, FIXED
+  discountValue Float
+  minOrder      Float?
+  maxDiscount   Float?
+}
+
+// ==========================================
+// 5. ORDERS (WITH SNAPSHOTS)
+// ==========================================
+
+model Order {
+  id                String   @id @default(cuid())
+  orderNumber       String   @unique
+  customerId        String
+  customer          Customer @relation(fields: [customerId], references: [id])
+  
+  status            String   // RECEIVED, CONFIRMED, PREPARING, OUT_FOR_DELIVERY, DELIVERED, CANCELLED
+  paymentMethod     String   // CASH, CARD
+  paymentStatus     String   // PENDING, PAID, FAILED
+  
+  addressText       String
+  latitude          Float?
+  longitude         Float?
+  
+  subtotal          Float
+  discountAmount    Float    @default(0)
+  deliveryFee       Float    @default(0)
+  totalAmount       Float
+  
+  customerNotes     String?
+  voiceNoteRef      String?
+  
+  deliveryTime      DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  items             OrderItem[]
+  reviews           Review[]
+}
+
+model OrderItem {
+  id            String @id @default(cuid())
+  orderId       String
+  order         Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId     String 
+  variantId     String? 
+  
+  // SNAPSHOTS (Immutable)
+  productNameAr String
+  productNameEn String
+  variantNameAr String?
+  variantNameEn String?
+  unitPrice     Float
+  quantity      Int
+  lineTotal     Float
+  
+  itemNotes     String?
+  
+  addons        OrderItemAddon[]
+}
+
+model OrderItemAddon {
+  id          String    @id @default(cuid())
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  
+  // SNAPSHOT
+  addonNameAr String
+  addonNameEn String
+  price       Float
+}
+
+// ==========================================
+// 6. REVIEWS
+// ==========================================
+
+model Review {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  orderId    String?
+  order      Order?   @relation(fields: [orderId], references: [id])
+  
+  rating     Int
+  reviewText String?
+  status     String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  isFeatured Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+
+// ==========================================
+// 7. CMS & HOMEPAGE
+// ==========================================
+
+model HomepageSection {
+  id            String  @id @default(cuid())
+  type          String  // HERO, CATEGORIES, OFFERS, FEATURED_MEALS, PACKAGES, REVIEWS
+  isEnabled     Boolean @default(true)
+  sortOrder     Int     @default(0)
+  
+  titleAr       String?
+  titleEn       String?
+  subtitleAr    String?
+  subtitleEn    String?
+  
+  ctaTextAr     String?
+  ctaTextEn     String?
+  ctaLink       String?
+  
+  image         String?
+  displayLimit  Int?    @default(6)
+  
+  selectedItems Json?   // Storing referenced product/category IDs
+}
+
+model HeroSlide {
+  id          String   @id @default(cuid())
+  desktopImg  String
+  mobileImg   String
+  titleAr     String?
+  titleEn     String?
+  subtitleAr  String?
+  subtitleEn  String?
+  ctaTextAr   String?
+  ctaTextEn   String?
+  ctaLink     String?
+  
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+}
+
+model AnnouncementBar {
+  id          String   @id @default("1")
+  isEnabled   Boolean  @default(true)
+  textAr      String
+  textEn      String
+  ctaTextAr   String?
+  ctaTextEn   String?
+  ctaLink     String?
+  bgColor     String?
+  textColor   String?
+  speed       Int      @default(20)
+  startDate   DateTime?
+  endDate     DateTime?
+}
+
+model NavigationItem {
+  id          String   @id @default(cuid())
+  location    String   // HEADER, CATEGORY, FOOTER
+  labelAr     String
+  labelEn     String
+  url         String
+  icon        String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+}
+
+// ==========================================
+// 8. MEDIA LIBRARY
+// ==========================================
+
+model Media {
+  id           String   @id @default(cuid())
+  url          String   @unique
+  filename     String
+  mimeType     String
+  sizeBytes    Int
+  folder       String?  
+  altTextAr    String?
+  altTextEn    String?
+  uploadedAt   DateTime @default(now())
+  uploadedById String?  
+}
+
+// ==========================================
+// 9. SYSTEM SETTINGS
+// ==========================================
+
+model BusinessSetting {
+  id              String   @id @default("1")
+  nameAr          String   @default("مطبخ تمارا")
+  nameEn          String   @default("Tamara Kitchen")
+  logo            String?
+  favicon         String?
+  phone           String?
+  whatsapp        String?
+  email           String?
+  addressAr       String?
+  addressEn       String?
+  businessHours   Json?
+  socialLinks     Json?
+}
+
+model CheckoutSetting {
+  id                    String   @id @default("1")
+  requireEmail          Boolean  @default(false)
+  allowVoiceNotes       Boolean  @default(true)
+  allowTextNotes        Boolean  @default(true)
+  deliveryTimeOptions   Json?
+}
+
+model PaymentSetting {
+  id           String   @id @default("1")
+  cashEnabled  Boolean  @default(true)
+  cardEnabled  Boolean  @default(false) 
+}
+
+model DeliveryConfig {
+  id             String   @id @default("1") 
+  isEnabled      Boolean  @default(true)
+  baseFee        Float    @default(0)
+  freeThreshold  Float?
+  minOrder       Float    @default(0)
+  estTimeMinutes Int      @default(45)
+}
+
+model DeliveryZone {
+  id        String  @id @default(cuid())
+  nameAr    String
+  nameEn    String
+  polygon   Json?   
+  fee       Float
+  minOrder  Float?
+  isActive  Boolean @default(true)
+}
+
+model AppInstallSetting {
+  id            String   @id @default("1")
+  isEnabled     Boolean  @default(true)
+  titleAr       String   @default("حمّل تطبيق تمارا")
+  titleEn       String   @default("Download Tamara App")
+  subtitleAr    String?
+  subtitleEn    String?
+  icon          String?
+  ctaTextAr     String?
+  ctaTextEn     String?
+  promoTextAr   String?
+  promoTextEn   String?
+  showOnMobile  Boolean  @default(true)
+  showOnDesktop Boolean  @default(true)
+}
+
+model NotificationSetting {
+  id            String   @id @default("1")
+  vapidPublic   String?
+  vapidPrivate  String?
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  adminId     String
+  admin       Admin    @relation(fields: [adminId], references: [id])
+  action      String   
+  entityType  String   
+  entityId    String
+  oldValue    Json?
+  newValue    Json?
+  createdAt   DateTime @default(now())
+}

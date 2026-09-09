@@ -1,0 +1,138 @@
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--glass-border);
+  z-index: var(--z-bottom-nav);
+  padding-bottom: var(--safe-area-bottom);
+}
+
+@media (min-width: 1024px) {
+  .bottomNav {
+    display: none;
+  }
+}
+
+.navContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 100%;
+  padding-inline: var(--spacing-2);
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.navItem:active {
+  transform: scale(0.95);
+}
+
+.navItem.active {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .navItem.active {
+  color: var(--color-gold);
+}
+
+.icon {
+  margin-bottom: 2px;
+}
+
+.icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Cart Item specific styling */
+.cartItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  color: var(--text-secondary);
+  position: relative;
+}
+
+.cartIconWrapper {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  background-color: var(--color-primary);
+  color: var(--neutral-50);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -12px;
+  margin-bottom: 2px;
+  box-shadow: 0 4px 12px rgba(23, 63, 53, 0.2);
+  transition: transform var(--transition-fast);
+}
+
+[data-theme="dark"] .cartIconWrapper {
+  background-color: var(--color-gold);
+  color: var(--bg-main);
+  box-shadow: 0 4px 12px rgba(198, 154, 82, 0.25);
+}
+
+.cartItem:active .cartIconWrapper {
+  transform: scale(0.92);
+}
+
+.cartIconWrapper svg {
+  width: 22px;
+  height: 22px;
+}
+
+.cartBadge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: var(--color-secondary);
+  color: var(--neutral-50);
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid var(--bg-surface);
+}
+
+html[dir="rtl"] .cartBadge {
+  right: auto;
+  left: -2px;
+}
+
+.cartActive .label {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .cartActive .label {
+  color: var(--color-gold);
+}
