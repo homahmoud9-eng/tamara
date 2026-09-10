@@ -39,7 +39,7 @@ export async function createCategory(formData: FormData) {
     data: {
       nameEn,
       nameAr,
-      slug: slug || undefined, // use undefined if empty to let it auto-generate or something, wait Prisma expects string if slug is req.
+      slug: slug || (nameEn ? nameEn.toLowerCase().replace(/\s+/g, '-') : `cat-${Date.now()}`),
       descriptionEn,
       descriptionAr,
       isActive,

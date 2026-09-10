@@ -5,14 +5,7 @@ import { useApp } from '@/components/providers/AppProvider';
 import { SafeImage } from '@/components/ui/SafeImage/SafeImage';
 import Link from 'next/link';
 import styles from './OfferRail.module.css';
-
-interface Offer {
-  id: string;
-  title: { ar: string; en: string };
-  description: { ar: string; en: string };
-  image: string;
-  link: string;
-}
+import { Offer } from '@/models/types';
 
 interface OfferRailProps {
   offers: Offer[];

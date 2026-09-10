@@ -144,7 +144,7 @@ export async function getFrontendReviews() {
   return reviews.map(r => ({
     id: r.id,
     rating: r.rating,
-    text: r.comment || '',
+    text: r.reviewText || '',
     author: r.customer?.name || 'مستخدم مجهول',
     date: r.createdAt.toLocaleDateString()
   }));
