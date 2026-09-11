@@ -20,6 +20,7 @@ export const viewport = {
 import { prisma } from "@/lib/prisma";
 
 import { NextAuthProvider } from "@/components/providers/NextAuthProvider";
+import { PushManager } from "@/components/notifications/PushManager";
 
 export default async function RootLayout({
   children,
@@ -73,6 +74,7 @@ export default async function RootLayout({
           `}
         </Script>
         <NextAuthProvider>
+          <PushManager />
           <AppProvider>
           <CartProvider>
             <FavoritesProvider>

@@ -586,6 +586,7 @@ model User {
   
   accounts      Account[]
   sessions      Session[]
+  pushSubscriptions PushSubscription[]
   
   // Link to Customer profile
   customer      Customer?
@@ -597,4 +598,20 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// ==========================================
+// 11. PUSH NOTIFICATIONS
+// ==========================================
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
 }
