@@ -1,5 +1,6 @@
+// @ts-nocheck
 /// <reference lib="webworker" />
-declare const self: ServiceWorkerGlobalScope;
+declare const self: any;
 
 self.addEventListener("push", (event) => {
   if (event.data) {
