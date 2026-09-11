@@ -2,10 +2,21 @@
 
 import { useApp } from "@/components/providers/AppProvider";
 import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 import styles from "./settings.module.css";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function SettingsPage() {
-  const { language, setLanguage, theme, setTheme, userProfile } = useApp();
+  const { language, setLanguage, theme, setTheme } = useApp();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
 
   const toggleLanguage = () => {
     setLanguage(language === 'ar' ? 'en' : 'ar');
@@ -21,25 +32,32 @@ export default function SettingsPage() {
     </svg>
   );
 
+  if (status === "loading") {
+    return <div className={styles.container} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>Loading...</div>;
+  }
+
+  const userName = session?.user?.name || (language === 'ar' ? 'مستخدم' : 'User');
+  const userInitial = userName.charAt(0).toUpperCase();
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.header}>
           <h1 className={styles.title}>
-            {language === 'ar' ? 'الحساب' : 'Account'}
+            {language === 'ar' ? 'الإعدادات' : 'Settings'}
           </h1>
         </div>
 
         <div className={styles.profileSection}>
           <div 
             className={styles.avatar}
-            style={userProfile.profileImage ? { backgroundImage: `url(${userProfile.profileImage})`, color: 'transparent', backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+            style={session?.user?.image ? { backgroundImage: `url(${session.user.image})`, color: 'transparent', backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
           >
-            {userProfile.firstName.charAt(0)}
+            {session?.user?.image ? '' : userInitial}
           </div>
           <div className={styles.profileInfo}>
-            <div className={styles.profileName}>{userProfile.firstName} {userProfile.lastName}</div>
-            <div className={styles.profileEmail}>{userProfile.email}</div>
+            <div className={styles.profileName}>{userName}</div>
+            <div className={styles.profileEmail}>{session?.user?.email}</div>
           </div>
           <Link href="/settings/profile" className={styles.editBtn}>
             {language === 'ar' ? 'تعديل' : 'Edit'}
@@ -126,7 +144,7 @@ export default function SettingsPage() {
 
         <div className={styles.section}>
           <div className={styles.list}>
-            <button className={`${styles.listItem} ${styles.logoutBtn}`}>
+            <button className={`${styles.listItem} ${styles.logoutBtn}`} onClick={() => signOut({ callbackUrl: "/login" })}>
               <div className={styles.itemLeft}>
                 <div className={styles.itemIcon}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

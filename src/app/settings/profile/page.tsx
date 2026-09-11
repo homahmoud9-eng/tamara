@@ -1,49 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useApp } from "@/components/providers/AppProvider";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "./profile.module.css";
 
 export default function ProfilePage() {
-  const { language, userProfile, updateProfile } = useApp();
+  const { language } = useApp();
+  const { data: session, status } = useSession();
   const router = useRouter();
   
   const [formData, setFormData] = useState({
-    firstName: userProfile.firstName,
-    lastName: userProfile.lastName,
-    email: userProfile.email,
-    phone: userProfile.phone
+    name: "",
+    email: "",
+    phone: ""
   });
   
-  const [profileImage, setProfileImage] = useState<string | null>(userProfile.profileImage);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    } else if (session?.user) {
+      setFormData({
+        name: session.user.name || "",
+        email: session.user.email || "",
+        phone: "" // Phone is not part of standard NextAuth user yet
+      });
+      setProfileImage(session.user.image || null);
+    }
+  }, [session, status, router]);
 
   const handleSave = () => {
-    updateProfile({
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      phone: formData.phone,
-      profileImage: profileImage
-    });
+    // Requires API integration to update user profile in database
+    alert(language === 'ar' ? 'جاري العمل على تحديث البيانات' : 'Update profile feature coming soon');
     router.push('/settings');
   };
 
-  const handlePhotoChangeClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  if (status === "loading") {
+    return <div className={styles.container} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>Loading...</div>;
+  }
 
   return (
     <div className={styles.container}>
@@ -64,37 +62,20 @@ export default function ProfilePage() {
             className={styles.avatar} 
             style={profileImage ? { backgroundImage: `url(${profileImage})`, color: 'transparent', backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
           >
-            {formData.firstName.charAt(0)}
+            {profileImage ? '' : (formData.name ? formData.name.charAt(0) : 'U')}
           </div>
-          <button className={styles.changePhotoBtn} onClick={handlePhotoChangeClick}>
-            {language === 'ar' ? 'تغيير الصورة الشخصية' : 'Change Profile Photo'}
-          </button>
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleFileChange} 
-            accept="image/*" 
-            style={{ display: 'none' }} 
-          />
         </div>
 
         <div className={styles.formContainer}>
           <div className={styles.formGroup}>
-            <label>{language === 'ar' ? 'الاسم الأول' : 'First Name'}</label>
+            <label>{language === 'ar' ? 'الاسم' : 'Name'}</label>
             <input 
               type="text" 
               className={styles.formInput} 
-              value={formData.firstName} 
-              onChange={e => setFormData({...formData, firstName: e.target.value})}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label>{language === 'ar' ? 'اسم العائلة' : 'Last Name'}</label>
-            <input 
-              type="text" 
-              className={styles.formInput} 
-              value={formData.lastName} 
-              onChange={e => setFormData({...formData, lastName: e.target.value})}
+              value={formData.name} 
+              onChange={e => setFormData({...formData, name: e.target.value})}
+              disabled
+              style={{ opacity: 0.6, cursor: 'not-allowed' }}
             />
           </div>
           <div className={styles.formGroup}>
@@ -104,17 +85,8 @@ export default function ProfilePage() {
               className={styles.formInput} 
               value={formData.email} 
               onChange={e => setFormData({...formData, email: e.target.value})}
-              disabled // Email is usually disabled or requires verification to change
+              disabled
               style={{ opacity: 0.6, cursor: 'not-allowed' }}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label>{language === 'ar' ? 'رقم الهاتف' : 'Phone Number'}</label>
-            <input 
-              type="tel" 
-              className={styles.formInput} 
-              value={formData.phone} 
-              onChange={e => setFormData({...formData, phone: e.target.value})}
             />
           </div>
           
@@ -123,7 +95,7 @@ export default function ProfilePage() {
               {language === 'ar' ? 'حفظ التعديلات' : 'Save Changes'}
             </button>
             <Link href="/settings" className={styles.cancelBtn} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>
-              {language === 'ar' ? 'إلغاء' : 'Cancel'}
+              {language === 'ar' ? 'رجوع' : 'Back'}
             </Link>
           </div>
         </div>
