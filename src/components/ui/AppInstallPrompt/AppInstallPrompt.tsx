@@ -60,7 +60,7 @@ export function AppInstallPrompt() {
 
         {/* WhatsApp Button */}
         <a 
-          href="https://wa.me/971500000000" 
+          href="https://wa.me/971541744773" 
           target="_blank" 
           rel="noopener noreferrer" 
           className={styles.whatsappBtn}
@@ -104,13 +104,13 @@ export function AppInstallPrompt() {
                 </div>
 
                 <div className={styles.downloadOptions}>
-                  {/* Android APK Link (Direct download) */}
-                  <a href="/assets/tamara.apk" download className={styles.downloadBtn}>
+                  {/* Android APK Link (Coming Soon) */}
+                  <button onClick={() => alert(language === 'ar' ? 'التطبيق قريباً!' : 'App Coming Soon!')} className={styles.downloadBtn}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.btnIcon}>
                       <path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A2 2 0 0 1 6.6 1H17.4a2 2 0 0 1 1.89 1.16l2.44 7.51 1.22 3.78a.84.84 0 0 1-.3.94z"></path>
                     </svg>
                     {language === 'ar' ? 'تحميل مباشر للأندرويد' : 'Direct Download (Android)'}
-                  </a>
+                  </button>
 
                   {/* iOS Button (Triggers Instructions) */}
                   <button className={styles.downloadBtn} onClick={() => setShowIosInstructions(true)} style={{ background: 'var(--bg-main)', color: 'var(--text-primary)', border: '2px solid var(--border-color)', width: '100%' }}>

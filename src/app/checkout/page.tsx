@@ -43,7 +43,7 @@ export default function CheckoutPage() {
 
     const encodedMsg = encodeURIComponent(msg);
     // Open whatsapp in background
-    window.open(`https://wa.me/971501234567?text=${encodedMsg}`, '_blank');
+    window.open(`https://wa.me/971541744773?text=${encodedMsg}`, '_blank');
 
     setIsSuccess(true);
     clearCart();

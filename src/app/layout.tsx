@@ -19,6 +19,8 @@ export const viewport = {
 
 import { prisma } from "@/lib/prisma";
 
+import { NextAuthProvider } from "@/components/providers/NextAuthProvider";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -56,7 +58,8 @@ export default async function RootLayout({
             } catch (e) {}
           `}
         </Script>
-        <AppProvider>
+        <NextAuthProvider>
+          <AppProvider>
           <CartProvider>
             <FavoritesProvider>
               <AnimatedBackground />
@@ -65,7 +68,8 @@ export default async function RootLayout({
               </ShopLayoutWrapper>
             </FavoritesProvider>
           </CartProvider>
-        </AppProvider>
+          </AppProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );

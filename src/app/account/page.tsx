@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useApp } from "@/components/providers/AppProvider";
+import { signOut, useSession } from "next-auth/react";
 import styles from "./account.module.css";
 
 export default function AccountPage() {
   const { language } = useApp();
+  const { data: session, status } = useSession();
 
   const menuItems = [
     {
@@ -56,6 +58,13 @@ export default function AccountPage() {
     }
   ];
 
+  if (status === "loading") {
+    return <div className={styles.accountContainer}>Loading...</div>;
+  }
+
+  const userName = session?.user?.name || "User";
+  const userInitial = userName.charAt(0).toUpperCase();
+
   return (
     <div className={styles.accountContainer}>
       <header className={styles.header}>
@@ -65,10 +74,16 @@ export default function AccountPage() {
       </header>
 
       <div className={styles.profileCard}>
-        <div className={styles.avatar}>T</div>
+        <div className={styles.avatar}>
+          {session?.user?.image ? (
+            <img src={session.user.image} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+          ) : (
+            userInitial
+          )}
+        </div>
         <div className={styles.profileInfo}>
-          <h2>{language === "ar" ? "ضيف" : "Guest User"}</h2>
-          <p>{language === "ar" ? "قم بتسجيل الدخول لحفظ طلباتك" : "Sign in to save your orders"}</p>
+          <h2>{userName}</h2>
+          <p>{session?.user?.email}</p>
         </div>
       </div>
 
@@ -85,7 +100,7 @@ export default function AccountPage() {
           </Link>
         ))}
         
-        <button className={`${styles.menuItem} ${styles.logoutBtn}`}>
+        <button className={`${styles.menuItem} ${styles.logoutBtn}`} onClick={() => signOut({ callbackUrl: "/login" })}>
           <span className={styles.menuIcon}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>

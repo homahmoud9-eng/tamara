@@ -4,38 +4,8 @@ import { useApp } from "@/components/providers/AppProvider";
 import Link from "next/link";
 import styles from "./orders.module.css";
 
-// Mock orders for the UI
-const mockOrders = [
-  {
-    id: "ORD-9823",
-    date: "2023-10-15T14:30:00Z",
-    status: "processing", // processing, completed, cancelled
-    items: [
-      { name: { ar: "دجاج محشي", en: "Stuffed Chicken" }, quantity: 1 },
-      { name: { ar: "باقة الغداء", en: "Lunch Saver" }, quantity: 1 }
-    ],
-    total: 350
-  },
-  {
-    id: "ORD-9750",
-    date: "2023-10-10T11:20:00Z",
-    status: "completed",
-    items: [
-      { name: { ar: "طاجن بامية باللحم", en: "Okra Meat Tagine" }, quantity: 2 },
-      { name: { ar: "مكرونة بالبشاميل", en: "Macaroni Bechamel" }, quantity: 1 }
-    ],
-    total: 420
-  },
-  {
-    id: "ORD-9610",
-    date: "2023-09-28T18:45:00Z",
-    status: "cancelled",
-    items: [
-      { name: { ar: "باقة التوفير الشهرية", en: "Monthly Saver Package" }, quantity: 1 }
-    ],
-    total: 1200
-  }
-];
+// Orders will be fetched here when authenticated
+const mockOrders: any[] = [];
 
 export default function OrdersPage() {
   const { language } = useApp();

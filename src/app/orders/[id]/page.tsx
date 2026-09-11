@@ -8,39 +8,105 @@ import styles from "./tracking.module.css";
 export default function OrderTrackingPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const { language } = useApp();
-  const [progress, setProgress] = useState(0);
+  
+  const [order, setOrder] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Simulate progress
   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prev) => (prev < 100 ? prev + 10 : 100));
-    }, 2000);
-    return () => clearInterval(timer);
-  }, []);
+    const fetchOrder = async () => {
+      try {
+        const res = await fetch(`/api/orders/${resolvedParams.id}`);
+        const data = await res.json();
+        
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to fetch order");
+        }
+        
+        setOrder(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchOrder();
+    
+    // Optional: Poll for updates every 30 seconds
+    const interval = setInterval(fetchOrder, 30000);
+    return () => clearInterval(interval);
+  }, [resolvedParams.id]);
 
-  const getStatusText = () => {
-    if (progress < 25) return language === "ar" ? "قيد التحضير" : "Preparing";
-    if (progress < 75) return language === "ar" ? "في الطريق" : "On the Way";
-    return language === "ar" ? "تم التوصيل" : "Delivered";
+  if (loading) {
+    return (
+      <div className={styles.trackingContainer}>
+        <div style={{ padding: "4rem", textAlign: "center", color: "var(--text-primary)" }}>
+          {language === "ar" ? "جاري تحميل الطلب..." : "Loading order..."}
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !order) {
+    return (
+      <div className={styles.trackingContainer}>
+        <div style={{ padding: "4rem", textAlign: "center", color: "var(--color-error)" }}>
+          {language === "ar" ? "تعذر العثور على الطلب" : "Order not found"}
+        </div>
+      </div>
+    );
+  }
+
+  const getProgress = (status: string) => {
+    switch (status) {
+      case "RECEIVED":
+      case "CONFIRMED": return 10;
+      case "PREPARING": return 30;
+      case "OUT_FOR_DELIVERY": return 75;
+      case "DELIVERED": return 100;
+      case "CANCELLED": return 0;
+      default: return 10;
+    }
   };
 
-  const getStatusIcon = () => {
-    if (progress < 25) return "👨‍🍳";
-    if (progress < 75) return "🛵";
-    return "✅";
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "RECEIVED": return language === "ar" ? "تم الاستلام" : "Received";
+      case "CONFIRMED": return language === "ar" ? "مؤكد" : "Confirmed";
+      case "PREPARING": return language === "ar" ? "قيد التحضير" : "Preparing";
+      case "OUT_FOR_DELIVERY": return language === "ar" ? "في الطريق" : "On the Way";
+      case "DELIVERED": return language === "ar" ? "تم التوصيل" : "Delivered";
+      case "CANCELLED": return language === "ar" ? "ملغي" : "Cancelled";
+      default: return status;
+    }
   };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "RECEIVED":
+      case "CONFIRMED": return "📝";
+      case "PREPARING": return "👨‍🍳";
+      case "OUT_FOR_DELIVERY": return "🛵";
+      case "DELIVERED": return "✅";
+      case "CANCELLED": return "❌";
+      default: return "📦";
+    }
+  };
+
+  const progress = getProgress(order.status);
 
   return (
     <div className={styles.trackingContainer}>
       <header className={styles.header}>
         <div className="container">
-          <Link href="/" className={styles.backBtn}>
+          <Link href="/orders" className={styles.backBtn}>
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               {language === "ar" ? <polyline points="9 18 15 12 9 6"></polyline> : <polyline points="15 18 9 12 15 6"></polyline>}
             </svg>
           </Link>
           <h1 className={styles.title}>
-            {language === "ar" ? `الطلب #${resolvedParams.id}` : `Order #${resolvedParams.id}`}
+            {language === "ar" ? `الطلب #${order.orderNumber}` : `Order #${order.orderNumber}`}
           </h1>
         </div>
       </header>
@@ -55,29 +121,36 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       <div className={`container ${styles.statusSection}`}>
         <div className={styles.statusCard}>
           <div className={styles.statusHeader}>
-            <div className={styles.statusIcon}>{getStatusIcon()}</div>
+            <div className={styles.statusIcon}>{getStatusIcon(order.status)}</div>
             <div>
-              <h2 className={styles.statusTitle}>{getStatusText()}</h2>
+              <h2 className={styles.statusTitle}>{getStatusText(order.status)}</h2>
               <p className={styles.statusDesc}>
-                {language === "ar" ? "الوقت المتوقع: ١٥ دقيقة" : "ETA: 15 minutes"}
+                {order.status === "DELIVERED" || order.status === "CANCELLED" 
+                  ? "" 
+                  : (language === "ar" ? "يتم تحديث الحالة من الإدارة" : "Status updated by admin")}
               </p>
             </div>
           </div>
 
           <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: `${progress}%` }}></div>
+            <div 
+              className={styles.progressFill} 
+              style={{ width: `${progress}%`, backgroundColor: order.status === "CANCELLED" ? "var(--color-error)" : "var(--primary)" }}
+            ></div>
           </div>
 
-          <div className={styles.driverInfo}>
-            <div className={styles.driverAvatar}>👤</div>
-            <div className={styles.driverDetails}>
-              <h3 className={styles.driverName}>{language === "ar" ? "أحمد مصطفى" : "Ahmed Mostafa"}</h3>
-              <p className={styles.driverMeta}>{language === "ar" ? "تويوتا يارس - ABC 123" : "Toyota Yaris - ABC 123"}</p>
+          {order.status === "OUT_FOR_DELIVERY" && (
+            <div className={styles.driverInfo}>
+              <div className={styles.driverAvatar}>👤</div>
+              <div className={styles.driverDetails}>
+                <h3 className={styles.driverName}>{language === "ar" ? "مندوب التوصيل" : "Delivery Driver"}</h3>
+                <p className={styles.driverMeta}>{language === "ar" ? "في طريقه إليك" : "On his way to you"}</p>
+              </div>
+              <a href="tel:+971541744773" className={styles.callBtn}>
+                📞
+              </a>
             </div>
-            <a href="tel:+971541744773" className={styles.callBtn}>
-              📞
-            </a>
-          </div>
+          )}
         </div>
 
         <div className={styles.orderDetails}>
@@ -86,11 +159,15 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
           </h3>
           <div className={styles.summaryItem}>
             <span>{language === "ar" ? "المجموع الكلي" : "Total Amount"}</span>
-            <span className={styles.summaryValue}>235 {language === "ar" ? "درهم" : "AED"}</span>
+            <span className={styles.summaryValue}>{order.totalAmount} {language === "ar" ? "درهم" : "AED"}</span>
           </div>
           <div className={styles.summaryItem}>
             <span>{language === "ar" ? "طريقة الدفع" : "Payment"}</span>
-            <span className={styles.summaryValue}>{language === "ar" ? "نقداً" : "Cash"}</span>
+            <span className={styles.summaryValue}>
+              {order.paymentMethod === "CASH" 
+                ? (language === "ar" ? "نقداً" : "Cash") 
+                : (language === "ar" ? "بطاقة ائتمان" : "Card")}
+            </span>
           </div>
         </div>
       </div>

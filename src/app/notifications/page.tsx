@@ -6,30 +6,7 @@ import styles from "./notifications.module.css";
 export default function NotificationsPage() {
   const { language } = useApp();
 
-  const notifications = [
-    {
-      id: "1",
-      titleAr: "طلبك في الطريق!",
-      titleEn: "Your order is on the way!",
-      descAr: "مندوب التوصيل في طريقه إليك. تتبع طلبك الآن.",
-      descEn: "The delivery driver is on the way. Track your order now.",
-      timeAr: "منذ ١٠ دقائق",
-      timeEn: "10 minutes ago",
-      unread: true,
-      icon: "🚚"
-    },
-    {
-      id: "2",
-      titleAr: "خصم ٣٠٪ بانتظارك",
-      titleEn: "30% discount waiting for you",
-      descAr: "استخدم الكود TAMARA30 للحصول على خصم ٣٠٪ على طلبك القادم.",
-      descEn: "Use code TAMARA30 to get 30% off your next order.",
-      timeAr: "أمس",
-      timeEn: "Yesterday",
-      unread: false,
-      icon: "🎁"
-    }
-  ];
+  const notifications: any[] = [];
 
   return (
     <div className={styles.notificationsContainer}>
@@ -40,24 +17,35 @@ export default function NotificationsPage() {
       </header>
 
       <div className={styles.list}>
-        {notifications.map(notif => (
-          <div key={notif.id} className={`${styles.notificationCard} ${notif.unread ? styles.unread : ''}`}>
-            <div className={styles.iconWrapper}>
-              {notif.icon}
+        {notifications.length > 0 ? (
+          notifications.map(notif => (
+            <div key={notif.id} className={`${styles.notificationCard} ${notif.unread ? styles.unread : ''}`}>
+              <div className={styles.iconWrapper}>
+                {notif.icon}
+              </div>
+              <div className={styles.content}>
+                <h3 className={styles.notifTitle}>
+                  {language === "ar" ? notif.titleAr : notif.titleEn}
+                </h3>
+                <p className={styles.notifDesc}>
+                  {language === "ar" ? notif.descAr : notif.descEn}
+                </p>
+                <span className={styles.notifTime}>
+                  {language === "ar" ? notif.timeAr : notif.timeEn}
+                </span>
+              </div>
             </div>
-            <div className={styles.content}>
-              <h3 className={styles.notifTitle}>
-                {language === "ar" ? notif.titleAr : notif.titleEn}
-              </h3>
-              <p className={styles.notifDesc}>
-                {language === "ar" ? notif.descAr : notif.descEn}
-              </p>
-              <span className={styles.notifTime}>
-                {language === "ar" ? notif.timeAr : notif.timeEn}
-              </span>
-            </div>
+          ))
+        ) : (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary)' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="48" height="48" style={{ margin: '0 auto 16px', display: 'block', opacity: 0.5 }}>
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <h3>{language === 'ar' ? 'لا توجد إشعارات' : 'No notifications'}</h3>
+            <p>{language === 'ar' ? 'ستظهر هنا جميع الإشعارات الخاصة بحسابك' : 'All your account notifications will appear here'}</p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
