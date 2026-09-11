@@ -5,6 +5,8 @@ import React, { createContext, useContext, useEffect, useReducer } from 'react';
 export interface CartItem {
   id: string; // unique string for this exact configuration
   productId: string;
+  name?: { ar: string; en: string };
+  variantName?: { ar: string; en: string };
   variantId: string | null;
   addons: Record<string, string[]>; // groupId -> addonIds
   packageSelections?: {

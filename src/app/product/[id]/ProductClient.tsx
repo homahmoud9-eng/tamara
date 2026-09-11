@@ -150,6 +150,8 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
     addItem({
       id: configId,
       productId: product.id,
+      name: product.name,
+      variantName: selectedVariant ? selectedVariant.name : undefined,
       variantId: selectedVariantId,
       addons: selectedAddons,
       packageSelections: customSelections,

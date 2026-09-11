@@ -31,6 +31,7 @@ export function ProductCard({ product }: { product: Product }) {
     addItem({
       id: `${product.id}-${defaultVariant?.id || 'base'}---`, // Simple distinct id for no-options
       productId: product.id,
+      name: product.name,
       variantId: defaultVariant?.id || null,
       addons: {},
       quantity: 1,

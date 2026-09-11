@@ -27,19 +27,25 @@ export default function CheckoutPage() {
     msg += `Name: ${formData.name}\n`;
     msg += `Phone: ${formData.phone}\n`;
     msg += `Address: ${formData.address}\n\n`;
-    msg += `*Items:*\n`;
+    msg += `*Items - الطلبات:*\n`;
     items.forEach(i => {
-      msg += `- ${i.quantity}x (Total: ${i.totalPrice * i.quantity} AED)\n`;
+      // Safely get names, fallback to 'Unknown Product' if name wasn't saved in older cart sessions
+      const nameAr = i.name?.ar || 'منتج غير معروف';
+      const nameEn = i.name?.en || 'Unknown Product';
+      const variantAr = i.variantName?.ar ? ` - ${i.variantName.ar}` : '';
+      const variantEn = i.variantName?.en ? ` - ${i.variantName.en}` : '';
+      
+      msg += `- ${i.quantity}x ${nameAr}${variantAr} | ${nameEn}${variantEn} (Total: ${i.totalPrice * i.quantity} AED)\n`;
       if (i.notes && i.notes.trim() !== '') {
-        msg += `   Note: ${i.notes}\n`;
+        msg += `   Note - ملاحظة: ${i.notes}\n`;
       }
     });
     if (orderNotes && orderNotes.trim() !== '') {
-      msg += `\n*Delivery Notes:* ${orderNotes}\n`;
+      msg += `\n*Delivery Notes - ملاحظات التوصيل:* ${orderNotes}\n`;
     }
-    msg += `\n*Delivery:* ${deliveryFee} AED\n`;
-    msg += `*Grand Total:* ${grandTotal} AED\n`;
-    msg += `*Payment:* ${paymentMethod === 'cash' ? 'Cash on Delivery' : 'Card'}`;
+    msg += `\n*Delivery - التوصيل:* ${deliveryFee} AED\n`;
+    msg += `*Grand Total - الإجمالي:* ${grandTotal} AED\n`;
+    msg += `*Payment - الدفع:* ${paymentMethod === 'cash' ? 'Cash on Delivery - الدفع عند الاستلام' : 'Card - بطاقة'}`;
 
     const encodedMsg = encodeURIComponent(msg);
     // Open whatsapp in background
