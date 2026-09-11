@@ -3,20 +3,25 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/nextauth";
 import prisma from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
+    const { searchParams } = new URL(req.url);
+    const phone = searchParams.get('phone');
 
-    if (!session || !session.user || !(session.user as any).id) {
-      return NextResponse.json({ orders: [] }, { status: 200 });
+    let customer = null;
+
+    if (session && session.user && (session.user as any).id) {
+      const userId = (session.user as any).id;
+      customer = await prisma.customer.findUnique({
+        where: { userId: userId },
+      });
+    } else if (phone) {
+      // Fallback for guest users tracking by phone
+      customer = await prisma.customer.findUnique({
+        where: { phone: phone },
+      });
     }
-
-    const userId = (session.user as any).id;
-
-    // Find the customer linked to this user
-    const customer = await prisma.customer.findUnique({
-      where: { userId: userId },
-    });
 
     if (!customer) {
       return NextResponse.json({ orders: [] }, { status: 200 });

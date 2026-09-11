@@ -11,6 +11,7 @@ export default function CheckoutPage() {
   const { items, totalAmount, orderNotes, clearCart } = useCart();
   
   const [isSuccess, setIsSuccess] = useState(false);
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -42,9 +43,18 @@ export default function CheckoutPage() {
         body: JSON.stringify(orderPayload),
       });
 
-      if (!res.ok) {
+      if (res.ok) {
+        const data = await res.json();
+        if (data.order && data.order.id) {
+          setPlacedOrderId(data.order.id);
+        }
+      } else {
         console.error("Failed to save order to database.");
-        // We will still send WhatsApp msg as fallback
+      }
+
+      // Save phone number for guest tracking
+      if (typeof window !== "undefined") {
+        localStorage.setItem("guestPhone", formData.phone);
       }
 
       // 2. Generate WhatsApp Message
@@ -101,7 +111,7 @@ export default function CheckoutPage() {
             ? "شكراً لك. طلبك قيد التحضير وسنرسل لك تحديثات قريباً." 
             : "Thank you. Your order is being prepared and we'll send updates soon."}
         </p>
-        <Link href="/orders/tracking-123" className={styles.trackBtn}>
+        <Link href={`/orders/${placedOrderId || ''}`} className={styles.trackBtn}>
           {language === "ar" ? "تتبع الطلب" : "Track Order"}
         </Link>
         <Link href="/" className={styles.whatsappBtn}>

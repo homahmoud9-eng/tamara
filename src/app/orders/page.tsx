@@ -13,7 +13,15 @@ export default function OrdersPage() {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const res = await fetch('/api/orders/my-orders');
+        let url = '/api/orders/my-orders';
+        if (typeof window !== 'undefined') {
+          const guestPhone = localStorage.getItem('guestPhone');
+          if (guestPhone) {
+            url += `?phone=${encodeURIComponent(guestPhone)}`;
+          }
+        }
+        
+        const res = await fetch(url);
         if (res.ok) {
           const data = await res.json();
           setOrders(data.orders || []);
