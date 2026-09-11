@@ -2,28 +2,49 @@
 
 import { useApp } from "@/components/providers/AppProvider";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import styles from "./orders.module.css";
-
-// Orders will be fetched here when authenticated
-const mockOrders: any[] = [];
 
 export default function OrdersPage() {
   const { language } = useApp();
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchOrders() {
+      try {
+        const res = await fetch('/api/orders/my-orders');
+        if (res.ok) {
+          const data = await res.json();
+          setOrders(data.orders || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch orders", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchOrders();
+  }, []);
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'processing': return language === 'ar' ? 'جاري التجهيز' : 'Processing';
-      case 'completed': return language === 'ar' ? 'مكتمل' : 'Completed';
-      case 'cancelled': return language === 'ar' ? 'ملغي' : 'Cancelled';
+      case 'RECEIVED': return language === 'ar' ? 'مستلم جديد' : 'Received';
+      case 'CONFIRMED': return language === 'ar' ? 'مؤكد' : 'Confirmed';
+      case 'PREPARING': return language === 'ar' ? 'جاري التجهيز' : 'Preparing';
+      case 'OUT_FOR_DELIVERY': return language === 'ar' ? 'في الطريق' : 'Out for Delivery';
+      case 'DELIVERED': return language === 'ar' ? 'مكتمل' : 'Completed';
+      case 'CANCELLED': return language === 'ar' ? 'ملغي' : 'Cancelled';
       default: return status;
     }
   };
 
   const getStatusClass = (status: string) => {
     switch (status) {
-      case 'processing': return styles.statusProcessing;
-      case 'completed': return styles.statusCompleted;
-      case 'cancelled': return styles.statusCancelled;
+      case 'PREPARING': return styles.statusProcessing;
+      case 'OUT_FOR_DELIVERY': return styles.statusProcessing;
+      case 'DELIVERED': return styles.statusCompleted;
+      case 'CANCELLED': return styles.statusCancelled;
       default: return '';
     }
   };
@@ -44,14 +65,18 @@ export default function OrdersPage() {
           {language === 'ar' ? 'طلباتي' : 'My Orders'}
         </h1>
 
-        {mockOrders.length > 0 ? (
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            {language === 'ar' ? 'جاري التحميل...' : 'Loading...'}
+          </div>
+        ) : orders.length > 0 ? (
           <div className={styles.orderList}>
-            {mockOrders.map((order) => (
+            {orders.map((order) => (
               <Link href={`/orders/${order.id}`} key={order.id} className={styles.orderCard}>
                 <div className={styles.orderHeader}>
                   <div>
-                    <div className={styles.orderId}>#{order.id}</div>
-                    <div className={styles.orderDate}>{formatDate(order.date)}</div>
+                    <div className={styles.orderId}>#{order.orderNumber}</div>
+                    <div className={styles.orderDate}>{formatDate(order.createdAt)}</div>
                   </div>
                   <div className={`${styles.orderStatus} ${getStatusClass(order.status)}`}>
                     {getStatusText(order.status)}
@@ -59,14 +84,14 @@ export default function OrdersPage() {
                 </div>
                 <div className={styles.orderDetails}>
                   <div className={styles.orderItems}>
-                    {order.items.map((item: any, idx: number) => (
+                    {order.items?.map((item: any, idx: number) => (
                       <div key={idx}>
-                        {item.quantity}x {language === 'ar' ? item.name.ar : item.name.en}
+                        {item.quantity}x {language === 'ar' ? item.productNameAr : item.productNameEn}
                       </div>
                     ))}
                   </div>
                   <div className={styles.orderTotal}>
-                    {order.total} {language === 'ar' ? 'درهم' : 'AED'}
+                    {order.totalAmount} {language === 'ar' ? 'درهم' : 'AED'}
                   </div>
                 </div>
               </Link>
