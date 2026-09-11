@@ -21,38 +21,66 @@ export default function CheckoutPage() {
   const deliveryFee = 15;
   const grandTotal = totalAmount + deliveryFee;
 
-  const handlePlaceOrder = () => {
-    // Generate WhatsApp Message
-    let msg = `*New Order - طلب جديد*\n`;
-    msg += `Name: ${formData.name}\n`;
-    msg += `Phone: ${formData.phone}\n`;
-    msg += `Address: ${formData.address}\n\n`;
-    msg += `*Items - الطلبات:*\n`;
-    items.forEach(i => {
-      // Safely get names, fallback to 'Unknown Product' if name wasn't saved in older cart sessions
-      const nameAr = i.name?.ar || 'منتج غير معروف';
-      const nameEn = i.name?.en || 'Unknown Product';
-      const variantAr = i.variantName?.ar ? ` - ${i.variantName.ar}` : '';
-      const variantEn = i.variantName?.en ? ` - ${i.variantName.en}` : '';
-      
-      msg += `- ${i.quantity}x ${nameAr}${variantAr} | ${nameEn}${variantEn} (Total: ${i.totalPrice * i.quantity} AED)\n`;
-      if (i.notes && i.notes.trim() !== '') {
-        msg += `   Note - ملاحظة: ${i.notes}\n`;
+  const handlePlaceOrder = async () => {
+    try {
+      // 1. Send Order to Database
+      const orderPayload = {
+        customerName: formData.name,
+        customerPhone: formData.phone,
+        address: formData.address,
+        items: items,
+        subtotal: totalAmount,
+        deliveryFee: deliveryFee,
+        totalAmount: grandTotal,
+        customerNotes: orderNotes,
+        paymentMethod: paymentMethod
+      };
+
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderPayload),
+      });
+
+      if (!res.ok) {
+        console.error("Failed to save order to database.");
+        // We will still send WhatsApp msg as fallback
       }
-    });
-    if (orderNotes && orderNotes.trim() !== '') {
-      msg += `\n*Delivery Notes - ملاحظات التوصيل:* ${orderNotes}\n`;
+
+      // 2. Generate WhatsApp Message
+      let msg = `*New Order - طلب جديد*\n`;
+      msg += `Name: ${formData.name}\n`;
+      msg += `Phone: ${formData.phone}\n`;
+      msg += `Address: ${formData.address}\n\n`;
+      msg += `*Items - الطلبات:*\n`;
+      items.forEach(i => {
+        const nameAr = i.name?.ar || 'منتج غير معروف';
+        const nameEn = i.name?.en || 'Unknown Product';
+        const variantAr = i.variantName?.ar ? ` - ${i.variantName.ar}` : '';
+        const variantEn = i.variantName?.en ? ` - ${i.variantName.en}` : '';
+        
+        msg += `- ${i.quantity}x ${nameAr}${variantAr} | ${nameEn}${variantEn} (Total: ${i.totalPrice * i.quantity} AED)\n`;
+        if (i.notes && i.notes.trim() !== '') {
+          msg += `   Note - ملاحظة: ${i.notes}\n`;
+        }
+      });
+      if (orderNotes && orderNotes.trim() !== '') {
+        msg += `\n*Delivery Notes - ملاحظات التوصيل:* ${orderNotes}\n`;
+      }
+      msg += `\n*Delivery - التوصيل:* ${deliveryFee} AED\n`;
+      msg += `*Grand Total - الإجمالي:* ${grandTotal} AED\n`;
+      msg += `*Payment - الدفع:* ${paymentMethod === 'cash' ? 'Cash on Delivery - الدفع عند الاستلام' : 'Card - بطاقة'}`;
+
+      const encodedMsg = encodeURIComponent(msg);
+      // Open whatsapp in background
+      window.open(`https://wa.me/971541744773?text=${encodedMsg}`, '_blank');
+
+      setIsSuccess(true);
+      clearCart();
+    } catch (err) {
+      console.error("Error placing order:", err);
+      alert(language === 'ar' ? 'حدث خطأ أثناء معالجة الطلب.' : 'Error processing order.');
     }
-    msg += `\n*Delivery - التوصيل:* ${deliveryFee} AED\n`;
-    msg += `*Grand Total - الإجمالي:* ${grandTotal} AED\n`;
-    msg += `*Payment - الدفع:* ${paymentMethod === 'cash' ? 'Cash on Delivery - الدفع عند الاستلام' : 'Card - بطاقة'}`;
-
-    const encodedMsg = encodeURIComponent(msg);
-    // Open whatsapp in background
-    window.open(`https://wa.me/971541744773?text=${encodedMsg}`, '_blank');
-
-    setIsSuccess(true);
-    clearCart();
   };
 
   const isFormValid = formData.name.trim() !== "" && formData.phone.trim() !== "" && formData.address.trim() !== "";
