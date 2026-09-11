@@ -59,7 +59,7 @@ export default function OrdersPage() {
                 </div>
                 <div className={styles.orderDetails}>
                   <div className={styles.orderItems}>
-                    {order.items.map((item, idx) => (
+                    {order.items.map((item: any, idx: number) => (
                       <div key={idx}>
                         {item.quantity}x {language === 'ar' ? item.name.ar : item.name.en}
                       </div>
