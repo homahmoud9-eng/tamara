@@ -47,7 +47,7 @@ export function Header({ announcement }: { announcement?: any }) {
   }
 
   return (
-    <header className={`${styles.header} ${positionClass} ${isScrolled ? styles.scrolled : ''}`}>
+    <>
       {announcement?.isEnabled && (
         <div style={{ backgroundColor: announcement.bgColor || '#173F35', color: announcement.textColor || '#F7F0E3', width: '100%' }}>
           <AnnouncementBar 
@@ -59,7 +59,8 @@ export function Header({ announcement }: { announcement?: any }) {
           />
         </div>
       )}
-      <div className={styles.headerContainer}>
+      <header className={`${styles.header} ${positionClass} ${isScrolled ? styles.scrolled : ''}`}>
+        <div className={styles.headerContainer}>
         <div className={`container ${styles.headerInner}`}>
           
           {/* Mobile Left: Actions (Notifications) */}
@@ -172,6 +173,7 @@ export function Header({ announcement }: { announcement?: any }) {
           </div>
         </div>
       )}
-    </header>
+      </header>
+    </>
   );
 }
