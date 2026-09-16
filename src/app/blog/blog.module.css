@@ -24,82 +24,131 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--spacing-6);
+  padding: var(--spacing-4) 0;
 }
 
+/* Card Design matching the reference image */
 .card {
-  background: var(--bg-surface);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  position: relative;
   display: flex;
   flex-direction: column;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  border-color: var(--color-gold);
+  margin-bottom: 40px; /* Space for overlap */
 }
 
 .imageWrapper {
   position: relative;
   width: 100%;
-  padding-top: 60%; /* 16:9 aspect ratio roughly */
-  background-color: var(--bg-main);
+  height: 220px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1;
 }
 
 .image {
   object-fit: cover;
 }
 
+/* The dark content box that overlaps the image */
 .content {
-  padding: var(--spacing-4);
+  position: relative;
+  background-color: #1a2530; /* Dark blue/slate color from the reference */
+  border-radius: 20px;
+  padding: 30px 20px 20px;
+  margin-top: -40px; /* Overlap the image */
+  z-index: 2;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  align-items: center;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.date {
-  font-size: 0.85rem;
-  color: var(--color-gold);
-  margin-bottom: var(--spacing-2);
-  font-weight: 500;
+/* The gold button/tag at the top of the content box */
+.tag {
+  background-color: var(--color-gold);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 24px;
+  border-radius: 20px;
+  position: absolute;
+  top: -20px; /* Halfway out of the box */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 80%;
+  text-align: center;
 }
 
 .postTitle {
-  font-size: 1.25rem;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-2);
-  font-weight: 700;
+  font-size: 1.3rem;
+  color: #ffffff;
+  margin-top: 10px;
+  margin-bottom: 12px;
+  font-weight: 800;
   line-height: 1.4;
+}
+
+.separator {
+  width: 100%;
+  height: 2px;
+  background-color: #d32f2f; /* Red line */
+  margin: 10px 0 15px;
+  border: none;
 }
 
 .excerpt {
   font-size: 0.95rem;
-  color: var(--text-secondary);
+  color: #b0bec5;
   line-height: 1.6;
-  margin-bottom: var(--spacing-4);
+  margin-bottom: 20px;
   flex-grow: 1;
 }
 
-.readMore {
-  align-self: flex-start;
-  padding: var(--spacing-2) var(--spacing-4);
-  background-color: transparent;
-  color: var(--color-gold);
-  border: 1px solid var(--color-gold);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
+.meta {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 0.95rem;
   font-weight: 600;
+}
+
+.metaIcon {
+  color: var(--color-gold); /* Orange/Gold icon */
+  width: 18px;
+  height: 18px;
+}
+
+.readMore {
+  width: 100%;
+  padding: 12px 20px;
+  background-color: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 700;
   text-decoration: none;
   transition: all var(--transition-fast);
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .readMore:hover {
-  background-color: var(--color-gold);
-  color: var(--bg-main);
+  background-color: #ffffff;
+  color: #1a2530;
 }

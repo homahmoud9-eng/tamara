@@ -75,6 +75,7 @@ const NAV_SECTIONS: NavSection[] = [
       { nameEn: 'Navigation', nameAr: 'التنقل', href: '/dashboard/website/navigation', icon: Navigation },
       { nameEn: 'Reviews', nameAr: 'التقييمات', href: '/dashboard/website/reviews', icon: Star },
       { nameEn: 'Media Library', nameAr: 'مكتبة الوسائط', href: '/dashboard/website/media', icon: ImageIcon },
+      { nameEn: 'Blog', nameAr: 'المدونة', href: '/dashboard/website/blog', icon: FileText },
     ]
   },
   {

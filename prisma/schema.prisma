@@ -615,3 +615,24 @@ model PushSubscription {
   
   createdAt DateTime @default(now())
 }
+
+// ==========================================
+// 12. BLOG POSTS
+// ==========================================
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  titleAr     String
+  titleEn     String?
+  slug        String   @unique
+  excerptAr   String?
+  excerptEn   String?
+  contentAr   String   @db.Text
+  contentEn   String?  @db.Text
+  image       String?
+  isActive    Boolean  @default(true)
+  author      String?  @default("Tamara Kitchen")
+  readTimeMin Int      @default(5)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
