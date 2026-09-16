@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark" | "system";
+type Theme = "dark";
 type Direction = "rtl" | "ltr";
 type Language = "ar" | "en";
 
@@ -27,7 +27,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
+  const [theme, setThemeState] = useState<Theme>("dark");
   const [language, setLanguageState] = useState<Language>("ar");
   const [userProfile, setUserProfile] = useState<UserProfile>({
     firstName: 'Tamara',
@@ -58,9 +58,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     // Read persisted theme
     const savedTheme = localStorage.getItem("theme") as Theme | null;
-    if (savedTheme) {
+    if (savedTheme === "dark") {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setThemeState(savedTheme);
+      setThemeState("dark");
+    } else {
+      localStorage.setItem("theme", "dark");
     }
   }, []);
 
@@ -93,24 +95,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const applyTheme = (currentTheme: Theme) => {
-    if (currentTheme === "system") {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
-    } else {
-      document.documentElement.setAttribute("data-theme", currentTheme);
-    }
+    document.documentElement.setAttribute("data-theme", "dark");
   };
 
-  // Sync theme changes with system preference if set to system
+  // Sync theme changes
   useEffect(() => {
-    applyTheme(theme);
-    
-    if (theme === "system") {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      const handleChange = () => applyTheme("system");
-      mediaQuery.addEventListener("change", handleChange);
-      return () => mediaQuery.removeEventListener("change", handleChange);
-    }
+    applyTheme("dark");
   }, [theme]);
 
   // Initial language apply
