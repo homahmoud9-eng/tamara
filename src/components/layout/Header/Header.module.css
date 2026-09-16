@@ -5,6 +5,10 @@
   width: 100%;
 }
 
+.header.scrolled {
+  top: 16px;
+}
+
 .headerFixed {
   position: sticky;
 }
@@ -30,7 +34,6 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   width: 95%;
   max-width: 1200px;
-  margin-top: 16px;
   border-radius: 100px;
 }
 
