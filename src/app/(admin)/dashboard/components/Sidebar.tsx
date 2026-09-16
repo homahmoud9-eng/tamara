@@ -24,98 +24,99 @@ type NavItem = {
   nameAr: string;
   href: string;
   icon: any;
-  children?: { nameEn: string; nameAr: string; href: string }[];
+  isImplemented?: boolean;
+  children?: { nameEn: string; nameAr: string; href: string; isImplemented?: boolean }[];
 };
 
 const NAV_SECTIONS: NavSection[] = [
   {
     titleEn: '', titleAr: '',
     items: [
-      { nameEn: 'Overview', nameAr: 'نظرة عامة', href: '/dashboard', icon: LayoutDashboard },
+      { nameEn: 'Overview', nameAr: 'نظرة عامة', href: '/dashboard', icon: LayoutDashboard, isImplemented: true },
     ]
   },
   {
     titleEn: 'Operations', titleAr: 'العمليات',
     items: [
       { 
-        nameEn: 'Orders', nameAr: 'الطلبات', href: '/dashboard/orders', icon: ShoppingBag,
+        nameEn: 'Orders', nameAr: 'الطلبات', href: '/dashboard/orders', icon: ShoppingBag, isImplemented: true,
         children: [
-          { nameEn: 'All Orders', nameAr: 'جميع الطلبات', href: '/dashboard/orders' },
-          { nameEn: 'Live Orders', nameAr: 'الطلبات الحية', href: '/dashboard/orders/live' },
+          { nameEn: 'All Orders', nameAr: 'جميع الطلبات', href: '/dashboard/orders', isImplemented: true },
+          { nameEn: 'Live Orders', nameAr: 'الطلبات الحية', href: '/dashboard/orders/live', isImplemented: true },
         ]
       },
-      { nameEn: 'Customers', nameAr: 'العملاء', href: '/dashboard/customers', icon: Users },
+      { nameEn: 'Customers', nameAr: 'العملاء', href: '/dashboard/customers', icon: Users, isImplemented: true },
     ]
   },
   {
     titleEn: 'Catalog', titleAr: 'الكاتالوج',
     items: [
-      { nameEn: 'Products', nameAr: 'المنتجات', href: '/dashboard/catalog/products', icon: Box },
-      { nameEn: 'Categories', nameAr: 'الأقسام', href: '/dashboard/catalog/categories', icon: Layers },
-      { nameEn: 'Variants', nameAr: 'المتغيرات', href: '/dashboard/catalog/variants', icon: Tag },
-      { nameEn: 'Add-ons', nameAr: 'الإضافات', href: '/dashboard/catalog/addons', icon: Zap },
-      { nameEn: 'Packages', nameAr: 'الباقات', href: '/dashboard/catalog/packages', icon: Package },
+      { nameEn: 'Products', nameAr: 'المنتجات', href: '/dashboard/catalog/products', icon: Box, isImplemented: true },
+      { nameEn: 'Categories', nameAr: 'الأقسام', href: '/dashboard/catalog/categories', icon: Layers, isImplemented: true },
+      { nameEn: 'Variants', nameAr: 'المتغيرات', href: '/dashboard/catalog/variants', icon: Tag, isImplemented: true },
+      { nameEn: 'Add-ons', nameAr: 'الإضافات', href: '/dashboard/catalog/addons', icon: Zap, isImplemented: true },
+      { nameEn: 'Packages', nameAr: 'الباقات', href: '/dashboard/catalog/packages', icon: Package, isImplemented: false },
     ]
   },
   {
     titleEn: 'Marketing', titleAr: 'التسويق',
     items: [
-      { nameEn: 'Offers', nameAr: 'العروض', href: '/dashboard/marketing/offers', icon: Gift },
-      { nameEn: 'Coupons', nameAr: 'الكوبونات', href: '/dashboard/marketing/coupons', icon: Ticket },
-      { nameEn: 'First Order', nameAr: 'أول طلب', href: '/dashboard/marketing/first-order', icon: Percent },
-      { nameEn: 'Campaigns', nameAr: 'الحملات', href: '/dashboard/marketing/campaigns', icon: Megaphone },
+      { nameEn: 'Offers', nameAr: 'العروض', href: '/dashboard/marketing/offers', icon: Gift, isImplemented: true },
+      { nameEn: 'Coupons', nameAr: 'الكوبونات', href: '/dashboard/marketing/coupons', icon: Ticket, isImplemented: true },
+      { nameEn: 'First Order', nameAr: 'أول طلب', href: '/dashboard/marketing/first-order', icon: Percent, isImplemented: false },
+      { nameEn: 'Campaigns', nameAr: 'الحملات', href: '/dashboard/marketing/campaigns', icon: Megaphone, isImplemented: false },
     ]
   },
   {
     titleEn: 'Website', titleAr: 'الموقع',
     items: [
-      { nameEn: 'Homepage', nameAr: 'الصفحة الرئيسية', href: '/dashboard/website/homepage', icon: Home },
-      { nameEn: 'Hero', nameAr: 'البانر الرئيسي', href: '/dashboard/website/hero', icon: Monitor },
-      { nameEn: 'Announcement', nameAr: 'شريط الإعلانات', href: '/dashboard/website/announcement', icon: Type },
-      { nameEn: 'Navigation', nameAr: 'التنقل', href: '/dashboard/website/navigation', icon: Navigation },
-      { nameEn: 'Reviews', nameAr: 'التقييمات', href: '/dashboard/website/reviews', icon: Star },
-      { nameEn: 'Media Library', nameAr: 'مكتبة الوسائط', href: '/dashboard/website/media', icon: ImageIcon },
-      { nameEn: 'Blog', nameAr: 'المدونة', href: '/dashboard/website/blog', icon: FileText },
+      { nameEn: 'Homepage', nameAr: 'الصفحة الرئيسية', href: '/dashboard/website/homepage', icon: Home, isImplemented: true },
+      { nameEn: 'Hero', nameAr: 'البانر الرئيسي', href: '/dashboard/website/hero', icon: Monitor, isImplemented: true },
+      { nameEn: 'Announcement', nameAr: 'شريط الإعلانات', href: '/dashboard/website/announcement', icon: Type, isImplemented: true },
+      { nameEn: 'Navigation', nameAr: 'التنقل', href: '/dashboard/website/navigation', icon: Navigation, isImplemented: false },
+      { nameEn: 'Reviews', nameAr: 'التقييمات', href: '/dashboard/website/reviews', icon: Star, isImplemented: false },
+      { nameEn: 'Media Library', nameAr: 'مكتبة الوسائط', href: '/dashboard/website/media', icon: ImageIcon, isImplemented: false },
+      { nameEn: 'Blog', nameAr: 'المدونة', href: '/dashboard/website/blog', icon: FileText, isImplemented: true },
     ]
   },
   {
     titleEn: 'App', titleAr: 'التطبيق',
     items: [
-      { nameEn: 'PWA Settings', nameAr: 'إعدادات التطبيق', href: '/dashboard/app/pwa', icon: Smartphone },
-      { nameEn: 'Notifications', nameAr: 'الإشعارات', href: '/dashboard/app/notifications', icon: Bell },
+      { nameEn: 'PWA Settings', nameAr: 'إعدادات التطبيق', href: '/dashboard/app/pwa', icon: Smartphone, isImplemented: false },
+      { nameEn: 'Notifications', nameAr: 'الإشعارات', href: '/dashboard/app/notifications', icon: Bell, isImplemented: true },
     ]
   },
   {
     titleEn: 'Analytics', titleAr: 'التحليلات',
     items: [
-      { nameEn: 'Overview', nameAr: 'نظرة عامة', href: '/dashboard/analytics', icon: BarChart3 },
-      { nameEn: 'Sales', nameAr: 'المبيعات', href: '/dashboard/analytics/sales', icon: TrendingUp },
-      { nameEn: 'Products', nameAr: 'المنتجات', href: '/dashboard/analytics/products', icon: Box },
-      { nameEn: 'Customers', nameAr: 'العملاء', href: '/dashboard/analytics/customers', icon: UserCheck },
+      { nameEn: 'Overview', nameAr: 'نظرة عامة', href: '/dashboard/analytics', icon: BarChart3, isImplemented: false },
+      { nameEn: 'Sales', nameAr: 'المبيعات', href: '/dashboard/analytics/sales', icon: TrendingUp, isImplemented: false },
+      { nameEn: 'Products', nameAr: 'المنتجات', href: '/dashboard/analytics/products', icon: Box, isImplemented: false },
+      { nameEn: 'Customers', nameAr: 'العملاء', href: '/dashboard/analytics/customers', icon: UserCheck, isImplemented: false },
     ]
   },
   {
     titleEn: 'Settings', titleAr: 'الإعدادات',
     items: [
-      { nameEn: 'General', nameAr: 'عام', href: '/dashboard/settings/general', icon: Settings },
-      { nameEn: 'Business Hours', nameAr: 'ساعات العمل', href: '/dashboard/settings/hours', icon: Clock },
-      { nameEn: 'Delivery', nameAr: 'التوصيل', href: '/dashboard/settings/delivery', icon: Truck },
-      { nameEn: 'Delivery Zones', nameAr: 'مناطق التوصيل', href: '/dashboard/settings/zones', icon: MapPin },
-      { nameEn: 'Checkout', nameAr: 'الدفع', href: '/dashboard/settings/checkout', icon: ShoppingCart },
-      { nameEn: 'Payments', nameAr: 'طرق الدفع', href: '/dashboard/settings/payments', icon: CreditCard },
-      { nameEn: 'Localization', nameAr: 'اللغة', href: '/dashboard/settings/localization', icon: Globe },
-      { nameEn: 'Theme', nameAr: 'المظهر', href: '/dashboard/settings/theme', icon: Palette },
-      { nameEn: 'SEO', nameAr: 'تحسين البحث', href: '/dashboard/settings/seo', icon: SearchIcon },
-      { nameEn: 'Social', nameAr: 'التواصل الاجتماعي', href: '/dashboard/settings/social', icon: Share2 },
-      { nameEn: 'WhatsApp', nameAr: 'واتساب', href: '/dashboard/settings/whatsapp', icon: MessageCircle },
+      { nameEn: 'General', nameAr: 'عام', href: '/dashboard/settings/general', icon: Settings, isImplemented: true },
+      { nameEn: 'Business Hours', nameAr: 'ساعات العمل', href: '/dashboard/settings/hours', icon: Clock, isImplemented: false },
+      { nameEn: 'Delivery', nameAr: 'التوصيل', href: '/dashboard/settings/delivery', icon: Truck, isImplemented: false },
+      { nameEn: 'Delivery Zones', nameAr: 'مناطق التوصيل', href: '/dashboard/settings/zones', icon: MapPin, isImplemented: false },
+      { nameEn: 'Checkout', nameAr: 'الدفع', href: '/dashboard/settings/checkout', icon: ShoppingCart, isImplemented: false },
+      { nameEn: 'Payments', nameAr: 'طرق الدفع', href: '/dashboard/settings/payments', icon: CreditCard, isImplemented: false },
+      { nameEn: 'Localization', nameAr: 'اللغة', href: '/dashboard/settings/localization', icon: Globe, isImplemented: false },
+      { nameEn: 'Theme', nameAr: 'المظهر', href: '/dashboard/settings/theme', icon: Palette, isImplemented: false },
+      { nameEn: 'SEO', nameAr: 'تحسين البحث', href: '/dashboard/settings/seo', icon: SearchIcon, isImplemented: false },
+      { nameEn: 'Social', nameAr: 'التواصل الاجتماعي', href: '/dashboard/settings/social', icon: Share2, isImplemented: false },
+      { nameEn: 'WhatsApp', nameAr: 'واتساب', href: '/dashboard/settings/whatsapp', icon: MessageCircle, isImplemented: false },
     ]
   },
   {
     titleEn: 'Admin', titleAr: 'الإدارة',
     items: [
-      { nameEn: 'Admin Users', nameAr: 'المديرين', href: '/dashboard/admin/users', icon: UserCog },
-      { nameEn: 'Roles & Permissions', nameAr: 'الأدوار والصلاحيات', href: '/dashboard/admin/roles', icon: Lock },
-      { nameEn: 'Activity Logs', nameAr: 'سجل النشاط', href: '/dashboard/admin/activity', icon: Activity },
+      { nameEn: 'Admin Users', nameAr: 'المديرين', href: '/dashboard/admin/users', icon: UserCog, isImplemented: false },
+      { nameEn: 'Roles & Permissions', nameAr: 'الأدوار والصلاحيات', href: '/dashboard/admin/roles', icon: Lock, isImplemented: false },
+      { nameEn: 'Activity Logs', nameAr: 'سجل النشاط', href: '/dashboard/admin/activity', icon: Activity, isImplemented: false },
     ]
   },
 ];
@@ -162,45 +163,87 @@ export default function Sidebar() {
               const hasChildren = item.children && item.children.length > 0;
               const expanded = expandedSections[item.href];
 
+              const renderBadge = (implemented?: boolean) => {
+                if (implemented === false && !collapsed) {
+                  return (
+                    <span style={{
+                      fontSize: '10px',
+                      background: 'var(--admin-warning)',
+                      color: '#000',
+                      padding: '2px 6px',
+                      borderRadius: '10px',
+                      marginLeft: 'auto',
+                      fontWeight: 700
+                    }}>
+                      {language === 'ar' ? 'قريباً' : 'Soon'}
+                    </span>
+                  );
+                }
+                return null;
+              };
+
               return (
                 <div key={item.href}>
                   {hasChildren ? (
                     <>
                       <button
-                        onClick={() => toggleSection(item.href)}
+                        onClick={() => item.isImplemented !== false && toggleSection(item.href)}
                         className={`admin-nav-item ${active ? 'active' : ''}`}
-                        style={{ width: '100%', textAlign: 'inherit' }}
+                        style={{ width: '100%', textAlign: 'inherit', opacity: item.isImplemented === false ? 0.5 : 1, cursor: item.isImplemented === false ? 'not-allowed' : 'pointer' }}
+                        disabled={item.isImplemented === false}
                       >
                         <Icon className="admin-nav-icon" />
                         {!collapsed && (
                           <>
-                            <span style={{ flex: 1 }}>{language === 'ar' ? item.nameAr : item.nameEn}</span>
-                            {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                            <span style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+                              {language === 'ar' ? item.nameAr : item.nameEn}
+                              {renderBadge(item.isImplemented)}
+                            </span>
+                            {item.isImplemented !== false && (expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />)}
                           </>
                         )}
                       </button>
-                      {expanded && !collapsed && (
+                      {expanded && !collapsed && item.isImplemented !== false && (
                         <div className="admin-nav-children">
                           {item.children!.map((child) => (
-                            <Link
-                              key={child.href}
-                              href={child.href}
-                              className={`admin-nav-child ${pathname === child.href ? 'active' : ''}`}
-                            >
-                              {language === 'ar' ? child.nameAr : child.nameEn}
-                            </Link>
+                            child.isImplemented === false ? (
+                              <div key={child.href} className="admin-nav-child" style={{ opacity: 0.5, cursor: 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <span>{language === 'ar' ? child.nameAr : child.nameEn}</span>
+                                {renderBadge(false)}
+                              </div>
+                            ) : (
+                              <Link
+                                key={child.href}
+                                href={child.href}
+                                className={`admin-nav-child ${pathname === child.href ? 'active' : ''}`}
+                              >
+                                {language === 'ar' ? child.nameAr : child.nameEn}
+                              </Link>
+                            )
                           ))}
                         </div>
                       )}
                     </>
                   ) : (
-                    <Link 
-                      href={item.href}
-                      className={`admin-nav-item ${active ? 'active' : ''}`}
-                    >
-                      <Icon className="admin-nav-icon" />
-                      {!collapsed && (language === 'ar' ? item.nameAr : item.nameEn)}
-                    </Link>
+                    item.isImplemented === false ? (
+                      <div className={`admin-nav-item`} style={{ opacity: 0.5, cursor: 'not-allowed' }}>
+                        <Icon className="admin-nav-icon" />
+                        {!collapsed && (
+                          <span style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+                            {language === 'ar' ? item.nameAr : item.nameEn}
+                            {renderBadge(false)}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <Link 
+                        href={item.href}
+                        className={`admin-nav-item ${active ? 'active' : ''}`}
+                      >
+                        <Icon className="admin-nav-icon" />
+                        {!collapsed && (language === 'ar' ? item.nameAr : item.nameEn)}
+                      </Link>
+                    )
                   )}
                 </div>
               );
