@@ -9,14 +9,14 @@ export async function toggleSection(id: string, isEnabled: boolean) {
     where: { id },
     data: { isEnabled },
   });
-  revalidatePath('/dashboard/website/homepage');
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
 }
 
 export async function deleteSection(id: string) {
   await prisma.homepageSection.delete({ where: { id } });
-  revalidatePath('/dashboard/website/homepage');
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
 }
 
 export async function createSection(formData: FormData) {
@@ -36,8 +36,8 @@ export async function createSection(formData: FormData) {
       displayLimit: parseInt(formData.get('displayLimit') as string) || 6,
     },
   });
-  revalidatePath('/dashboard/website/homepage');
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/website/homepage');
 }
 
@@ -59,7 +59,7 @@ export async function updateSection(id: string, formData: FormData) {
       displayLimit: parseInt(formData.get('displayLimit') as string) || 6,
     },
   });
-  revalidatePath('/dashboard/website/homepage');
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/website/homepage');
 }

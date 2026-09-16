@@ -24,8 +24,8 @@ export async function createVariant(formData: FormData) {
       sortOrder: parseInt(formData.get('sortOrder') as string) || 0,
     },
   });
-  revalidatePath('/dashboard/catalog/variants');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog/variants');
 }
 
@@ -57,13 +57,13 @@ export async function updateVariant(id: string, formData: FormData) {
     where: { id },
     data: dataToUpdate,
   });
-  revalidatePath('/dashboard/catalog/variants');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog/variants');
 }
 
 export async function deleteVariant(id: string) {
   await prisma.variant.delete({ where: { id } });
-  revalidatePath('/dashboard/catalog/variants');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
 }

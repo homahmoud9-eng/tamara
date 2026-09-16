@@ -58,8 +58,8 @@ export async function createProduct(formData: FormData) {
   };
 
   await prisma.product.create({ data });
-  revalidatePath('/dashboard/catalog/products');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog/products');
 }
 
@@ -111,22 +111,22 @@ export async function updateProduct(id: string, formData: FormData) {
   }
 
   await prisma.product.update({ where: { id }, data });
-  revalidatePath('/dashboard/catalog/products');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog/products');
 }
 
 export async function deleteGalleryImage(id: string, productId: string) {
   await prisma.productGallery.delete({ where: { id } });
-  revalidatePath('/dashboard/catalog/products');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect(`/dashboard/catalog/products/${productId}/edit`);
 }
 
 export async function deleteProduct(id: string) {
   await prisma.product.delete({ where: { id } });
-  revalidatePath('/dashboard/catalog/products');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
 }
 
 export async function toggleProductAvailability(id: string, availability: string) {
@@ -134,6 +134,6 @@ export async function toggleProductAvailability(id: string, availability: string
     where: { id },
     data: { availability },
   });
-  revalidatePath('/dashboard/catalog/products');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
 }

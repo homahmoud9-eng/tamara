@@ -19,7 +19,7 @@ async function createCoupon(formData: FormData) {
       expiryDate: formData.get('expiryDate') ? new Date(formData.get('expiryDate') as string) : null,
     }
   });
-  revalidatePath('/dashboard/marketing/coupons');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/marketing/coupons');
 }
 

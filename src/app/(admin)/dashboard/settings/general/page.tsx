@@ -6,8 +6,8 @@ async function saveSettings(formData: FormData) {
   'use server';
   // TODO: Fix this to use BusinessSetting or proper Key-Value Setting model
   // Currently setting model does not exist in Prisma schema
-  revalidatePath('/dashboard/settings/general');
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
 }
 
 export default async function GeneralSettingsPage() {

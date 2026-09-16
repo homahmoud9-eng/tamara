@@ -22,8 +22,8 @@ export async function createHeroSlide(formData: FormData) {
       endDate: formData.get('endDate') ? new Date(formData.get('endDate') as string) : null,
     },
   });
-  revalidatePath('/dashboard/website/hero');
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/website/hero');
 }
 
@@ -46,13 +46,13 @@ export async function updateHeroSlide(id: string, formData: FormData) {
       endDate: formData.get('endDate') ? new Date(formData.get('endDate') as string) : null,
     },
   });
-  revalidatePath('/dashboard/website/hero');
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/website/hero');
 }
 
 export async function deleteHeroSlide(id: string) {
   await prisma.heroSlide.delete({ where: { id } });
-  revalidatePath('/dashboard/website/hero');
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
 }

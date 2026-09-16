@@ -34,8 +34,8 @@ async function saveAnnouncement(formData: FormData) {
       endDate: formData.get('endDate') ? new Date(formData.get('endDate') as string) : null,
     },
   });
-  revalidatePath('/dashboard/website/announcement');
-  revalidatePath('/');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
 }
 
 export default async function AnnouncementPage() {

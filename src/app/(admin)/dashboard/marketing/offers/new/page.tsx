@@ -23,7 +23,7 @@ async function createOffer(formData: FormData) {
       endDate: formData.get('endDate') ? new Date(formData.get('endDate') as string) : null,
     }
   });
-  revalidatePath('/dashboard/marketing/offers');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/marketing/offers');
 }
 

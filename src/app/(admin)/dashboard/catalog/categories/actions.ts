@@ -18,8 +18,8 @@ export async function createCategory(formData: FormData) {
       isFeatured: formData.get('isFeatured') === 'on',
     },
   });
-  revalidatePath('/dashboard/catalog/categories');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog/categories');
 }
 
@@ -38,13 +38,13 @@ export async function updateCategory(id: string, formData: FormData) {
       isFeatured: formData.get('isFeatured') === 'on',
     },
   });
-  revalidatePath('/dashboard/catalog/categories');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog/categories');
 }
 
 export async function deleteCategory(id: string) {
   await prisma.category.delete({ where: { id } });
-  revalidatePath('/dashboard/catalog/categories');
-  revalidatePath('/menu');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
 }

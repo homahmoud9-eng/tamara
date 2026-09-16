@@ -9,8 +9,8 @@ export async function toggleBlogPost(id: string, isEnabled: boolean) {
       where: { id },
       data: { isActive: isEnabled },
     });
-    revalidatePath('/dashboard/website/blog');
-    revalidatePath('/blog');
+    revalidatePath('/', 'layout');
+    revalidatePath('/', 'layout');
   } catch (error) {
     console.error('Failed to toggle blog post:', error);
     throw new Error('Failed to toggle blog post');
@@ -22,8 +22,8 @@ export async function deleteBlogPost(id: string) {
     await prisma.blogPost.delete({
       where: { id },
     });
-    revalidatePath('/dashboard/website/blog');
-    revalidatePath('/blog');
+    revalidatePath('/', 'layout');
+    revalidatePath('/', 'layout');
   } catch (error) {
     console.error('Failed to delete blog post:', error);
     throw new Error('Failed to delete blog post');

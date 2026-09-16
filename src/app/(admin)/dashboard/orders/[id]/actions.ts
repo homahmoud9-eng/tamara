@@ -17,9 +17,9 @@ export async function updateOrderStatus(orderId: string, status: string) {
     include: { customer: true }
   });
 
-  revalidatePath(`/dashboard/orders/${orderId}`);
-  revalidatePath('/dashboard/orders');
-  revalidatePath('/dashboard');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
+  revalidatePath('/', 'layout');
 
   // Try to send push notification
   if (order.customer?.userId) {

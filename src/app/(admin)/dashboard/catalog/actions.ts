@@ -49,13 +49,13 @@ export async function createCategory(formData: FormData) {
     }
   });
 
-  revalidatePath('/dashboard/catalog');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog?tab=categories');
 }
 
 export async function deleteCategory(id: string) {
   await prisma.category.delete({ where: { id } });
-  revalidatePath('/dashboard/catalog');
+  revalidatePath('/', 'layout');
 }
 
 export async function createProduct(formData: FormData) {
@@ -102,7 +102,7 @@ export async function createProduct(formData: FormData) {
     }
   });
 
-  revalidatePath('/dashboard/catalog');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog?tab=products');
 }
 
@@ -145,13 +145,13 @@ export async function updateCategory(id: string, formData: FormData) {
     data: dataToUpdate
   });
 
-  revalidatePath('/dashboard/catalog');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog?tab=categories');
 }
 
 export async function deleteProduct(id: string) {
   await prisma.product.delete({ where: { id } });
-  revalidatePath('/dashboard/catalog');
+  revalidatePath('/', 'layout');
 }
 
 export async function updateProduct(id: string, formData: FormData) {
@@ -202,6 +202,6 @@ export async function updateProduct(id: string, formData: FormData) {
     }
   });
 
-  revalidatePath('/dashboard/catalog');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog?tab=products');
 }

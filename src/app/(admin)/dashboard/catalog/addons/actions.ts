@@ -31,16 +31,16 @@ export async function createAddonGroup(formData: FormData) {
     }
   }
 
-  revalidatePath('/dashboard/catalog/addons');
+  revalidatePath('/', 'layout');
   redirect('/dashboard/catalog/addons');
 }
 
 export async function deleteAddonGroup(id: string) {
   await prisma.addonGroup.delete({ where: { id } });
-  revalidatePath('/dashboard/catalog/addons');
+  revalidatePath('/', 'layout');
 }
 
 export async function deleteAddon(id: string) {
   await prisma.addon.delete({ where: { id } });
-  revalidatePath('/dashboard/catalog/addons');
+  revalidatePath('/', 'layout');
 }
