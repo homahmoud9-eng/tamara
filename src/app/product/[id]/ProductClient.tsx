@@ -380,25 +380,7 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
           </div>
         </div>
 
-        <div className={styles.section} style={{ marginTop: '32px', marginBottom: '32px' }}>
-          <h2 className={styles.sectionTitle}>
-            {language === "ar" ? "التقييمات" : "Reviews"} ({product.ratingAggregate} ★)
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {mockReviews.map(review => (
-              <div key={review.id} style={{ padding: '16px', background: 'var(--bg-main)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ fontWeight: '600' }}>{review.author}</span>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>{review.date}</span>
-                </div>
-                <div style={{ color: '#fbbf24', marginBottom: '8px', fontSize: '14px' }}>
-                  {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
-                </div>
-                <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>{review.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+
       </div>
       </div>
 
