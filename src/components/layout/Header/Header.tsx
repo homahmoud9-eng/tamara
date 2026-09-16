@@ -40,7 +40,7 @@ export function Header({ announcement }: { announcement?: any }) {
   const isSettingsPage = pathname?.startsWith('/settings');
   const isOrdersPage = pathname?.startsWith('/orders');
   const isProductPage = pathname?.startsWith('/product/');
-  const positionClass = (isMenuPage || isOffersPage || isPackagesPage || isSettingsPage || isOrdersPage) ? styles.headerStatic : styles.headerFixed;
+  const positionClass = styles.headerFixed;
 
   if (isProductPage) {
     return null;
