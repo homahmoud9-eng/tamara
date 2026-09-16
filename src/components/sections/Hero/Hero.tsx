@@ -7,7 +7,7 @@ import { SafeImage } from '@/components/ui/SafeImage/SafeImage';
 import Link from 'next/link';
 import styles from './Hero.module.css';
 
-export function Hero() {
+export function Hero({ freeDeliveryThreshold = 500 }: { freeDeliveryThreshold?: number }) {
   const { language } = useApp();
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -30,14 +30,14 @@ export function Hero() {
       subtitle: 'أكل مصري بيتعمل بحب وطعم البيت، متفرزن أو مطبوخ، بيوصلك طازة في أبوظبي.',
       primaryCta: 'اطلب الآن',
       secondaryCta: 'تصفح المنيو',
-      badge: 'التوصيل مجاني للطلبات فوق ٥٠٠ درهم'
+      badge: `التوصيل مجاني للطلبات فوق ${freeDeliveryThreshold} درهم`
     },
     en: {
       headline: 'Authentic Egyptian Taste,\nCloser Than You Think',
       subtitle: 'Homemade Egyptian food made with love, frozen or cooked, delivered fresh in Abu Dhabi.',
       primaryCta: 'Order Now',
       secondaryCta: 'View Menu',
-      badge: 'Free delivery for orders over 500 AED'
+      badge: `Free delivery for orders over ${freeDeliveryThreshold} AED`
     }
   };
 
