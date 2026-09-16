@@ -1,22 +1,57 @@
 import prisma from '@/lib/prisma';
 import { getAdminLang } from '@/lib/i18n';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 async function saveSettings(formData: FormData) {
   'use server';
-  // TODO: Fix this to use BusinessSetting or proper Key-Value Setting model
-  // Currently setting model does not exist in Prisma schema
-  revalidatePath('/', 'layout');
+  
+  await prisma.businessSetting.upsert({
+    where: { id: "1" },
+    update: {
+      nameAr: formData.get('setting_storeNameAr') as string || '',
+      nameEn: formData.get('setting_storeNameEn') as string || '',
+      phone: formData.get('setting_phone') as string || '',
+      email: formData.get('setting_email') as string || '',
+      addressAr: formData.get('setting_address') as string || '',
+      addressEn: formData.get('setting_address') as string || '',
+    },
+    create: {
+      id: "1",
+      nameAr: formData.get('setting_storeNameAr') as string || '',
+      nameEn: formData.get('setting_storeNameEn') as string || '',
+      phone: formData.get('setting_phone') as string || '',
+      email: formData.get('setting_email') as string || '',
+      addressAr: formData.get('setting_address') as string || '',
+      addressEn: formData.get('setting_address') as string || '',
+    }
+  });
+
+  await prisma.deliveryConfig.upsert({
+    where: { id: "1" },
+    update: {
+      minOrder: parseFloat(formData.get('setting_minOrder') as string) || 0,
+      freeThreshold: parseFloat(formData.get('setting_freeDeliveryThreshold') as string) || null,
+      baseFee: parseFloat(formData.get('setting_defaultDeliveryFee') as string) || 0,
+    },
+    create: {
+      id: "1",
+      minOrder: parseFloat(formData.get('setting_minOrder') as string) || 0,
+      freeThreshold: parseFloat(formData.get('setting_freeDeliveryThreshold') as string) || null,
+      baseFee: parseFloat(formData.get('setting_defaultDeliveryFee') as string) || 0,
+    }
+  });
+
   revalidatePath('/', 'layout');
 }
 
 export default async function GeneralSettingsPage() {
   const lang = await getAdminLang();
   
-  // TODO: Fetch from actual BusinessSetting table
-  const settingsMap: Record<string, string> = {};
-
-  const getSetting = (key: string, defaultValue = '') => settingsMap[key] || defaultValue;
+  const [businessSettings, deliveryConfig] = await Promise.all([
+    prisma.businessSetting.findUnique({ where: { id: "1" } }),
+    prisma.deliveryConfig.findUnique({ where: { id: "1" } })
+  ]);
 
   return (
     <div>
@@ -35,24 +70,24 @@ export default async function GeneralSettingsPage() {
             <div className="admin-form-row">
               <div className="admin-form-group">
                 <label className="admin-form-label">{lang === 'ar' ? 'اسم المتجر (عربي)' : 'Store Name (Arabic)'}</label>
-                <input type="text" name="setting_storeNameAr" defaultValue={getSetting('storeNameAr', 'تمارا كيتشن')} className="admin-input" />
+                <input type="text" name="setting_storeNameAr" defaultValue={businessSettings?.nameAr || 'تمارا كيتشن'} className="admin-input" />
               </div>
               <div className="admin-form-group">
                 <label className="admin-form-label">{lang === 'ar' ? 'اسم المتجر (إنجليزي)' : 'Store Name (English)'}</label>
-                <input type="text" name="setting_storeNameEn" defaultValue={getSetting('storeNameEn', 'Tamara Kitchen')} className="admin-input" />
+                <input type="text" name="setting_storeNameEn" defaultValue={businessSettings?.nameEn || 'Tamara Kitchen'} className="admin-input" />
               </div>
             </div>
             <div className="admin-form-group">
               <label className="admin-form-label">{lang === 'ar' ? 'الهاتف' : 'Phone'}</label>
-              <input type="text" name="setting_phone" defaultValue={getSetting('phone')} className="admin-input" />
+              <input type="text" name="setting_phone" defaultValue={businessSettings?.phone || ''} className="admin-input" />
             </div>
             <div className="admin-form-group">
               <label className="admin-form-label">{lang === 'ar' ? 'البريد' : 'Email'}</label>
-              <input type="email" name="setting_email" defaultValue={getSetting('email')} className="admin-input" />
+              <input type="email" name="setting_email" defaultValue={businessSettings?.email || ''} className="admin-input" />
             </div>
             <div className="admin-form-group">
               <label className="admin-form-label">{lang === 'ar' ? 'العنوان' : 'Address'}</label>
-              <input type="text" name="setting_address" defaultValue={getSetting('address')} className="admin-input" />
+              <input type="text" name="setting_address" defaultValue={businessSettings?.addressAr || ''} className="admin-input" />
             </div>
           </div>
         </div>
@@ -64,7 +99,7 @@ export default async function GeneralSettingsPage() {
             <div className="admin-form-row">
               <div className="admin-form-group">
                 <label className="admin-form-label">{lang === 'ar' ? 'العملة' : 'Currency'}</label>
-                <select name="setting_currency" className="admin-select" defaultValue={getSetting('currency', 'AED')}>
+                <select name="setting_currency" className="admin-select" defaultValue="AED">
                   <option value="AED">AED - UAE Dirham</option>
                   <option value="SAR">SAR - Saudi Riyal</option>
                   <option value="USD">USD - US Dollar</option>
@@ -72,7 +107,7 @@ export default async function GeneralSettingsPage() {
               </div>
               <div className="admin-form-group">
                 <label className="admin-form-label">{lang === 'ar' ? 'المنطقة الزمنية' : 'Timezone'}</label>
-                <select name="setting_timezone" className="admin-select" defaultValue={getSetting('timezone', 'Asia/Dubai')}>
+                <select name="setting_timezone" className="admin-select" defaultValue="Asia/Dubai">
                   <option value="Asia/Dubai">Asia/Dubai (GMT+4)</option>
                   <option value="Asia/Riyadh">Asia/Riyadh (GMT+3)</option>
                   <option value="Europe/London">Europe/London (GMT+0)</option>
@@ -81,7 +116,7 @@ export default async function GeneralSettingsPage() {
             </div>
             <div className="admin-form-group">
               <label className="admin-form-label">{lang === 'ar' ? 'رسالة "الحد الأدنى للطلب"' : 'Minimum Order Message'}</label>
-              <input type="number" name="setting_minOrder" defaultValue={getSetting('minOrder', '50')} className="admin-input" style={{ width: '200px' }} />
+              <input type="number" name="setting_minOrder" defaultValue={deliveryConfig?.minOrder ?? 50} className="admin-input" style={{ width: '200px' }} />
               <span className="admin-form-hint">{lang === 'ar' ? 'بالدرهم' : 'in AED'}</span>
             </div>
           </div>
@@ -94,11 +129,11 @@ export default async function GeneralSettingsPage() {
             <div className="admin-form-row">
               <div className="admin-form-group">
                 <label className="admin-form-label">{lang === 'ar' ? 'الحد الأدنى للتوصيل المجاني' : 'Free Delivery Above'}</label>
-                <input type="number" name="setting_freeDeliveryThreshold" defaultValue={getSetting('freeDeliveryThreshold', '500')} className="admin-input" style={{ width: '200px' }} />
+                <input type="number" name="setting_freeDeliveryThreshold" defaultValue={deliveryConfig?.freeThreshold ?? 500} className="admin-input" style={{ width: '200px' }} />
               </div>
               <div className="admin-form-group">
                 <label className="admin-form-label">{lang === 'ar' ? 'رسوم التوصيل الافتراضية' : 'Default Delivery Fee'}</label>
-                <input type="number" name="setting_defaultDeliveryFee" defaultValue={getSetting('defaultDeliveryFee', '25')} className="admin-input" style={{ width: '200px' }} />
+                <input type="number" name="setting_defaultDeliveryFee" defaultValue={deliveryConfig?.baseFee ?? 25} className="admin-input" style={{ width: '200px' }} />
               </div>
             </div>
           </div>
