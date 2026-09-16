@@ -14,12 +14,24 @@
 }
 
 .headerContainer {
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--glass-border);
+  width: 100%;
+  transition: all 0.3s ease;
+  margin: 0 auto;
+  border-radius: 0;
+}
+
+.scrolled .headerContainer {
   background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--glass-border);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-  width: 100%;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 95%;
+  max-width: 1200px;
+  margin-top: 16px;
+  border-radius: 100px;
 }
 
 .headerInner {
@@ -34,6 +46,10 @@
   .headerInner {
     height: 80px;
     padding-inline: var(--spacing-8);
+  }
+  
+  .scrolled .headerInner {
+    height: 70px;
   }
 }
 
