@@ -1,0 +1,143 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: calc(var(--spacing-8) + 80px) var(--spacing-4) var(--spacing-12);
+  min-height: 80vh;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-gold);
+  font-weight: 600;
+  margin-bottom: var(--spacing-6);
+  transition: opacity var(--transition-fast);
+  text-decoration: none;
+}
+
+.backButton:hover {
+  opacity: 0.8;
+}
+
+.backButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+html[dir="rtl"] .backButton svg {
+  transform: rotate(180deg);
+}
+
+.article {
+  background: var(--bg-surface);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.header {
+  padding: var(--spacing-8) var(--spacing-6) var(--spacing-6);
+  text-align: center;
+}
+
+.tag {
+  display: inline-block;
+  background-color: var(--color-gold);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: var(--spacing-4);
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-6);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-6);
+  color: var(--text-secondary);
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.metaItem svg {
+  width: 18px;
+  height: 18px;
+  color: var(--color-gold);
+}
+
+.heroImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: var(--bg-secondary);
+}
+
+@media (max-width: 768px) {
+  .heroImageWrapper {
+    height: 250px;
+  }
+}
+
+.heroImage {
+  object-fit: cover;
+}
+
+.content {
+  padding: var(--spacing-8) var(--spacing-6);
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.lead {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-weight: 600;
+  margin-bottom: var(--spacing-6);
+  text-align: justify;
+}
+
+.separator {
+  width: 60px;
+  height: 4px;
+  background-color: var(--color-gold);
+  border: none;
+  border-radius: 2px;
+  margin: 0 auto var(--spacing-6);
+}
+
+.bodyText {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  line-height: 2;
+  text-align: justify;
+}
+
+.bodyText p {
+  margin-bottom: var(--spacing-4);
+}
+
+.bodyText h2, .bodyText h3 {
+  color: var(--text-primary);
+  margin-top: var(--spacing-8);
+  margin-bottom: var(--spacing-4);
+  font-weight: 700;
+}

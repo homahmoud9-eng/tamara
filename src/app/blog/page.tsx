@@ -66,10 +66,9 @@ export default async function BlogPage() {
                 </div>
               </div>
 
-              {/* <Link href={`/blog/${post.slug}`} className={styles.readMore}>
-                عرض المقال
-              </Link> */}
-              <button className={styles.readMore}>عرض المقال (قريباً)</button>
+              <Link href={`/blog/${post.slug}`} className={styles.readMore}>
+                اقرأ المقال
+              </Link>
             </div>
           </article>
         ))}
