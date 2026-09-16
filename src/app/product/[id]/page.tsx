@@ -11,8 +11,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     return notFound();
   }
 
-  const allProducts = await getFrontendProducts();
-  const mealProducts = allProducts.filter(p => p.categoryId === 'cat-meals');
+  let mealProducts: any[] = [];
+  
+  if (product.categoryId === 'cat-packages') {
+    const allProducts = await getFrontendProducts();
+    mealProducts = allProducts.filter(p => p.categoryId === 'cat-meals');
+  }
 
   return <ProductClient product={product} mealProducts={mealProducts} />;
 }
