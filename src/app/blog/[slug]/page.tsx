@@ -7,9 +7,14 @@ import { prisma } from '@/lib/prisma';
 
 export const revalidate = 60;
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const resolvedParams = await params;
   const post = await prisma.blogPost.findUnique({
-    where: { slug: params.slug, isActive: true },
+    where: { slug: resolvedParams.slug, isActive: true },
   });
 
   if (!post) {
@@ -27,9 +32,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: Props) {
+  const resolvedParams = await params;
   const post = await prisma.blogPost.findUnique({
-    where: { slug: params.slug, isActive: true },
+    where: { slug: resolvedParams.slug, isActive: true },
   });
 
   if (!post) {
