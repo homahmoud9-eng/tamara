@@ -1,0 +1,105 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: calc(var(--spacing-8) + 80px) var(--spacing-4) var(--spacing-8);
+  min-height: 80vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+}
+
+.title {
+  font-size: 2.5rem;
+  color: var(--color-gold);
+  margin-bottom: var(--spacing-2);
+  font-weight: 800;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border-color: var(--color-gold);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 60%; /* 16:9 aspect ratio roughly */
+  background-color: var(--bg-main);
+}
+
+.image {
+  object-fit: cover;
+}
+
+.content {
+  padding: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: var(--color-gold);
+  margin-bottom: var(--spacing-2);
+  font-weight: 500;
+}
+
+.postTitle {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-2);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.excerpt {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-4);
+  flex-grow: 1;
+}
+
+.readMore {
+  align-self: flex-start;
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: transparent;
+  color: var(--color-gold);
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.readMore:hover {
+  background-color: var(--color-gold);
+  color: var(--bg-main);
+}

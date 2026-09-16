@@ -90,6 +90,7 @@ export function Header({ announcement }: { announcement?: any }) {
           <Link href="/menu" className={styles.navLink}>{language === 'ar' ? 'المنيو' : 'Menu'}</Link>
           <Link href="/offers" className={styles.navLink}>{language === 'ar' ? 'العروض' : 'Offers'}</Link>
           <Link href="/packages" className={styles.navLink}>{language === 'ar' ? 'الباقات' : 'Packages'}</Link>
+          <Link href="/blog" className={styles.navLink}>{language === 'ar' ? 'المدونة' : 'Blog'}</Link>
         </nav>
 
         {/* Mobile Center: Logo */}
@@ -163,6 +164,7 @@ export function Header({ announcement }: { announcement?: any }) {
               <Link href="/menu" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>{language === 'ar' ? 'المنيو' : 'Menu'}</Link>
               <Link href="/offers" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>{language === 'ar' ? 'العروض' : 'Offers'}</Link>
               <Link href="/packages" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>{language === 'ar' ? 'الباقات' : 'Packages'}</Link>
+              <Link href="/blog" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>{language === 'ar' ? 'المدونة' : 'Blog'}</Link>
             </nav>
             <div className={styles.mobileMenuActionsDrawer}>
               <button className={styles.mobileMenuActionBtn} onClick={() => { toggleLanguage(); setIsMobileMenuOpen(false); }}>
