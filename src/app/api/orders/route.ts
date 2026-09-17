@@ -89,6 +89,54 @@ export async function POST(req: Request) {
       }
     });
 
+    // Create an Admin Notification
+    await prisma.adminNotification.create({
+      data: {
+        titleAr: `طلب جديد #${orderNumber}`,
+        titleEn: `New Order #${orderNumber}`,
+        messageAr: `تم إنشاء طلب جديد بواسطة ${customer.name || 'عميل'} بمبلغ ${calculatedTotalAmount} ج.م`,
+        messageEn: `A new order has been placed by ${customer.name || 'Customer'} for ${calculatedTotalAmount} EGP`,
+        type: 'ORDER',
+        entityId: order.id,
+      }
+    });
+
+    try {
+      const webpush = require('web-push');
+      webpush.setVapidDetails(
+        'mailto:admin@tamara.com',
+        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '',
+        process.env.VAPID_PRIVATE_KEY || ''
+      );
+
+      // For the admin dashboard, we broadcast to all available subscriptions,
+      // as currently the only consumers of the push API in this app are Admins in the dashboard.
+      const subscriptions = await prisma.pushSubscription.findMany();
+
+      if (subscriptions.length > 0) {
+        const payload = JSON.stringify({
+          title: `طلب جديد #${orderNumber}`,
+          body: `مبلغ الطلب: ${calculatedTotalAmount} ج.م`,
+          url: `/dashboard/orders/${order.id}`,
+        });
+
+        for (const sub of subscriptions) {
+          try {
+            await webpush.sendNotification({
+              endpoint: sub.endpoint,
+              keys: { auth: sub.auth, p256dh: sub.p256dh }
+            }, payload);
+          } catch (e: any) {
+            if (e.statusCode === 410 || e.statusCode === 404) {
+              await prisma.pushSubscription.delete({ where: { id: sub.id } });
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to send admin push notification:", err);
+    }
+
     return NextResponse.json({ success: true, order }, { status: 201 });
 
   } catch (error) {

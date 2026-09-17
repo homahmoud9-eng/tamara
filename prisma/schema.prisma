@@ -566,6 +566,18 @@ model ActivityLog {
   createdAt   DateTime @default(now())
 }
 
+model AdminNotification {
+  id        String   @id @default(cuid())
+  titleAr   String
+  titleEn   String
+  messageAr String?
+  messageEn String?
+  type      String   // e.g. "ORDER", "CUSTOMER", "SYSTEM"
+  entityId  String?  
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
 // ==========================================
 // 10. NEXTAUTH MODELS
 // ==========================================
@@ -654,6 +666,10 @@ model BlogPost {
   isActive    Boolean  @default(true)
   author      String?  @default("Tamara Kitchen")
   readTimeMin Int      @default(5)
+  seoTitleAr  String?
+  seoTitleEn  String?
+  seoDescAr   String?
+  seoDescEn   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

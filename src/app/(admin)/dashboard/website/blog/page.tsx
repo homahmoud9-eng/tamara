@@ -43,16 +43,21 @@ export default async function BlogAdminPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '4px' }}>
+                <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer" className="admin-icon-btn" title="View">
+                  <Eye size={16} />
+                </a>
                 <form action={async () => { 'use server'; await toggleBlogPost(post.id, !post.isActive); }}>
-                  <button type="submit" className="admin-icon-btn" title={post.isActive ? 'Hide' : 'Show'}>
-                    {post.isActive ? <Eye size={16} color="var(--admin-success)" /> : <EyeOff size={16} />}
+                  <button type="submit" className="admin-icon-btn" title={post.isActive ? 'Unpublish' : 'Publish'}>
+                    {post.isActive ? <EyeOff size={16} color="var(--admin-success)" /> : <Eye size={16} />}
                   </button>
                 </form>
-                <button className="admin-icon-btn" style={{ opacity: 0.5, cursor: 'not-allowed' }} title="Edit (Coming soon)">
+                <Link href={`/dashboard/website/blog/${post.id}/edit`} className="admin-icon-btn" title="Edit">
                   <Edit2 size={16} />
-                </button>
+                </Link>
                 <form action={async () => { 'use server'; await deleteBlogPost(post.id); }}>
-                  <button type="submit" className="admin-icon-btn" style={{ color: 'var(--admin-error)' }}><Trash2 size={16} /></button>
+                  <button type="submit" className="admin-icon-btn" style={{ color: 'var(--admin-error)' }} title="Delete">
+                    <Trash2 size={16} />
+                  </button>
                 </form>
               </div>
             </div>
