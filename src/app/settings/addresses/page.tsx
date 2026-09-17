@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useApp } from "@/components/providers/AppProvider";
 import Link from "next/link";
 import styles from "./addresses.module.css";
@@ -11,7 +11,8 @@ export default function AddressesPage() {
   const { language } = useApp();
   const [addresses, setAddresses] = useState(initialAddresses);
   const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [editingId, setEditingId] = useState<number | string | null>(null);
   
   const [formData, setFormData] = useState({
     titleAr: '',
@@ -21,16 +22,61 @@ export default function AddressesPage() {
     isDefault: false
   });
 
-  const setAsDefault = (id: number) => {
-    setAddresses(addresses.map(a => ({
-      ...a,
-      isDefault: a.id === id
-    })));
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const res = await fetch('/api/addresses');
+        const data = await res.json();
+        if (data.success && data.addresses) {
+          // Map DB format to UI format
+          const mapped = data.addresses.map((a: any) => ({
+            id: a.id,
+            title: { ar: a.label, en: a.label },
+            details: a.addressText,
+            phone: '', // Address model doesn't have phone
+            isDefault: a.isDefault
+          }));
+          setAddresses(mapped);
+        }
+      } catch (error) {
+        console.error("Failed to fetch addresses:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAddresses();
+  }, []);
+
+  const setAsDefault = async (id: string | number) => {
+    try {
+      // Optimistic update
+      setAddresses(addresses.map(a => ({
+        ...a,
+        isDefault: a.id === id
+      })));
+      
+      await fetch(`/api/addresses/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isDefault: true })
+      });
+    } catch (error) {
+      console.error("Failed to set default:", error);
+    }
   };
 
-  const handleDelete = (e: React.MouseEvent, id: number) => {
+  const handleDelete = async (e: React.MouseEvent, id: string | number) => {
     e.stopPropagation();
-    setAddresses(addresses.filter(a => a.id !== id));
+    try {
+      // Optimistic update
+      setAddresses(addresses.filter(a => a.id !== id));
+      
+      await fetch(`/api/addresses/${id}`, {
+        method: 'DELETE'
+      });
+    } catch (error) {
+      console.error("Failed to delete:", error);
+    }
   };
 
   const handleEdit = (e: React.MouseEvent, address: any) => {
@@ -52,33 +98,53 @@ export default function AddressesPage() {
     setShowForm(true);
   };
 
-  const handleSave = () => {
-    if (!formData.titleAr || !formData.details) return; // Simple validation
+  const handleSave = async () => {
+    if (!formData.titleAr || !formData.details) return;
 
-    let updatedAddresses = [...addresses];
-
-    if (formData.isDefault) {
-      updatedAddresses = updatedAddresses.map(a => ({ ...a, isDefault: false }));
+    try {
+      if (editingId) {
+        const res = await fetch(`/api/addresses/${editingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          setAddresses(addresses.map(a => 
+            a.id === editingId 
+              ? { ...a, title: { ar: data.address.label, en: data.address.label }, details: data.address.addressText, isDefault: data.address.isDefault }
+              : (formData.isDefault ? { ...a, isDefault: false } : a)
+          ));
+        }
+      } else {
+        const res = await fetch('/api/addresses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          const newAddress = {
+            id: data.address.id,
+            title: { ar: data.address.label, en: data.address.label },
+            details: data.address.addressText,
+            phone: formData.phone,
+            isDefault: data.address.isDefault
+          };
+          
+          if (formData.isDefault) {
+            setAddresses(addresses.map(a => ({ ...a, isDefault: false })).concat(newAddress));
+          } else {
+            setAddresses([...addresses, newAddress]);
+          }
+        }
+      }
+      setShowForm(false);
+    } catch (error) {
+      console.error("Failed to save address:", error);
     }
-
-    if (editingId) {
-      updatedAddresses = updatedAddresses.map(a => 
-        a.id === editingId 
-          ? { ...a, title: { ar: formData.titleAr, en: formData.titleEn || formData.titleAr }, details: formData.details, phone: formData.phone, isDefault: formData.isDefault }
-          : a
-      );
-    } else {
-      updatedAddresses.push({
-        id: Date.now(),
-        title: { ar: formData.titleAr, en: formData.titleEn || formData.titleAr },
-        details: formData.details,
-        phone: formData.phone,
-        isDefault: formData.isDefault || updatedAddresses.length === 0
-      });
-    }
-
-    setAddresses(updatedAddresses);
-    setShowForm(false);
   };
 
   return (
@@ -97,7 +163,12 @@ export default function AddressesPage() {
 
         {!showForm ? (
           <>
-            <div className={styles.addressesList}>
+            {isLoading ? (
+              <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
+                {language === 'ar' ? 'جاري التحميل...' : 'Loading...'}
+              </div>
+            ) : (
+              <div className={styles.addressesList}>
               {addresses.map((address) => (
                 <div 
                   key={address.id} 
@@ -147,6 +218,7 @@ export default function AddressesPage() {
                 </div>
               ))}
             </div>
+            )}
 
             <button className={styles.addBtn} onClick={handleAddNew}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
