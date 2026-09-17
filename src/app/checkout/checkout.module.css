@@ -218,3 +218,56 @@
   font-weight: 700;
   text-decoration: none;
 }
+
+.couponForm {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.couponInput {
+  flex: 1;
+  padding: var(--spacing-3);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+}
+
+.couponInput:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+}
+
+.couponBtn {
+  background: var(--brand-primary);
+  color: white;
+  border-radius: 8px;
+  padding: 0 var(--spacing-4);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  transition: opacity var(--transition-fast);
+}
+
+.couponBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.couponMessage {
+  font-size: var(--text-sm);
+  margin-bottom: var(--spacing-2);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.couponSuccess {
+  color: var(--brand-primary);
+}
+
+.couponError {
+  color: var(--color-error);
+}

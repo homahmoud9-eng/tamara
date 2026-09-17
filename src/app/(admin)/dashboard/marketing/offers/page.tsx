@@ -72,6 +72,16 @@ export default async function OffersPage() {
                     <td>
                       <div className="admin-table-actions">
                         <Link href={`/dashboard/marketing/offers/${offer.id}/edit`} className="admin-icon-btn" style={{ color: 'var(--admin-primary)' }}><Edit2 size={16} /></Link>
+                        
+                        <form action={async () => { 'use server'; const { toggleOfferStatus } = await import('./actions'); await toggleOfferStatus(offer.id, !offer.isActive); }}>
+                          <button type="submit" className="admin-icon-btn" style={{ color: offer.isActive ? 'var(--admin-warning)' : 'var(--admin-success)' }}>
+                            {offer.isActive ? (lang === 'ar' ? 'تعطيل' : 'Disable') : (lang === 'ar' ? 'تفعيل' : 'Enable')}
+                          </button>
+                        </form>
+
+                        <form action={async () => { 'use server'; const { deleteOffer } = await import('./actions'); await deleteOffer(offer.id); }}>
+                          <button type="submit" className="admin-icon-btn" style={{ color: 'var(--admin-error)' }}><Trash2 size={16} /></button>
+                        </form>
                       </div>
                     </td>
                   </tr>

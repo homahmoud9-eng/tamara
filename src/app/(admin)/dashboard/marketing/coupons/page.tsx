@@ -67,6 +67,16 @@ export default async function CouponsPage() {
                     <td>
                       <div className="admin-table-actions">
                         <Link href={`/dashboard/marketing/coupons/${coupon.id}/edit`} className="admin-icon-btn" style={{ color: 'var(--admin-primary)' }}><Edit2 size={16} /></Link>
+                        
+                        <form action={async () => { 'use server'; const { toggleCouponStatus } = await import('./actions'); await toggleCouponStatus(coupon.id, !coupon.isActive); }}>
+                          <button type="submit" className="admin-icon-btn" style={{ color: coupon.isActive ? 'var(--admin-warning)' : 'var(--admin-success)' }}>
+                            {coupon.isActive ? (lang === 'ar' ? 'تعطيل' : 'Disable') : (lang === 'ar' ? 'تفعيل' : 'Enable')}
+                          </button>
+                        </form>
+
+                        <form action={async () => { 'use server'; const { deleteCoupon } = await import('./actions'); await deleteCoupon(coupon.id); }}>
+                          <button type="submit" className="admin-icon-btn" style={{ color: 'var(--admin-error)' }}><Trash2 size={16} /></button>
+                        </form>
                       </div>
                     </td>
                   </tr>

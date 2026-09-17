@@ -39,6 +39,36 @@ export async function POST(req: Request) {
       itemNotes: item.notes || null,
     }));
 
+    // Server-side Coupon Validation
+    let discountAmount = 0;
+    if (body.couponCode) {
+      const coupon = await prisma.coupon.findUnique({
+        where: { code: body.couponCode.toUpperCase().replace(/\s+/g, '') }
+      });
+
+      if (coupon && coupon.isActive) {
+        const now = new Date();
+        const isExpired = coupon.expiryDate && coupon.expiryDate < now;
+        const isScheduled = coupon.startDate && coupon.startDate > now;
+        const meetsMinOrder = !coupon.minOrder || body.subtotal >= coupon.minOrder;
+
+        if (!isExpired && !isScheduled && meetsMinOrder) {
+          if (coupon.discountType === 'PERCENTAGE') {
+            discountAmount = (body.subtotal * coupon.discountValue) / 100;
+            if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
+              discountAmount = coupon.maxDiscount;
+            }
+          } else if (coupon.discountType === 'FIXED') {
+            discountAmount = coupon.discountValue;
+          }
+          // Never discount more than subtotal
+          discountAmount = Math.min(discountAmount, body.subtotal);
+        }
+      }
+    }
+
+    const calculatedTotalAmount = body.subtotal + body.deliveryFee - discountAmount;
+
     // Create the order
     const order = await prisma.order.create({
       data: {
@@ -49,8 +79,9 @@ export async function POST(req: Request) {
         paymentStatus: "PENDING",
         addressText: body.address,
         subtotal: body.subtotal,
+        discountAmount: discountAmount,
         deliveryFee: body.deliveryFee,
-        totalAmount: body.totalAmount,
+        totalAmount: calculatedTotalAmount,
         customerNotes: body.customerNotes,
         items: {
           create: orderItems

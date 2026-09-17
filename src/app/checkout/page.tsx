@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useApp } from "@/components/providers/AppProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import styles from "./checkout.module.css";
+import { validateCoupon } from "./actions";
 
 export default function CheckoutPage() {
   const { language } = useApp();
@@ -19,8 +20,40 @@ export default function CheckoutPage() {
   });
   const [paymentMethod, setPaymentMethod] = useState<"cash" | "card">("cash");
 
+  // Coupon State
+  const [couponCode, setCouponCode] = useState("");
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number } | null>(null);
+  const [couponError, setCouponError] = useState("");
+
   const deliveryFee = 15;
-  const grandTotal = totalAmount + deliveryFee;
+  const grandTotal = totalAmount + deliveryFee - (appliedCoupon?.discountAmount || 0);
+
+  const handleApplyCoupon = async () => {
+    setCouponError("");
+    if (!couponCode.trim()) return;
+    
+    setIsApplyingCoupon(true);
+    const res = await validateCoupon(couponCode, totalAmount);
+    setIsApplyingCoupon(false);
+
+    if (res.error) {
+      setAppliedCoupon(null);
+      switch(res.error) {
+        case 'invalid': setCouponError(language === 'ar' ? 'كود الخصم غير صحيح' : 'Invalid coupon code'); break;
+        case 'inactive': setCouponError(language === 'ar' ? 'كود الخصم غير فعال' : 'Inactive coupon code'); break;
+        case 'expired': setCouponError(language === 'ar' ? 'كود الخصم منتهي الصلاحية' : 'Expired coupon code'); break;
+        case 'min_order': setCouponError(language === 'ar' ? `الحد الأدنى للطلب هو ${res.minOrder} درهم` : `Minimum order is ${res.minOrder} AED`); break;
+        default: setCouponError(language === 'ar' ? 'حدث خطأ' : 'An error occurred'); break;
+      }
+    } else if (res.success && res.coupon) {
+      setAppliedCoupon({
+        code: res.coupon.code,
+        discountAmount: res.coupon.discountAmount
+      });
+      setCouponCode("");
+    }
+  };
 
   const handlePlaceOrder = async () => {
     try {
@@ -32,6 +65,8 @@ export default function CheckoutPage() {
         items: items,
         subtotal: totalAmount,
         deliveryFee: deliveryFee,
+        discountAmount: appliedCoupon?.discountAmount || 0,
+        couponCode: appliedCoupon?.code || null,
         totalAmount: grandTotal,
         customerNotes: orderNotes,
         paymentMethod: paymentMethod
@@ -77,8 +112,13 @@ export default function CheckoutPage() {
       if (orderNotes && orderNotes.trim() !== '') {
         msg += `\n*Delivery Notes - ملاحظات التوصيل:* ${orderNotes}\n`;
       }
-      msg += `\n*Delivery - التوصيل:* ${deliveryFee} AED\n`;
-      msg += `*Grand Total - الإجمالي:* ${grandTotal} AED\n`;
+      
+      msg += `\n*Subtotal - المجموع الفرعي:* ${totalAmount} AED\n`;
+      if (appliedCoupon) {
+        msg += `*Discount - الخصم (${appliedCoupon.code}):* -${appliedCoupon.discountAmount.toFixed(2)} AED\n`;
+      }
+      msg += `*Delivery - التوصيل:* ${deliveryFee} AED\n`;
+      msg += `*Grand Total - الإجمالي:* ${grandTotal.toFixed(2)} AED\n`;
       msg += `*Payment - الدفع:* ${paymentMethod === 'cash' ? 'Cash on Delivery - الدفع عند الاستلام' : 'Card - بطاقة'}`;
 
       const encodedMsg = encodeURIComponent(msg);
@@ -208,17 +248,61 @@ export default function CheckoutPage() {
         <h2 className={styles.sectionTitle}>
           {language === "ar" ? "ملخص الطلب" : "Order Summary"}
         </h2>
+
+        {!appliedCoupon ? (
+          <div className={styles.couponForm}>
+            <input 
+              type="text" 
+              className={styles.couponInput}
+              placeholder={language === "ar" ? "كود الخصم" : "Coupon Code"}
+              value={couponCode}
+              onChange={e => setCouponCode(e.target.value)}
+            />
+            <button 
+              className={styles.couponBtn}
+              onClick={handleApplyCoupon}
+              disabled={isApplyingCoupon || !couponCode.trim()}
+            >
+              {isApplyingCoupon ? '...' : (language === "ar" ? "تطبيق" : "Apply")}
+            </button>
+          </div>
+        ) : (
+          <div className={styles.couponMessage}>
+            <span className={styles.couponSuccess}>
+              ✓ {language === 'ar' ? 'تم تطبيق كود الخصم:' : 'Coupon applied:'} <strong>{appliedCoupon.code}</strong>
+            </span>
+            <button 
+              onClick={() => setAppliedCoupon(null)} 
+              style={{ background: 'none', border: 'none', color: 'var(--color-error)', textDecoration: 'underline', fontSize: '12px' }}
+            >
+              {language === 'ar' ? 'إزالة' : 'Remove'}
+            </button>
+          </div>
+        )}
+
+        {couponError && (
+          <div className={`${styles.couponMessage} ${styles.couponError}`}>
+            {couponError}
+          </div>
+        )}
+
         <div className={styles.summaryRow}>
           <span>{language === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
-          <span>{totalAmount} {language === "ar" ? "درهم" : "AED"}</span>
+          <span>{totalAmount.toFixed(2)} {language === "ar" ? "درهم" : "AED"}</span>
         </div>
         <div className={styles.summaryRow}>
           <span>{language === "ar" ? "رسوم التوصيل" : "Delivery Fee"}</span>
-          <span>{deliveryFee} {language === "ar" ? "درهم" : "AED"}</span>
+          <span>{deliveryFee.toFixed(2)} {language === "ar" ? "درهم" : "AED"}</span>
         </div>
+        {appliedCoupon && (
+          <div className={styles.summaryRow} style={{ color: 'var(--brand-primary)' }}>
+            <span>{language === "ar" ? "الخصم" : "Discount"}</span>
+            <span>-{appliedCoupon.discountAmount.toFixed(2)} {language === "ar" ? "درهم" : "AED"}</span>
+          </div>
+        )}
         <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
           <span>{language === "ar" ? "الإجمالي" : "Grand Total"}</span>
-          <span>{grandTotal} {language === "ar" ? "درهم" : "AED"}</span>
+          <span>{grandTotal.toFixed(2)} {language === "ar" ? "درهم" : "AED"}</span>
         </div>
       </section>
 
