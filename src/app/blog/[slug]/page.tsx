@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { BlogPostClient } from './BlogPostClient';
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const revalidate = 60;
 
@@ -19,12 +20,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'مقال غير موجود | مطبخ تمارا' };
   }
 
+  const url = `https://www.tamara-kitchen.com/blog/${post.slug}`;
+  const title = post.seoTitleAr || post.titleAr;
+  const description = post.seoDescAr || post.excerptAr || '';
+
   return {
-    title: `${post.titleAr} | مدونة تمارا`,
-    description: post.excerptAr || '',
+    title: `${title} | مدونة تمارا`,
+    description: description,
+    alternates: { canonical: url },
     openGraph: {
-      title: post.titleAr,
-      description: post.excerptAr || '',
+      title,
+      description,
+      url,
+      type: "article",
+      publishedTime: post.createdAt.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+      authors: post.author ? [post.author] : [],
       images: post.image ? [post.image] : [],
     }
   };
@@ -40,5 +51,23 @@ export default async function BlogPostPage({ params }: Props) {
     notFound();
   }
 
-  return <BlogPostClient post={post} />;
+  const blogSchema: Record<string, any> = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.titleAr,
+    "image": post.image ? [`https://www.tamara-kitchen.com${post.image}`] : undefined,
+    "datePublished": post.createdAt.toISOString(),
+    "dateModified": post.updatedAt.toISOString(),
+    "author": {
+      "@type": "Person",
+      "name": post.author || "مطبخ تمارا"
+    }
+  };
+
+  return (
+    <>
+      <JsonLd schema={blogSchema} />
+      <BlogPostClient post={post} />
+    </>
+  );
 }

@@ -14,13 +14,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const title = lang === 'ar' ? (page.seoTitleAr || page.titleAr) : (page.seoTitleEn || page.titleEn);
   const description = lang === 'ar' ? page.seoDescAr : page.seoDescEn;
+  const url = `https://www.tamara-kitchen.com/p/${slug}`;
 
   return {
-    title,
+    title: `${title} | مطبخ تمارا`,
     description,
+    alternates: { canonical: url },
     openGraph: {
       title,
       description: description || '',
+      url,
       images: page.ogImage ? [page.ogImage] : [],
     },
   };

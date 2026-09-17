@@ -7,6 +7,16 @@ import { FreezerSection } from "@/components/sections/FreezerSection/FreezerSect
 import { TrustReviews } from "@/components/sections/TrustReviews/TrustReviews";
 import { getFrontendCategories, getFrontendProducts, getFrontendOffers, getFrontendReviews, getFrontendHeroSlides, getFrontendHomepageSections } from "@/lib/data-mapper";
 import prisma from "@/lib/prisma";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Tamara Kitchen | مطبخ تمارا",
+  description: "طعم البيت المصري، أقرب مما تتخيل. أكل مصري بيتعمل بطعم البيت ويتوصل طازة في أبوظبي.",
+  alternates: {
+    canonical: '/',
+  }
+};
 
 export default async function Home() {
   const categories = await getFrontendCategories();
@@ -18,6 +28,8 @@ export default async function Home() {
   
   const deliveryConfig = await prisma.deliveryConfig.findUnique({ where: { id: "1" } });
   const freeThreshold = deliveryConfig?.freeThreshold ?? 500;
+  
+  const businessSetting = await prisma.businessSetting.findUnique({ where: { id: "1" } });
 
   const storytellingSection = sections.find(s => ['PACKAGES', 'storytelling', 'packages'].includes(s.type.toUpperCase()));
   const freezerSection = sections.find(s => ['FREEZER', 'frozen'].includes(s.type.toUpperCase()));
@@ -25,8 +37,25 @@ export default async function Home() {
   // Custom sort order based on CMS, we'll implement a simple render mapping
   // We'll keep the core structure but conditionally render the CMS-controlled parts.
 
+  const restaurantSchema = {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": businessSetting?.nameAr || "مطبخ تمارا",
+    "image": businessSetting?.logo ? `https://www.tamara-kitchen.com${businessSetting.logo}` : "https://www.tamara-kitchen.com/assets/images/logo.png",
+    "@id": "https://www.tamara-kitchen.com",
+    "url": "https://www.tamara-kitchen.com",
+    "telephone": businessSetting?.phone || "",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": businessSetting?.addressAr || "",
+      "addressCountry": "AE"
+    },
+    "servesCuisine": "Egyptian"
+  };
+
   return (
     <>
+      <JsonLd schema={restaurantSchema} />
       <Hero slides={heroSlides} freeDeliveryThreshold={freeThreshold} />
       <OfferRail offers={offers} />
       <QuickCategories categories={categories} />

@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: 'المدونة | مطبخ تمارا - Tamara Kitchen Blog',
   description: 'اقرأ أحدث المقالات والوصفات وأخبار مطبخ تمارا. نصائح للطبخ، ووصفات مصرية أصيلة، والمزيد.',
   keywords: 'مدونة طبخ, أكل مصري, وصفات, مطبخ تمارا, مطاعم أبوظبي, مقالات طعام',
+  alternates: {
+    canonical: '/blog',
+  }
 };
 
 // Next.js config for caching and revalidation

@@ -8,9 +8,27 @@ import { AnimatedBackground } from "@/components/layout/AnimatedBackground/Anima
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.tamara-kitchen.com"),
   title: "Tamara Kitchen | مطبخ تمارا",
   description: "طعم البيت المصري، أقرب مما تتخيل. أكل مصري بيتعمل بطعم البيت ويتوصل طازة في أبوظبي.",
   manifest: "/manifest.json",
+  openGraph: {
+    title: "Tamara Kitchen | مطبخ تمارا",
+    description: "طعم البيت المصري، أقرب مما تتخيل. أكل مصري بيتعمل بطعم البيت ويتوصل طازة في أبوظبي.",
+    url: "https://www.tamara-kitchen.com",
+    siteName: "Tamara Kitchen",
+    locale: "ar_AE",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tamara Kitchen | مطبخ تمارا",
+    description: "طعم البيت المصري، أقرب مما تتخيل. أكل مصري بيتعمل بطعم البيت ويتوصل طازة في أبوظبي.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  }
 };
 
 export const viewport = {
