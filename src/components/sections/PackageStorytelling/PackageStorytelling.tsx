@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/Button/Button';
 import { SafeImage } from '@/components/ui/SafeImage/SafeImage';
 import styles from './PackageStorytelling.module.css';
 
-export function PackageStorytelling() {
+export function PackageStorytelling({ section }: { section?: any }) {
   const { language, direction } = useApp();
 
-  const content = {
+  const fallbackContent = {
     ar: {
       tag: 'جديد تمارا',
       title: 'باقات توفير الغداء',
@@ -37,7 +37,21 @@ export function PackageStorytelling() {
     }
   };
 
-  const text = content[language];
+  const text = section 
+    ? {
+        tag: section.titleAr && section.titleEn ? (language === 'ar' ? 'جديد' : 'New') : fallbackContent[language].tag,
+        title: language === 'ar' ? (section.titleAr || fallbackContent.ar.title) : (section.titleEn || fallbackContent.en.title),
+        description: language === 'ar' ? (section.subtitleAr || fallbackContent.ar.description) : (section.subtitleEn || fallbackContent.en.description),
+        features: fallbackContent[language].features, // Features could be derived from description splitting, but keeping static for now if CMS doesn't support array
+        cta: language === 'ar' ? (section.ctaTextAr || fallbackContent.ar.cta) : (section.ctaTextEn || fallbackContent.en.cta),
+        image: section.image || "/assets/images/tamara_package_lunch_saver.jpg",
+        ctaLink: section.ctaLink || "/menu/packages"
+      }
+    : {
+        ...fallbackContent[language],
+        image: "/assets/images/tamara_package_lunch_saver.jpg",
+        ctaLink: "/menu/packages"
+      };
 
   return (
     <section className={styles.section}>
@@ -61,7 +75,7 @@ export function PackageStorytelling() {
               ))}
             </ul>
             
-            <Link href="/menu/packages" passHref legacyBehavior>
+            <Link href={text.ctaLink} passHref legacyBehavior>
               <Button size="lg" variant="secondary" className={styles.ctaBtn}>
                 {text.cta}
               </Button>
@@ -73,7 +87,7 @@ export function PackageStorytelling() {
             <div className={styles.blob}></div>
             <div className={styles.imageWrapper}>
               <SafeImage 
-                src="/assets/images/tamara_package_lunch_saver.jpg" 
+                src={text.image} 
                 alt={text.title}
                 fill
                 className={styles.image}

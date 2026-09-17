@@ -7,24 +7,29 @@ import { SafeImage } from '@/components/ui/SafeImage/SafeImage';
 import Link from 'next/link';
 import styles from './Hero.module.css';
 
-export function Hero({ freeDeliveryThreshold = 500 }: { freeDeliveryThreshold?: number }) {
+export function Hero({ slides = [], freeDeliveryThreshold = 500 }: { slides?: any[], freeDeliveryThreshold?: number }) {
   const { language } = useApp();
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const images = [
+  const fallbackImages = [
     '/assets/images/tamara_hero_main.jpg',
     '/assets/images/tamara_hero_family_feast.jpg',
     '/assets/images/tamara_hero_grilled_centerpiece.jpg'
   ];
 
+  const hasSlides = slides && slides.length > 0;
+  const slideCount = hasSlides ? slides.length : fallbackImages.length;
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveIndex((current) => (current + 1) % images.length);
+      setActiveIndex((current) => (current + 1) % slideCount);
     }, 5000);
     return () => clearInterval(interval);
-  }, [images.length]);
+  }, [slideCount]);
 
-  const content = {
+  const activeSlide = hasSlides ? slides[activeIndex] : null;
+
+  const fallbackContent = {
     ar: {
       headline: 'طعم البيت المصري،\nأقرب مما تتخيل',
       subtitle: 'أكل مصري بيتعمل بحب وطعم البيت، متفرزن أو مطبوخ، بيوصلك طازة في أبوظبي.',
@@ -41,7 +46,15 @@ export function Hero({ freeDeliveryThreshold = 500 }: { freeDeliveryThreshold?: 
     }
   };
 
-  const text = content[language];
+  const text = hasSlides 
+    ? {
+        headline: activeSlide.title[language] || fallbackContent[language].headline,
+        subtitle: activeSlide.subtitle[language] || fallbackContent[language].subtitle,
+        primaryCta: activeSlide.ctaText[language] || fallbackContent[language].primaryCta,
+        secondaryCta: fallbackContent[language].secondaryCta, // Keeping secondary CTA static for now
+        badge: fallbackContent[language].badge
+      }
+    : fallbackContent[language];
 
   return (
     <section className={styles.hero}>
@@ -50,13 +63,13 @@ export function Hero({ freeDeliveryThreshold = 500 }: { freeDeliveryThreshold?: 
         {/* Visual Half (Single Image Rotation) */}
         <div className={styles.visualHalf}>
           <div className={styles.imageGallery}>
-            {images.map((src, index) => (
+            {(hasSlides ? slides : fallbackImages.map((src, i) => ({ desktopImg: src, id: i }))).map((slide, index) => (
               <div 
-                key={src} 
+                key={slide.id} 
                 className={`${styles.heroImage} ${index === activeIndex ? styles.active : ''}`}
               >
                 <SafeImage
-                  src={src}
+                  src={slide.desktopImg}
                   alt="Tamara Kitchen Hero"
                   fill
                   priority={index === 0}
@@ -74,14 +87,14 @@ export function Hero({ freeDeliveryThreshold = 500 }: { freeDeliveryThreshold?: 
           <div className={styles.textContent}>
             <div className={styles.badge}>{text.badge}</div>
             <h1 className={styles.headline}>
-              {text.headline.split('\n').map((line, i) => (
+              {text.headline.split('\n').map((line: string, i: number) => (
                 <span key={i} className={styles.headlineLine}>{line}</span>
               ))}
             </h1>
             <p className={styles.subtitle}>{text.subtitle}</p>
             
             <div className={styles.actions}>
-              <Link href="/menu">
+              <Link href={hasSlides && activeSlide.ctaLink ? activeSlide.ctaLink : "/menu"}>
                 <Button size="lg" variant="primary" withSweep className={styles.primaryBtn}>
                   {text.primaryCta}
                 </Button>

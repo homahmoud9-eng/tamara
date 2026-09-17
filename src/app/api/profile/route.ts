@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/nextauth";
+import { resolveCustomer } from "@/lib/customer-resolver";
 
 export async function GET(req: Request) {
   try {
@@ -11,23 +12,20 @@ export async function GET(req: Request) {
     }
 
     const userId = (session.user as any).id;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
     
-    // Fetch user and customer
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { customer: true }
-    });
-
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
     }
 
+    const customer = await resolveCustomer(userId, user.name, user.email);
+
     return NextResponse.json({ 
       success: true, 
       profile: {
-        name: user.customer?.name || user.name || "",
+        name: customer.name || user.name || "",
         email: user.email || "",
-        phone: user.customer?.phone || ""
+        phone: customer.phone.startsWith('USER_') ? '' : customer.phone
       }
     });
   } catch (error) {
@@ -51,36 +49,37 @@ export async function PUT(req: Request) {
       return NextResponse.json({ success: false, message: "Name cannot be empty" }, { status: 400 });
     }
 
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+
     // Update User name
     await prisma.user.update({
       where: { id: userId },
       data: { name: name.trim() }
     });
 
-    // Update Customer name and phone
-    const customer = await prisma.customer.findUnique({
-      where: { userId }
-    });
+    const customer = await resolveCustomer(userId, user.name, user.email);
 
-    if (customer) {
-      // Check phone uniqueness if phone is changing
-      if (phone && phone !== customer.phone) {
-        const existingPhone = await prisma.customer.findUnique({
-          where: { phone: phone.trim() }
-        });
-        if (existingPhone && existingPhone.id !== customer.id) {
-          return NextResponse.json({ success: false, message: "Phone number already exists" }, { status: 400 });
-        }
-      }
-
-      await prisma.customer.update({
-        where: { id: customer.id },
-        data: { 
-          name: name.trim(),
-          phone: phone ? phone.trim() : customer.phone
-        }
+    // Check phone uniqueness if phone is changing
+    let finalPhone = phone ? phone.trim() : null;
+    if (finalPhone && finalPhone !== customer.phone) {
+      const existingPhone = await prisma.customer.findUnique({
+        where: { phone: finalPhone }
       });
+      if (existingPhone && existingPhone.id !== customer.id) {
+        return NextResponse.json({ success: false, message: "Phone number already exists" }, { status: 400 });
+      }
+    } else if (!finalPhone) {
+       finalPhone = customer.phone; // Preserve existing
     }
+
+    await prisma.customer.update({
+      where: { id: customer.id },
+      data: { 
+        name: name.trim(),
+        phone: finalPhone
+      }
+    });
 
     return NextResponse.json({ success: true, message: "Profile updated successfully" });
   } catch (error) {

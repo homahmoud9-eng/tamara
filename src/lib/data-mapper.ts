@@ -1,6 +1,45 @@
 import prisma from './prisma';
 import { Category, Product, ProductVariant } from '@/models/types';
 
+export async function getFrontendHomepageSections() {
+  const sections = await prisma.homepageSection.findMany({
+    where: { isEnabled: true },
+    orderBy: { sortOrder: 'asc' }
+  });
+  return sections;
+}
+
+export async function getFrontendHeroSlides() {
+  const slides = await prisma.heroSlide.findMany({
+    where: { 
+      isActive: true,
+      OR: [
+        { startDate: null },
+        { startDate: { lte: new Date() } }
+      ],
+      AND: [
+        {
+          OR: [
+            { endDate: null },
+            { endDate: { gte: new Date() } }
+          ]
+        }
+      ]
+    },
+    orderBy: { sortOrder: 'asc' }
+  });
+
+  return slides.map(s => ({
+    id: s.id,
+    desktopImg: s.desktopImg,
+    mobileImg: s.mobileImg,
+    title: { ar: s.titleAr || '', en: s.titleEn || '' },
+    subtitle: { ar: s.subtitleAr || '', en: s.subtitleEn || '' },
+    ctaText: { ar: s.ctaTextAr || '', en: s.ctaTextEn || '' },
+    ctaLink: s.ctaLink || ''
+  }));
+}
+
 export async function getFrontendCategories(): Promise<Category[]> {
   const categories = await prisma.category.findMany({
     where: { isActive: true },
@@ -25,6 +64,16 @@ export async function getFrontendProducts(): Promise<Product[]> {
       variants: {
         where: { isActive: true },
         orderBy: { sortOrder: 'asc' }
+      },
+      addonGroups: {
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+        include: {
+          addons: {
+            where: { isActive: true },
+            orderBy: { sortOrder: 'asc' }
+          }
+        }
       }
     },
     orderBy: { sortOrder: 'asc' }
@@ -61,6 +110,20 @@ export async function getFrontendProducts(): Promise<Product[]> {
         isDefault: v.isDefault,
         sortOrder: v.sortOrder,
         servingDescription: { ar: v.servingDescAr || '', en: v.servingDescEn || '' }
+      })),
+      addonGroups: p.addonGroups.map(g => ({
+        id: g.id,
+        productId: g.productId,
+        name: { ar: g.nameAr, en: g.nameEn },
+        required: g.isRequired,
+        minSelect: g.minSelect,
+        maxSelect: g.maxSelect,
+        addons: g.addons.map(a => ({
+          id: a.id,
+          groupId: a.groupId,
+          name: { ar: a.nameAr, en: a.nameEn },
+          price: a.price
+        }))
       }))
     };
   });
@@ -73,6 +136,16 @@ export async function getFrontendProduct(id: string): Promise<Product | null> {
       variants: {
         where: { isActive: true },
         orderBy: { sortOrder: 'asc' }
+      },
+      addonGroups: {
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+        include: {
+          addons: {
+            where: { isActive: true },
+            orderBy: { sortOrder: 'asc' }
+          }
+        }
       }
     }
   });
@@ -109,6 +182,20 @@ export async function getFrontendProduct(id: string): Promise<Product | null> {
       isDefault: v.isDefault,
       sortOrder: v.sortOrder,
       servingDescription: { ar: v.servingDescAr || '', en: v.servingDescEn || '' }
+    })),
+    addonGroups: p.addonGroups.map(g => ({
+      id: g.id,
+      productId: g.productId,
+      name: { ar: g.nameAr, en: g.nameEn },
+      required: g.isRequired,
+      minSelect: g.minSelect,
+      maxSelect: g.maxSelect,
+      addons: g.addons.map(a => ({
+        id: a.id,
+        groupId: a.groupId,
+        name: { ar: a.nameAr, en: a.nameEn },
+        price: a.price
+      }))
     }))
   };
 }

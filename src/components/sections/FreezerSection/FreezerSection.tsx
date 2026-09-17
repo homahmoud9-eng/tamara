@@ -7,10 +7,10 @@ import { useApp } from '@/components/providers/AppProvider';
 import { Button } from '@/components/ui/Button/Button';
 import styles from './FreezerSection.module.css';
 
-export function FreezerSection() {
+export function FreezerSection({ section }: { section?: any }) {
   const { language } = useApp();
 
-  const content = {
+  const fallbackContent = {
     ar: {
       title: 'من الفريزر لبيتك',
       subtitle: 'أكلات تمارا مجهزة ومجمدة، جاهزة على التسوية عشان توفر وقتك.',
@@ -23,7 +23,19 @@ export function FreezerSection() {
     }
   };
 
-  const text = content[language];
+  const text = section 
+    ? {
+        title: language === 'ar' ? (section.titleAr || fallbackContent.ar.title) : (section.titleEn || fallbackContent.en.title),
+        subtitle: language === 'ar' ? (section.subtitleAr || fallbackContent.ar.subtitle) : (section.subtitleEn || fallbackContent.en.subtitle),
+        cta: language === 'ar' ? (section.ctaTextAr || fallbackContent.ar.cta) : (section.ctaTextEn || fallbackContent.en.cta),
+        image: section.image || "/assets/images/tamara_freezer_prepared.jpg",
+        ctaLink: section.ctaLink || "/menu/frozen"
+      }
+    : {
+        ...fallbackContent[language],
+        image: "/assets/images/tamara_freezer_prepared.jpg",
+        ctaLink: "/menu/frozen"
+      };
 
   return (
     <section className={styles.section}>
@@ -37,7 +49,7 @@ export function FreezerSection() {
             </div>
             <h2 className={styles.title}>{text.title}</h2>
             <p className={styles.subtitle}>{text.subtitle}</p>
-            <Link href="/menu/frozen" passHref legacyBehavior>
+            <Link href={text.ctaLink} passHref legacyBehavior>
               <Button variant="glass" className={styles.ctaBtn}>
                 {text.cta}
               </Button>
@@ -45,8 +57,8 @@ export function FreezerSection() {
           </div>
           <div className={styles.imageWrapper}>
             <SafeImage 
-              src="/assets/images/tamara_freezer_prepared.jpg" 
-              alt="Freezer Ready Meals"
+              src={text.image} 
+              alt={text.title}
               fill
               className={styles.image}
               sizes="(max-width: 768px) 100vw, 50vw"

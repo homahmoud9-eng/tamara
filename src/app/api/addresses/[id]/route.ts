@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/nextauth";
+import { resolveCustomer } from "@/lib/customer-resolver";
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -11,13 +12,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    const customer = await prisma.customer.findUnique({
-      where: { userId: (session.user as any).id }
-    });
-
-    if (!customer) {
-      return NextResponse.json({ success: false, message: "Customer profile not found" }, { status: 404 });
-    }
+    const userId = (session.user as any).id;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const customer = await resolveCustomer(userId, user?.name, user?.email);
 
     // Verify ownership
     const existing = await prisma.address.findUnique({ where: { id } });
@@ -26,7 +23,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     }
 
     const body = await req.json();
-    const { titleAr, titleEn, details, phone, isDefault } = body;
+    const { titleAr, details, isDefault } = body;
 
     // If making default, remove default from others
     if (isDefault) {
@@ -39,8 +36,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const address = await prisma.address.update({
       where: { id },
       data: {
-        label: titleAr,
-        addressText: details,
+        label: titleAr !== undefined ? titleAr : existing.label,
+        addressText: details !== undefined ? details : existing.addressText,
         isDefault: isDefault !== undefined ? isDefault : existing.isDefault,
       }
     });
@@ -60,13 +57,9 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    const customer = await prisma.customer.findUnique({
-      where: { userId: (session.user as any).id }
-    });
-
-    if (!customer) {
-      return NextResponse.json({ success: false, message: "Customer profile not found" }, { status: 404 });
-    }
+    const userId = (session.user as any).id;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const customer = await resolveCustomer(userId, user?.name, user?.email);
 
     // Verify ownership
     const existing = await prisma.address.findUnique({ where: { id } });

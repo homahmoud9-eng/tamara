@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/nextauth";
+import { resolveCustomer } from "@/lib/customer-resolver";
 
 export async function GET(req: Request) {
   try {
@@ -10,13 +11,9 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    const customer = await prisma.customer.findUnique({
-      where: { userId: (session.user as any).id }
-    });
-
-    if (!customer) {
-      return NextResponse.json({ success: true, addresses: [] });
-    }
+    const userId = (session.user as any).id;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const customer = await resolveCustomer(userId, user?.name, user?.email);
 
     const addresses = await prisma.address.findMany({
       where: { customerId: customer.id },
@@ -38,19 +35,15 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { titleAr, titleEn, details, phone, isDefault } = body;
+    const { titleAr, details, isDefault } = body;
 
     if (!titleAr || !details) {
       return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 });
     }
 
-    const customer = await prisma.customer.findUnique({
-      where: { userId: (session.user as any).id }
-    });
-
-    if (!customer) {
-      return NextResponse.json({ success: false, message: "Customer profile not found" }, { status: 404 });
-    }
+    const userId = (session.user as any).id;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const customer = await resolveCustomer(userId, user?.name, user?.email);
 
     // If this is set as default, remove default from others
     if (isDefault) {
@@ -70,12 +63,9 @@ export async function POST(req: Request) {
         label: titleAr, // Using titleAr for label
         addressText: details,
         isDefault: shouldBeDefault,
-        // Since the UI passes phone, maybe we should save it? Address model doesn't have phone. 
-        // Wait, Address model has `label`, `addressText`, `latitude`, `longitude`, `building`, `floor`, `apartment`, `landmark`, `isDefault`
       }
     });
 
-    // The UI uses a specific format, let's adapt it to return what the UI expects or update the UI
     return NextResponse.json({ success: true, address }, { status: 201 });
   } catch (error) {
     console.error("Addresses POST Error:", error);
