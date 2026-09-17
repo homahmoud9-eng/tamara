@@ -3,6 +3,7 @@ import { getAdminLang } from '@/lib/i18n';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Phone, Mail, MapPin, ShoppingBag, DollarSign, Calendar, Star } from 'lucide-react';
+import CustomerActions from './CustomerActions';
 
 export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const lang = await getAdminLang();
@@ -38,7 +39,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
 
   return (
     <div>
-      <div className="admin-page-header">
+      <div className="admin-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Link href="/dashboard/customers" className="admin-btn-ghost" style={{ textDecoration: 'none' }}>
             <ArrowLeft size={18} />
@@ -48,6 +49,14 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
             <p className="admin-page-subtitle">{lang === 'ar' ? 'ملف العميل' : 'Customer Profile'}</p>
           </div>
         </div>
+        
+        <CustomerActions 
+          customerId={customer.id} 
+          customerName={customer.name} 
+          status={customer.status} 
+          orderCount={customer.totalOrders} 
+          lang={lang} 
+        />
       </div>
 
       {/* Stats */}

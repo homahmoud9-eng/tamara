@@ -124,8 +124,23 @@ export async function deleteGalleryImage(id: string, productId: string) {
 }
 
 export async function deleteProduct(id: string) {
-  await prisma.product.delete({ where: { id } });
-  revalidatePath('/', 'layout');
+  const [orderItems, packageItems, reviews] = await Promise.all([
+    prisma.orderItem.findFirst({ where: { productId: id } }),
+    prisma.packageItem.findFirst({ where: { productId: id } }),
+    prisma.review.findFirst({ where: { productId: id } })
+  ]);
+
+  if (orderItems || packageItems || reviews) {
+    // Soft delete
+    await prisma.product.update({
+      where: { id },
+      data: { isActive: false, availability: 'OUT_OF_STOCK' }
+    });
+  } else {
+    // Hard delete
+    await prisma.product.delete({ where: { id } });
+  }
+
   revalidatePath('/', 'layout');
 }
 
