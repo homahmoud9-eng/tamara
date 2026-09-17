@@ -13,3 +13,15 @@ export async function getAdminLang(): Promise<Language> {
   // Default to Arabic
   return 'ar';
 }
+
+export async function getLang(): Promise<Language> {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get('NEXT_LOCALE')?.value;
+  
+  if (locale === 'en') {
+    return 'en';
+  }
+  
+  // Default to Arabic
+  return 'ar';
+}

@@ -44,7 +44,23 @@ export async function updateCategory(id: string, formData: FormData) {
 }
 
 export async function deleteCategory(id: string) {
-  await prisma.category.delete({ where: { id } });
-  revalidatePath('/', 'layout');
+  const category = await prisma.category.findUnique({
+    where: { id },
+    include: { _count: { select: { products: true } } }
+  });
+
+  if (!category) return;
+
+  if (category._count.products > 0) {
+    // Soft delete/hide
+    await prisma.category.update({
+      where: { id },
+      data: { isActive: false }
+    });
+  } else {
+    // Hard delete
+    await prisma.category.delete({ where: { id } });
+  }
+
   revalidatePath('/', 'layout');
 }

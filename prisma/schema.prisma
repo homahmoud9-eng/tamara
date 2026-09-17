@@ -442,6 +442,27 @@ model NavigationItem {
   isActive    Boolean  @default(true)
 }
 
+model Page {
+  id            String    @id @default(cuid())
+  titleAr       String
+  titleEn       String
+  contentAr     String?   @db.Text
+  contentEn     String?   @db.Text
+  slug          String    @unique
+  
+  seoTitleAr    String?
+  seoTitleEn    String?
+  seoDescAr     String?
+  seoDescEn     String?
+  ogImage       String?
+  
+  status        String    @default("DRAFT") // DRAFT, PUBLISHED, ARCHIVED
+  publishedAt   DateTime?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
 // ==========================================
 // 8. MEDIA LIBRARY
 // ==========================================

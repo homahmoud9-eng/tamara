@@ -41,6 +41,15 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         </div>
       </div>
 
+      <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', borderBottom: '1px solid var(--admin-border)' }}>
+        <Link href={`/dashboard/catalog/products/${product.id}/edit`} style={{ padding: '8px 16px', borderBottom: '2px solid var(--admin-primary)', color: 'var(--admin-primary)', fontWeight: 600, textDecoration: 'none' }}>
+          {lang === 'ar' ? 'المعلومات الأساسية' : 'Basic Info'}
+        </Link>
+        <Link href={`/dashboard/catalog/products/${product.id}/addons`} style={{ padding: '8px 16px', color: 'var(--admin-text-muted)', textDecoration: 'none' }}>
+          {lang === 'ar' ? 'الإضافات (Add-ons)' : 'Add-ons'}
+        </Link>
+      </div>
+
       <form action={updateProductWithId} className="admin-form-grid" style={{ maxWidth: '800px' }}>
         <div className="admin-card">
           <div className="admin-form-grid">
