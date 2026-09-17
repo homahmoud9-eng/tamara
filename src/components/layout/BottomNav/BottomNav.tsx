@@ -63,7 +63,7 @@ export function BottomNav() {
     },
     {
       id: 'account',
-      href: '/settings',
+      href: '/account',
       labelAr: 'الحساب',
       labelEn: 'Account',
       icon: (
