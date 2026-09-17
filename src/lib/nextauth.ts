@@ -11,6 +11,7 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -63,16 +64,43 @@ export const authOptions: NextAuthOptions = {
     }
   },
   events: {
-    // When a user is created (e.g. via Google), create a linked Customer profile
+    // When a user is created (e.g. via Google), create or link a Customer profile
     async createUser({ user }) {
-      await prisma.customer.create({
-        data: {
-          name: user.name || "User",
-          email: user.email,
-          phone: `GOOGLE_${user.id}`, // Placeholder
-          userId: user.id
+      try {
+        if (!user.email) return;
+
+        const existingCustomer = await prisma.customer.findUnique({
+          where: { email: user.email }
+        });
+
+        if (existingCustomer) {
+          if (!existingCustomer.userId) {
+            // Customer exists but is not linked to any User (e.g. Guest checkout). Safe to link.
+            await prisma.customer.update({
+              where: { id: existingCustomer.id },
+              data: { userId: user.id }
+            });
+          } else if (existingCustomer.userId === user.id) {
+            // Already linked correctly, do nothing.
+          } else {
+            // Customer is linked to a different User account.
+            // Do not overwrite it, and do not create a duplicate customer.
+            console.warn(`Customer with email ${user.email} is already linked to User ${existingCustomer.userId}. Skipping customer link for User ${user.id}.`);
+          }
+        } else {
+          // Create a new customer
+          await prisma.customer.create({
+            data: {
+              name: user.name || "User",
+              email: user.email,
+              phone: `GOOGLE_${user.id}`, // Placeholder
+              userId: user.id
+            }
+          });
         }
-      });
+      } catch (error) {
+        console.error("Error creating/linking customer in NextAuth:", error);
+      }
     }
   }
 };
