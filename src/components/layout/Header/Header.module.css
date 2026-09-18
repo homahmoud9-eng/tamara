@@ -325,3 +325,80 @@ html[dir="rtl"] .mobileNavLink:active {
   color: var(--text-primary);
   text-align: center;
 }
+
+/* Notification Dropdown */
+.notificationDropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 320px;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  overflow: hidden;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+html[dir="rtl"] .notificationDropdown {
+  right: auto;
+  left: 0;
+}
+
+.notificationHeader {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: 1px solid var(--glass-border);
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+}
+
+.notificationList {
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.notificationItem {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-bottom: 1px solid var(--glass-border);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+  color: #fff;
+}
+
+.notificationItem:last-child {
+  border-bottom: none;
+}
+
+.notificationItem:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.notificationTitle {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: var(--color-gold);
+}
+
+.notificationMessage {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
+.emptyNotifications {
+  padding: var(--spacing-6);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+}

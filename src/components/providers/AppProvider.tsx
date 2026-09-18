@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { Toaster } from 'react-hot-toast';
 
 type Theme = "dark";
 type Direction = "rtl" | "ltr";
@@ -113,6 +114,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{ theme, setTheme, language, setLanguage, direction, userProfile, updateProfile }}>
+      <Toaster position="top-center" />
       {children}
     </AppContext.Provider>
   );

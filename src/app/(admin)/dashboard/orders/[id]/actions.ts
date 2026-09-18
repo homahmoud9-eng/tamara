@@ -21,13 +21,9 @@ export async function updateOrderStatus(orderId: string, status: string) {
   revalidatePath('/', 'layout');
   revalidatePath('/', 'layout');
 
-  // Try to send push notification
+  // Try to send push notification and create DB notification
   if (order.customer?.userId) {
     try {
-      const subscriptions = await prisma.pushSubscription.findMany({
-        where: { userId: order.customer.userId }
-      });
-
       const getStatusText = (status: string) => {
         switch (status) {
           case 'CONFIRMED': return 'تم تأكيد طلبك وجاري تحضيره';
@@ -38,10 +34,43 @@ export async function updateOrderStatus(orderId: string, status: string) {
           default: return `تم تحديث حالة الطلب إلى ${status}`;
         }
       };
+      
+      const getStatusTextEn = (status: string) => {
+        switch (status) {
+          case 'CONFIRMED': return 'Your order is confirmed and being prepared';
+          case 'PREPARING': return 'Your order is now in the kitchen being prepared';
+          case 'OUT_FOR_DELIVERY': return 'Your order is out for delivery and on its way';
+          case 'DELIVERED': return 'Your order has been delivered successfully, enjoy!';
+          case 'CANCELLED': return 'Your order has been cancelled';
+          default: return `Your order status has been updated to ${status}`;
+        }
+      };
+
+      const titleAr = `تحديث طلب #${order.orderNumber}`;
+      const titleEn = `Order Update #${order.orderNumber}`;
+      const messageAr = getStatusText(status);
+      const messageEn = getStatusTextEn(status);
+
+      // Create in-app notification
+      await prisma.notification.create({
+        data: {
+          userId: order.customer.userId,
+          titleAr,
+          titleEn,
+          messageAr,
+          messageEn,
+          type: "ORDER",
+          entityId: order.id,
+        }
+      });
+
+      const subscriptions = await prisma.pushSubscription.findMany({
+        where: { userId: order.customer.userId }
+      });
 
       const payload = JSON.stringify({
-        title: `تحديث طلب #${order.orderNumber}`,
-        body: getStatusText(status),
+        title: titleAr,
+        body: messageAr,
         url: `/orders/${order.id}`,
       });
 

@@ -625,6 +625,8 @@ model User {
   
   // Link to Customer profile
   customer      Customer?
+  
+  notifications Notification[]
 }
 
 model VerificationToken {
@@ -648,6 +650,20 @@ model PushSubscription {
   userId    String?
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  titleAr   String
+  titleEn   String
+  messageAr String?
+  messageEn String?
+  type      String   @default("ORDER") // ORDER, SYSTEM, PROMO
+  entityId  String?  // e.g., Order ID
+  isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 

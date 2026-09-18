@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import useSWR from 'swr';
+import toast from 'react-hot-toast';
 import { SafeImage } from '@/components/ui/SafeImage/SafeImage';
 import { useApp } from '@/components/providers/AppProvider';
 import { AnnouncementBar } from '@/components/layout/AnnouncementBar/AnnouncementBar';
@@ -13,11 +15,59 @@ import { useCart } from '@/components/providers/CartProvider';
 export function Header({ announcement }: { announcement?: any }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const notificationDropdownRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage, theme, setTheme } = useApp();
   const { items } = useCart();
   const pathname = usePathname();
+  const router = useRouter();
 
   const cartItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data: notificationData, mutate: mutateNotifications } = useSWR('/api/notifications/unread', fetcher, { 
+    refreshInterval: 10000 
+  });
+  const unreadNotifications = notificationData?.notifications || [];
+  const unreadCount = unreadNotifications.length;
+
+  const previousCountRef = useRef(0);
+  useEffect(() => {
+    if (unreadCount > previousCountRef.current) {
+      const newNotif = unreadNotifications[0];
+      if (newNotif) {
+        toast.success(language === 'ar' ? newNotif.titleAr : newNotif.titleEn, {
+          icon: '🔔',
+          duration: 4000
+        });
+      }
+    }
+    previousCountRef.current = unreadCount;
+  }, [unreadCount, unreadNotifications, language]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationDropdownRef.current && !notificationDropdownRef.current.contains(event.target as Node)) {
+        setIsNotificationOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const markAsRead = async (ids: string[], redirectUrl?: string) => {
+    try {
+      await fetch('/api/notifications/unread', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notificationIds: ids })
+      });
+      mutateNotifications();
+      if (redirectUrl) router.push(redirectUrl);
+    } catch (error) {
+      console.error('Failed to mark as read', error);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,7 +120,7 @@ export function Header({ announcement }: { announcement?: any }) {
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
-            <span className={styles.notificationBadge}></span>
+            {unreadCount > 0 && <span className={styles.notificationBadge}></span>}
           </Link>
         </div>
 
@@ -113,6 +163,54 @@ export function Header({ announcement }: { announcement?: any }) {
             {language === 'ar' ? 'EN' : 'عربي'}
           </button>
 
+          {/* Desktop Notification Bell */}
+          <div className={styles.iconButton} style={{ position: 'relative', cursor: 'pointer' }} ref={notificationDropdownRef}>
+            <div onClick={() => setIsNotificationOpen(!isNotificationOpen)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '24px', height: '24px' }}>
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              {unreadCount > 0 && <span className={styles.notificationBadge}></span>}
+            </div>
+
+            {isNotificationOpen && (
+              <div className={styles.notificationDropdown}>
+                <div className={styles.notificationHeader}>
+                  <span>{language === 'ar' ? 'الإشعارات' : 'Notifications'}</span>
+                  {unreadCount > 0 && (
+                    <button 
+                      style={{ background: 'none', border: 'none', color: 'var(--color-gold)', cursor: 'pointer', fontSize: '12px' }}
+                      onClick={(e) => { e.stopPropagation(); markAsRead(unreadNotifications.map((n: any) => n.id)); }}
+                    >
+                      {language === 'ar' ? 'تحديد الكل كمقروء' : 'Mark all as read'}
+                    </button>
+                  )}
+                </div>
+                <div className={styles.notificationList}>
+                  {unreadCount === 0 ? (
+                    <div className={styles.emptyNotifications}>
+                      {language === 'ar' ? 'لا توجد إشعارات جديدة' : 'No new notifications'}
+                    </div>
+                  ) : (
+                    unreadNotifications.map((notif: any) => (
+                      <div 
+                        key={notif.id} 
+                        className={styles.notificationItem} 
+                        onClick={() => {
+                          setIsNotificationOpen(false);
+                          markAsRead([notif.id], notif.entityId ? `/orders/${notif.entityId}` : '/orders');
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <div className={styles.notificationTitle}>{language === 'ar' ? notif.titleAr : notif.titleEn}</div>
+                        <div className={styles.notificationMessage}>{language === 'ar' ? notif.messageAr : notif.messageEn}</div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
           
           <Link href="/account" className={styles.iconButton} aria-label="Account">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
