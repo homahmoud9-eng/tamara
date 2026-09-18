@@ -64,7 +64,7 @@ export default function AdminForm({
     } catch (err: any) {
       console.error('Form submission error:', err);
       setStatus('ERROR');
-      setErrorMsg(lang === 'ar' ? errorMessageAr : errorMessage);
+      setErrorMsg(`Client Exception: ${err.message || String(err)}`);
     }
   }
 

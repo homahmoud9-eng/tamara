@@ -57,6 +57,7 @@ export async function createCategory(formData: FormData) {
     return { success: true };
   } catch (err: any) {
     console.error('Create Category Error:', err);
+    require('fs').appendFileSync('c:/Users/pc/Desktop/جديد تمارا/action-error.log', err.stack + '\n');
     return { success: false, error: err.message || 'Database error occurred' };
   }
 }
