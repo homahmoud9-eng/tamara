@@ -1,4 +1,4 @@
-import { createCategory } from './src/app/(admin)/dashboard/catalog/actions.ts';
+import { createCategory } from './src/app/(admin)/dashboard/catalog/actions';
 
 async function run() {
   const formData1 = new FormData();

@@ -38,3 +38,23 @@ Error: Invariant: static generation store missing in revalidatePath /
     at revalidatePath (C:\Users\pc\Desktop\جديد تمارا\node_modules\next\src\server\web\spec-extension\revalidate.ts:125:10)
     at createCategory (C:\Users\pc\Desktop\جديد تمارا\src\app\(admin)\dashboard\catalog\actions.ts:56:5)
     at async run (C:\Users\pc\Desktop\جديد تمارا\test_full_form.ts:33:16)
+PrismaClientKnownRequestError: 
+Invalid `prisma.category.create()` invocation in
+C:\Users\pc\Desktop\جديد تمارا\src\app\(admin)\dashboard\catalog\actions.ts:40:27
+
+  37 const titleImageAr = await uploadImage(formData.get('titleImageAr'), 'categories');
+  38 const titleImageEn = await uploadImage(formData.get('titleImageEn'), 'categories');
+  39 
+→ 40 await prisma.category.create(
+Unique constraint failed on the fields: (`slug`)
+    at Ln.handleRequestError (C:\Users\pc\Desktop\جديد تمارا\node_modules\@prisma\client\runtime\library.js:121:7753)
+    at Ln.handleAndLogRequestError (C:\Users\pc\Desktop\جديد تمارا\node_modules\@prisma\client\runtime\library.js:121:7061)
+    at Ln.request (C:\Users\pc\Desktop\جديد تمارا\node_modules\@prisma\client\runtime\library.js:121:6745)
+    at async l (C:\Users\pc\Desktop\جديد تمارا\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async createCategory (C:\Users\pc\Desktop\جديد تمارا\src\app\(admin)\dashboard\catalog\actions.ts:40:5)
+    at async run (C:\Users\pc\Desktop\جديد تمارا\test_action.ts:8:16)
+Error: Invariant: static generation store missing in revalidatePath /
+    at revalidate (C:\Users\pc\Desktop\جديد تمارا\node_modules\next\src\server\web\spec-extension\revalidate.ts:135:11)
+    at revalidatePath (C:\Users\pc\Desktop\جديد تمارا\node_modules\next\src\server\web\spec-extension\revalidate.ts:125:10)
+    at createCategory (C:\Users\pc\Desktop\جديد تمارا\src\app\(admin)\dashboard\catalog\actions.ts:56:5)
+    at async run (C:\Users\pc\Desktop\جديد تمارا\test_action.ts:15:16)
