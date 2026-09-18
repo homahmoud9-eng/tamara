@@ -37,11 +37,21 @@ export async function createCategory(formData: FormData) {
     const titleImageAr = await uploadImage(formData.get('titleImageAr'), 'categories');
     const titleImageEn = await uploadImage(formData.get('titleImageEn'), 'categories');
 
+    let baseSlug = slug ? slug.trim() : (nameEn ? nameEn.trim().toLowerCase().replace(/[\s_]+/g, '-').replace(/[^\w\-]+/g, '') : 'category');
+    if (!baseSlug) baseSlug = 'category';
+    
+    let uniqueSlug = baseSlug;
+    let counter = 1;
+    while (await prisma.category.findUnique({ where: { slug: uniqueSlug } })) {
+      counter++;
+      uniqueSlug = `${baseSlug}-${counter}`;
+    }
+
     await prisma.category.create({
       data: {
         nameEn,
         nameAr,
-        slug: slug ? slug.trim() : (nameEn ? nameEn.trim().toLowerCase().replace(/\s+/g, '-') : `cat-${Date.now()}`),
+        slug: uniqueSlug,
         descriptionEn,
         descriptionAr,
         isActive,

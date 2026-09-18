@@ -14,7 +14,7 @@
 .visualHalf {
   position: relative;
   width: 100%;
-  height: 60vh;
+  height: 45vh;
   flex-shrink: 0;
   z-index: 1;
 }
@@ -44,12 +44,12 @@
 
 .imageElement {
   object-fit: cover;
-  object-position: center; /* LTR default */
+  object-position: center 20%; /* LTR default */
 }
 
 /* RTL Focal Points */
 html[dir="rtl"] .imageElement {
-  object-position: 60% center;
+  object-position: 70% 20%;
 }
 
 /* Desktop focal points */
@@ -90,7 +90,7 @@ html[dir="rtl"] .imageElement {
   justify-content: flex-start;
   padding-top: var(--mob-spacing-lg);
   padding-bottom: calc(var(--bottom-nav-height) + var(--mob-spacing-section));
-  margin-top: -10vh; /* Smooth overlap over the mask */
+  margin-top: -5vh; /* Smooth overlap over the mask */
 }
 
 .textContent {

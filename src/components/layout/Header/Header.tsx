@@ -145,6 +145,8 @@ export function Header({ announcement }: { announcement?: any }) {
         </div>
       </div>
 
+      </header>
+
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className={styles.mobileMenuOverlay}>
@@ -175,7 +177,6 @@ export function Header({ announcement }: { announcement?: any }) {
           </div>
         </div>
       )}
-      </header>
     </>
   );
 }
