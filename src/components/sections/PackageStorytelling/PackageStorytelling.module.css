@@ -15,6 +15,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    gap: var(--spacing-8);
   }
 }
 
@@ -176,10 +177,10 @@
 
 @media (min-width: 1024px) {
   .badgeRtl {
-    right: -20px;
+    right: 20px;
   }
   .badgeLtr {
-    left: -20px;
+    left: 20px;
   }
 }
 

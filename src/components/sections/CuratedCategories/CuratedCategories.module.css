@@ -98,6 +98,11 @@
 }
 
 @media (min-width: 1024px) {
+  .header {
+    max-width: var(--max-width);
+    margin: 0 auto var(--spacing-6) auto;
+  }
+
   .browseAllBtn {
     display: inline-flex;
   }
