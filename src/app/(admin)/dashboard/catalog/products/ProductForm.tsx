@@ -5,6 +5,15 @@ import AdminForm from '@/components/admin/AdminForm';
 import Link from 'next/link';
 import DeleteGalleryImageButton from '@/components/admin/DeleteGalleryImageButton';
 import { deleteGalleryImage } from './actions';
+import { Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+
+interface VariantItem {
+  id?: string;
+  nameAr: string;
+  nameEn: string;
+  price: number | string;
+  isDefault: boolean;
+}
 
 interface ProductFormProps {
   mode: 'create' | 'edit';
@@ -24,6 +33,68 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
     primaryImage: initialData?.primaryImage || null,
     availability: initialData?.availability || 'AVAILABLE'
   });
+
+  const [variants, setVariants] = useState<VariantItem[]>(() => {
+    if (initialData?.variants && initialData.variants.length > 0) {
+      return initialData.variants.map((v: any) => ({
+        id: v.id,
+        nameAr: v.nameAr || '',
+        nameEn: v.nameEn || '',
+        price: v.price ?? '',
+        isDefault: v.isDefault ?? false,
+      }));
+    }
+    return [];
+  });
+
+  const handleAddVariant = () => {
+    setVariants(prev => [
+      ...prev,
+      {
+        nameAr: '',
+        nameEn: '',
+        price: '',
+        isDefault: prev.length === 0
+      }
+    ]);
+  };
+
+  const handleUpdateVariant = (index: number, field: keyof VariantItem, value: any) => {
+    setVariants(prev => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  };
+
+  const handleRemoveVariant = (index: number) => {
+    setVariants(prev => {
+      const updated = prev.filter((_, i) => i !== index);
+      if (updated.length > 0 && !updated.some(v => v.isDefault)) {
+        updated[0].isDefault = true;
+      }
+      return updated;
+    });
+  };
+
+  const handleSetDefaultVariant = (index: number) => {
+    setVariants(prev => prev.map((v, i) => ({
+      ...v,
+      isDefault: i === index
+    })));
+  };
+
+  const handleMoveVariant = (index: number, direction: 'up' | 'down') => {
+    setVariants(prev => {
+      const updated = [...prev];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= updated.length) return prev;
+      const temp = updated[index];
+      updated[index] = updated[targetIndex];
+      updated[targetIndex] = temp;
+      return updated;
+    });
+  };
 
   const handlePreviewChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -122,6 +193,150 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Sizes & Variants */}
+        <div className="admin-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
+            <div>
+              <h2 style={{ fontSize: '16px', fontWeight: 600, margin: 0 }}>
+                {lang === 'ar' ? 'الأحجام والأسعار (Sizes & Variants)' : 'Sizes & Variants'}
+              </h2>
+              <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--admin-text-muted)' }}>
+                {lang === 'ar' 
+                  ? 'أضف أحجاماً مختلفة بأسعار مخصصة (مثل: صغير، وسط، كبير). في حال عدم إضافة أحجام، سيتم اعتماد السعر الأساسي.' 
+                  : 'Add different sizes with specific prices (e.g. Small, Medium, Large). If none added, the Base Price will be used.'}
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onClick={handleAddVariant} 
+              className="admin-btn-secondary" 
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', padding: '6px 12px' }}
+            >
+              <Plus size={16} />
+              {lang === 'ar' ? 'إضافة حجم / سعر' : 'Add Size'}
+            </button>
+          </div>
+
+          <input type="hidden" name="variantsJson" value={JSON.stringify(variants)} />
+
+          {variants.length === 0 ? (
+            <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', border: '1px dashed var(--admin-border)', borderRadius: '8px', textAlign: 'center', color: 'var(--admin-text-muted)', fontSize: '13px' }}>
+              {lang === 'ar' 
+                ? 'لا توجد أحجام مضافة حالياً. المنتج يعمل بسعر أساسي موحد. اضغط على "إضافة حجم / سعر" لتفعيل الأحجام المتعددة.' 
+                : 'No sizes added yet. Product uses a single Base Price. Click "Add Size" to enable multiple sizes.'}
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {variants.map((v, idx) => (
+                <div 
+                  key={idx} 
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '12px', 
+                    padding: '12px', 
+                    background: 'rgba(255,255,255,0.03)', 
+                    border: '1px solid var(--admin-border)', 
+                    borderRadius: '8px',
+                    flexWrap: 'wrap'
+                  }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <button 
+                      type="button" 
+                      onClick={() => handleMoveVariant(idx, 'up')}
+                      disabled={idx === 0}
+                      style={{ background: 'none', border: 'none', color: idx === 0 ? 'var(--admin-text-muted)' : 'var(--admin-text)', cursor: idx === 0 ? 'default' : 'pointer', padding: 0 }}
+                      title="Move up"
+                    >
+                      <ArrowUp size={14} />
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => handleMoveVariant(idx, 'down')}
+                      disabled={idx === variants.length - 1}
+                      style={{ background: 'none', border: 'none', color: idx === variants.length - 1 ? 'var(--admin-text-muted)' : 'var(--admin-text)', cursor: idx === variants.length - 1 ? 'default' : 'pointer', padding: 0 }}
+                      title="Move down"
+                    >
+                      <ArrowDown size={14} />
+                    </button>
+                  </div>
+
+                  <div style={{ flex: '1 1 180px' }}>
+                    <label style={{ display: 'block', fontSize: '11px', color: 'var(--admin-text-muted)', marginBottom: '4px' }}>
+                      {lang === 'ar' ? 'اسم الحجم (عربي) *' : 'Size Name (Arabic) *'}
+                    </label>
+                    <input 
+                      type="text" 
+                      value={v.nameAr} 
+                      placeholder={lang === 'ar' ? 'مثال: كبير / عائلي' : 'e.g. Large'} 
+                      required 
+                      className="admin-input" 
+                      style={{ padding: '6px 10px', fontSize: '13px' }}
+                      onChange={(e) => handleUpdateVariant(idx, 'nameAr', e.target.value)} 
+                    />
+                  </div>
+
+                  <div style={{ flex: '1 1 180px' }}>
+                    <label style={{ display: 'block', fontSize: '11px', color: 'var(--admin-text-muted)', marginBottom: '4px' }}>
+                      {lang === 'ar' ? 'اسم الحجم (إنجليزي)' : 'Size Name (English)'}
+                    </label>
+                    <input 
+                      type="text" 
+                      value={v.nameEn} 
+                      placeholder="e.g. Large" 
+                      className="admin-input" 
+                      style={{ padding: '6px 10px', fontSize: '13px' }}
+                      onChange={(e) => handleUpdateVariant(idx, 'nameEn', e.target.value)} 
+                    />
+                  </div>
+
+                  <div style={{ width: '120px' }}>
+                    <label style={{ display: 'block', fontSize: '11px', color: 'var(--admin-text-muted)', marginBottom: '4px' }}>
+                      {lang === 'ar' ? 'السعر (درهم) *' : 'Price (AED) *'}
+                    </label>
+                    <input 
+                      type="number" 
+                      step="0.01" 
+                      value={v.price} 
+                      placeholder="0.00" 
+                      required 
+                      className="admin-input" 
+                      style={{ padding: '6px 10px', fontSize: '13px' }}
+                      onChange={(e) => handleUpdateVariant(idx, 'price', e.target.value)} 
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', paddingTop: '16px' }}>
+                    <input 
+                      type="radio" 
+                      name="defaultVariantRadio" 
+                      id={`defaultVariant_${idx}`} 
+                      checked={v.isDefault} 
+                      onChange={() => handleSetDefaultVariant(idx)} 
+                      style={{ cursor: 'pointer' }}
+                    />
+                    <label htmlFor={`defaultVariant_${idx}`} style={{ fontSize: '12px', cursor: 'pointer', color: v.isDefault ? '#fbbf24' : 'var(--admin-text-muted)' }}>
+                      {lang === 'ar' ? 'الافتراضي' : 'Default'}
+                    </label>
+                  </div>
+
+                  <div style={{ paddingTop: '16px' }}>
+                    <button 
+                      type="button" 
+                      onClick={() => handleRemoveVariant(idx)} 
+                      style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '6px' }}
+                      title={lang === 'ar' ? 'حذف هذا الحجم' : 'Remove size'}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Images */}
@@ -228,7 +443,11 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
             <div style={{ padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                 <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>{lang === 'ar' ? (preview.nameAr || 'اسم المنتج') : (preview.nameEn || 'Product Name')}</h3>
-                <span style={{ fontWeight: 600, color: 'var(--primary-color, #10b981)' }}>{preview.price} EGP</span>
+                <span style={{ fontWeight: 600, color: 'var(--primary-color, #10b981)' }}>
+                  {variants.length > 0 
+                    ? (variants.find(v => v.isDefault)?.price || variants[0]?.price || preview.price)
+                    : preview.price} {lang === 'ar' ? 'درهم' : 'AED'}
+                </span>
               </div>
               <p style={{ margin: '0 0 8px 0', fontSize: '13px', color: 'var(--admin-text-muted)' }}>{getCategoryName(preview.categoryId)}</p>
               <div style={{ display: 'flex', gap: '8px' }}>

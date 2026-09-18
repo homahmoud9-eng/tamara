@@ -64,10 +64,43 @@ export default async function BlogPostPage({ params }: Props) {
     }
   };
 
+  // Fetch 3 related products (featured or active products) for internal linking
+  const relatedProducts = await prisma.product.findMany({
+    where: { isActive: true, availability: 'AVAILABLE' },
+    take: 3,
+    orderBy: [
+      { isFeatured: 'desc' },
+      { isBestseller: 'desc' },
+      { sortOrder: 'asc' },
+    ],
+    select: {
+      id: true,
+      nameAr: true,
+      nameEn: true,
+      basePrice: true,
+      primaryImage: true,
+      category: {
+        select: {
+          slug: true,
+          nameAr: true,
+          nameEn: true,
+        }
+      },
+      variants: {
+        where: { isActive: true },
+        select: {
+          id: true,
+          price: true,
+          nameAr: true,
+        }
+      }
+    }
+  });
+
   return (
     <>
       <JsonLd schema={blogSchema} />
-      <BlogPostClient post={post} />
+      <BlogPostClient post={post} relatedProducts={relatedProducts} />
     </>
   );
 }

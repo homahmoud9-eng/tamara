@@ -160,7 +160,7 @@ model Variant {
   product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   
   nameAr        String
-  nameEn        String
+  nameEn        String?
   price         Float
   image         String?
   servingDescAr String?

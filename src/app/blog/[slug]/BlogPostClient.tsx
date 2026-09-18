@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { SafeImage } from '@/components/ui/SafeImage/SafeImage';
 import styles from './blog-post.module.css';
 import { useApp } from '@/components/providers/AppProvider';
+import { RelatedProducts, RelatedProductItem } from '@/components/blog/RelatedProducts';
 
 interface BlogPost {
   id: string;
@@ -23,9 +24,10 @@ interface BlogPost {
 
 interface Props {
   post: BlogPost;
+  relatedProducts?: RelatedProductItem[];
 }
 
-export function BlogPostClient({ post }: Props) {
+export function BlogPostClient({ post, relatedProducts = [] }: Props) {
   const { language } = useApp();
 
   return (
@@ -92,6 +94,9 @@ export function BlogPostClient({ post }: Props) {
             }}
           />
         </div>
+
+        {/* Internal Linking: Related Products */}
+        <RelatedProducts products={relatedProducts} />
       </article>
     </div>
   );

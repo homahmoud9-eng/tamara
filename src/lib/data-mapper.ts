@@ -104,7 +104,7 @@ export async function getFrontendProducts(): Promise<Product[]> {
       variants: p.variants.map(v => ({
         id: v.id,
         productId: v.productId,
-        name: { ar: v.nameAr, en: v.nameEn },
+        name: { ar: v.nameAr, en: v.nameEn || v.nameAr },
         price: v.price,
         image: v.image || fallbackImage,
         active: v.isActive,
@@ -176,7 +176,7 @@ export async function getFrontendProduct(id: string): Promise<Product | null> {
     variants: p.variants.map(v => ({
       id: v.id,
       productId: v.productId,
-      name: { ar: v.nameAr, en: v.nameEn },
+      name: { ar: v.nameAr, en: v.nameEn || v.nameAr },
       price: v.price,
       image: v.image || fallbackImage,
       active: v.isActive,

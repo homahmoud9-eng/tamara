@@ -58,8 +58,8 @@ export default async function EditVariantPage({ params }: { params: Promise<{ id
                 <input type="text" name="nameAr" defaultValue={variant.nameAr} required className="admin-input" />
               </div>
               <div className="admin-form-group">
-                <label className="admin-form-label">{lang === 'ar' ? 'اسم المتغير (إنجليزي) *' : 'Variant Name (English) *'}</label>
-                <input type="text" name="nameEn" defaultValue={variant.nameEn} required className="admin-input" />
+                <label className="admin-form-label">{lang === 'ar' ? 'اسم المتغير (إنجليزي)' : 'Variant Name (English)'}</label>
+                <input type="text" name="nameEn" defaultValue={variant.nameEn || ''} className="admin-input" />
               </div>
             </div>
 

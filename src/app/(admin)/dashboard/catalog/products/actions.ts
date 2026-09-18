@@ -44,13 +44,32 @@ export async function createProduct(formData: FormData) {
       if (p) uploadedGalleryPaths.push(p);
     }
 
-    const data = {
+    const variantsJson = formData.get('variantsJson') as string;
+    let parsedVariants: any[] = [];
+    if (variantsJson) {
+      try {
+        parsedVariants = JSON.parse(variantsJson);
+      } catch (e) {
+        console.error('Failed to parse variantsJson', e);
+      }
+    }
+
+    const validVariants = parsedVariants.filter(
+      (v: any) => v && typeof v.nameAr === 'string' && v.nameAr.trim() !== '' && !isNaN(parseFloat(v.price))
+    );
+
+    const basePriceInput = parseFloat(formData.get('basePrice') as string) || 0;
+    const basePrice = (basePriceInput === 0 && validVariants.length > 0)
+      ? parseFloat(validVariants[0].price) || 0
+      : basePriceInput;
+
+    const data: any = {
       nameEn,
       nameAr,
       descriptionEn: formData.get('descriptionEn') as string || null,
       descriptionAr: formData.get('descriptionAr') as string || null,
       categoryId,
-      basePrice: parseFloat(formData.get('basePrice') as string) || 0,
+      basePrice,
       isActive: formData.get('isActive') === 'on',
       isFeatured: formData.get('isFeatured') === 'on',
       isBestseller: formData.get('isBestseller') === 'on',
@@ -69,6 +88,18 @@ export async function createProduct(formData: FormData) {
         }))
       }
     };
+
+    if (validVariants.length > 0) {
+      data.variants = {
+        create: validVariants.map((v: any, index: number) => ({
+          nameAr: v.nameAr.trim(),
+          nameEn: (v.nameEn && v.nameEn.trim()) || v.nameAr.trim(),
+          price: parseFloat(v.price) || 0,
+          isDefault: index === 0 || !!v.isDefault,
+          sortOrder: index
+        }))
+      };
+    }
 
     await prisma.product.create({ data });
     revalidatePath('/', 'layout');
@@ -92,13 +123,36 @@ export async function updateProduct(id: string, formData: FormData) {
     const newPrimaryImage = await uploadImage(formData.get('primaryImage'));
     const removePrimary = formData.get('removePrimaryImage') === 'true';
 
+    const variantsJson = formData.get('variantsJson') as string;
+    let validVariants: any[] = [];
+    let variantsProvided = false;
+
+    if (variantsJson !== null && variantsJson !== undefined) {
+      variantsProvided = true;
+      try {
+        const parsed = JSON.parse(variantsJson);
+        if (Array.isArray(parsed)) {
+          validVariants = parsed.filter(
+            (v: any) => v && typeof v.nameAr === 'string' && v.nameAr.trim() !== '' && !isNaN(parseFloat(v.price))
+          );
+        }
+      } catch (e) {
+        console.error('Failed to parse variantsJson in updateProduct', e);
+      }
+    }
+
+    const basePriceInput = parseFloat(formData.get('basePrice') as string) || 0;
+    const basePrice = (basePriceInput === 0 && validVariants.length > 0)
+      ? parseFloat(validVariants[0].price) || 0
+      : basePriceInput;
+
     const data: any = {
       nameEn,
       nameAr,
       descriptionEn: formData.get('descriptionEn') as string || null,
       descriptionAr: formData.get('descriptionAr') as string || null,
       categoryId,
-      basePrice: parseFloat(formData.get('basePrice') as string) || 0,
+      basePrice,
       isActive: formData.get('isActive') === 'on',
       isFeatured: formData.get('isFeatured') === 'on',
       isBestseller: formData.get('isBestseller') === 'on',
@@ -134,6 +188,23 @@ export async function updateProduct(id: string, formData: FormData) {
     }
 
     await prisma.product.update({ where: { id }, data });
+
+    if (variantsProvided) {
+      await prisma.variant.deleteMany({ where: { productId: id } });
+      if (validVariants.length > 0) {
+        await prisma.variant.createMany({
+          data: validVariants.map((v: any, index: number) => ({
+            productId: id,
+            nameAr: v.nameAr.trim(),
+            nameEn: (v.nameEn && v.nameEn.trim()) || v.nameAr.trim(),
+            price: parseFloat(v.price) || 0,
+            isDefault: index === 0 || !!v.isDefault,
+            sortOrder: index
+          }))
+        });
+      }
+    }
+
     revalidatePath('/', 'layout');
     return { success: true };
   } catch (err: any) {

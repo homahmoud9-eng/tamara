@@ -16,6 +16,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
     where: { id },
     include: {
       gallery: { orderBy: { sortOrder: 'asc' } },
+      variants: { orderBy: { sortOrder: 'asc' } },
       addonGroups: {
         include: { addons: true }
       }

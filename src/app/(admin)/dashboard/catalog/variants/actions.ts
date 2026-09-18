@@ -12,7 +12,7 @@ export async function createVariant(formData: FormData) {
   await prisma.variant.create({
     data: {
       productId: formData.get('productId') as string,
-      nameEn: formData.get('nameEn') as string,
+      nameEn: (formData.get('nameEn') as string) || (formData.get('nameAr') as string),
       nameAr: formData.get('nameAr') as string,
       price: parseFloat(formData.get('price') as string) || 0,
       image: image,
@@ -32,7 +32,7 @@ export async function createVariant(formData: FormData) {
 export async function updateVariant(id: string, formData: FormData) {
   const dataToUpdate: any = {
       productId: formData.get('productId') as string,
-      nameEn: formData.get('nameEn') as string,
+      nameEn: (formData.get('nameEn') as string) || (formData.get('nameAr') as string),
       nameAr: formData.get('nameAr') as string,
       price: parseFloat(formData.get('price') as string) || 0,
       servingDescEn: formData.get('servingDescEn') as string || null,
