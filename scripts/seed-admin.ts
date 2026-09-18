@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = 'admin@tamara.com';
-  const password = 'password123';
+  const email = 'admin@vision.com';
+  const password = 'vision26';
   
   // Create Super Admin role if not exists
   let role = await prisma.role.findFirst({

@@ -45,7 +45,7 @@ export default function LoginPage() {
               name="email"
               required
               className="admin-form-input"
-              placeholder="admin@tamara.com"
+              placeholder="admin@vision.com"
             />
           </div>
 

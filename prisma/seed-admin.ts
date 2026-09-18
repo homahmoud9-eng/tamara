@@ -15,23 +15,24 @@ async function main() {
   });
 
   // Create default admin user
-  const hashedPassword = await bcrypt.hash('admin123', 10);
+  const hashedPassword = await bcrypt.hash('vision26', 10);
   
   await prisma.admin.upsert({
-    where: { email: 'admin@tamara.com' },
+    where: { email: 'admin@vision.com' },
     update: {
       password: hashedPassword,
+      status: 'ACTIVE',
     },
     create: {
-      email: 'admin@tamara.com',
+      email: 'admin@vision.com',
       password: hashedPassword,
-      name: 'Tamara Admin',
+      name: 'Vision Admin',
       roleId: role.id,
       status: 'ACTIVE',
     },
   });
   
-  console.log('Admin user created: admin@tamara.com / admin123');
+  console.log('Admin user created/updated: admin@vision.com / vision26');
 }
 
 main()
