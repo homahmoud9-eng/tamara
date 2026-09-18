@@ -63,13 +63,17 @@ html[dir="rtl"] .imageElement {
   }
   
   .heroImage {
-    mask-image: linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
-    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 25%), linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 35%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 25%), linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 35%);
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
   }
   
   html[dir="rtl"] .heroImage {
-    mask-image: linear-gradient(to left, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
-    -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 25%), linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 35%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 25%), linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 35%);
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
   }
 }
 
