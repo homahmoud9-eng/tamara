@@ -40,7 +40,7 @@ export async function createCategory(formData: FormData) {
       data: {
         nameEn,
         nameAr,
-        slug: slug || (nameEn ? nameEn.toLowerCase().replace(/\s+/g, '-') : `cat-${Date.now()}`),
+        slug: slug ? slug.trim() : (nameEn ? nameEn.trim().toLowerCase().replace(/\s+/g, '-') : `cat-${Date.now()}`),
         descriptionEn,
         descriptionAr,
         isActive,
@@ -143,7 +143,7 @@ export async function updateCategory(id: string, formData: FormData) {
     const sortOrder = parseInt(formData.get('sortOrder') as string) || 0;
     
     const dataToUpdate: any = {
-      nameEn, nameAr, slug: slug || undefined, descriptionEn, descriptionAr,
+      nameEn, nameAr, slug: slug ? slug.trim() : undefined, descriptionEn, descriptionAr,
       isActive, isFeatured, sortOrder,
     };
 
