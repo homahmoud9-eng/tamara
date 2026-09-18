@@ -10,7 +10,7 @@ import {
   Clock, CreditCard, MapPin, Star, FileText, Megaphone, UserCog, Lock,
   Home, Navigation, Type, Monitor, Zap, TrendingUp, ShoppingCart, UserCheck
 } from 'lucide-react';
-import { logoutAction } from '../../admin-login/actions';
+import { logoutAction } from '../../vision-login/actions';
 import { useApp } from '@/components/providers/AppProvider';
 
 type NavSection = {

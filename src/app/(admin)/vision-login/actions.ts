@@ -35,5 +35,5 @@ export async function loginAction(prevState: any, formData: FormData) {
 export async function logoutAction() {
   const { logout } = await import('@/lib/auth');
   await logout();
-  redirect('/login');
+  redirect('/vision-login');
 }
