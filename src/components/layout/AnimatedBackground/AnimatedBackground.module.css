@@ -4,7 +4,7 @@
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background-color: #0A1210; /* Base near-black charcoal */
+  background-color: #161a1d; /* Base softened dark tone */
 }
 
 /* Subtle cinematic haze / Vignette */
@@ -12,7 +12,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 0%, rgba(7, 16, 13, 0.85) 100%);
+  background: radial-gradient(circle at center, transparent 0%, rgba(22, 26, 29, 0.85) 100%);
   z-index: 2; /* Sits above the glows to create a vignette */
 }
 
@@ -41,7 +41,7 @@
   width: 70vw;
   height: 70vw;
   background: radial-gradient(circle, rgba(200, 154, 69, 0.50) 0%, transparent 70%);
-  animation: movePrimaryGold 32s infinite ease-in-out alternate;
+  animation: movePrimaryGold 15s ease-in-out infinite alternate;
 }
 
 /* 2. Secondary GOLD glow: smaller, lower opacity, different movement path */
@@ -51,7 +51,7 @@
   width: 55vw;
   height: 55vw;
   background: radial-gradient(circle, rgba(213, 168, 79, 0.35) 0%, transparent 70%);
-  animation: moveSecondaryGold 45s infinite ease-in-out alternate;
+  animation: moveSecondaryGold 20s ease-in-out infinite alternate;
 }
 
 /* 3. Dark EMERALD glow: subtle, positioned toward another area, slow movement */
@@ -61,7 +61,7 @@
   width: 70vw;
   height: 70vw;
   background: radial-gradient(circle, rgba(11, 40, 30, 0.5) 0%, transparent 65%);
-  animation: moveEmerald 38s infinite ease-in-out alternate;
+  animation: moveEmerald 18s ease-in-out infinite alternate;
 }
 
 /* 4. Very subtle WARM BROWN glow: almost invisible, adds depth */
@@ -71,7 +71,7 @@
   width: 50vw;
   height: 50vw;
   background: radial-gradient(circle, rgba(100, 60, 30, 0.15) 0%, transparent 60%);
-  animation: moveBrown 52s infinite ease-in-out alternate;
+  animation: moveBrown 25s ease-in-out infinite alternate;
 }
 
 @keyframes movePrimaryGold {
