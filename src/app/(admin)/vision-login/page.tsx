@@ -1,7 +1,7 @@
 'use client';
 
-import { useActionState } from 'react';
-import { loginAction } from './actions';
+import { useActionState, useEffect } from 'react';
+import { loginAction, clearSession } from './actions';
 import Image from 'next/image';
 
 import '../admin.css';
@@ -10,6 +10,11 @@ const initialState = { error: '', success: false };
 
 export default function LoginPage() {
   const [state, formAction, pending] = useActionState(loginAction, initialState);
+
+  useEffect(() => {
+    // Force clear any stale auth state unconditionally on mount
+    clearSession();
+  }, []);
 
   return (
     <div dir="ltr" className="admin-login-wrapper">

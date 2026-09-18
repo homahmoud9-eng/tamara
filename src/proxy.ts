@@ -12,10 +12,9 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/vision-login', request.url));
   }
 
-  // If trying to access login while already authenticated, redirect to dashboard
-  if (isLoginPath && session) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
+  // We no longer auto-redirect away from /vision-login if authenticated.
+  // This ensures the login form always renders when visited, allowing
+  // users to re-authenticate or clear stale sessions.
 
   return NextResponse.next();
 }

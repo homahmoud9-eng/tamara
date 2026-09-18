@@ -37,3 +37,8 @@ export async function logoutAction() {
   await logout();
   redirect('/vision-login');
 }
+
+export async function clearSession() {
+  const { logout } = await import('@/lib/auth');
+  await logout();
+}
