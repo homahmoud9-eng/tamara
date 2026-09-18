@@ -12,6 +12,16 @@ export const metadata: Metadata = {
   title: "Tamara Kitchen | مطبخ تمارا",
   description: "طعم البيت المصري، أقرب مما تتخيل. أكل مصري بيتعمل بطعم البيت ويتوصل طازة في أبوظبي.",
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/assets/images/logo-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/assets/images/logo-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   openGraph: {
     title: "Tamara Kitchen | مطبخ تمارا",
     description: "طعم البيت المصري، أقرب مما تتخيل. أكل مصري بيتعمل بطعم البيت ويتوصل طازة في أبوظبي.",
