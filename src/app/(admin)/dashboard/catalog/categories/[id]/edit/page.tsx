@@ -19,7 +19,21 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
   if (!category) redirect('/dashboard/catalog/categories');
 
   const updateCategoryWithId = updateCategory.bind(null, category.id);
-  const serializedCategory = JSON.parse(JSON.stringify(category));
+  const plainCategory = {
+    id: category.id,
+    nameAr: category.nameAr,
+    nameEn: category.nameEn,
+    slug: category.slug,
+    descriptionAr: category.descriptionAr,
+    descriptionEn: category.descriptionEn,
+    image: category.image,
+    titleImage: category.titleImage,
+    titleImageAr: category.titleImageAr,
+    titleImageEn: category.titleImageEn,
+    sortOrder: category.sortOrder,
+    isActive: category.isActive,
+    isFeatured: category.isFeatured,
+  };
 
   return (
     <div>
@@ -40,7 +54,7 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
         mode="edit" 
         action={updateCategoryWithId} 
         lang={lang} 
-        initialData={serializedCategory}
+        initialData={plainCategory}
       />
     </div>
   );

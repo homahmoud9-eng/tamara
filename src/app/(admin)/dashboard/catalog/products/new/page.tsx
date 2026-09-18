@@ -8,7 +8,11 @@ import ProductForm from '../ProductForm';
 export default async function NewProductPage() {
   const lang = await getAdminLang();
   const categories = await prisma.category.findMany({ orderBy: { sortOrder: 'asc' } });
-  const serializedCategories = JSON.parse(JSON.stringify(categories));
+  const plainCategories = categories.map(c => ({
+    id: c.id,
+    nameAr: c.nameAr,
+    nameEn: c.nameEn,
+  }));
 
   return (
     <div>
@@ -29,7 +33,7 @@ export default async function NewProductPage() {
         mode="create" 
         action={createProduct} 
         lang={lang} 
-        categories={serializedCategories} 
+        categories={plainCategories} 
       />
     </div>
   );

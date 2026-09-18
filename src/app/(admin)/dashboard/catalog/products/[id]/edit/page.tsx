@@ -28,8 +28,44 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   const categories = await prisma.category.findMany({ orderBy: { sortOrder: 'asc' } });
   const updateProductWithId = updateProduct.bind(null, product.id);
 
-  const serializedProduct = JSON.parse(JSON.stringify(product));
-  const serializedCategories = JSON.parse(JSON.stringify(categories));
+  const plainCategories = categories.map(c => ({
+    id: c.id,
+    nameAr: c.nameAr,
+    nameEn: c.nameEn,
+  }));
+
+  const plainProduct = {
+    id: product.id,
+    nameAr: product.nameAr,
+    nameEn: product.nameEn,
+    descriptionAr: product.descriptionAr,
+    descriptionEn: product.descriptionEn,
+    basePrice: Number(product.basePrice),
+    categoryId: product.categoryId,
+    isActive: product.isActive,
+    isFeatured: product.isFeatured,
+    isBestseller: product.isBestseller,
+    availability: product.availability,
+    prepTime: product.prepTime,
+    primaryImage: product.primaryImage,
+    sortOrder: product.sortOrder,
+    seoTitleAr: product.seoTitleAr,
+    seoTitleEn: product.seoTitleEn,
+    seoDescAr: product.seoDescAr,
+    seoDescEn: product.seoDescEn,
+    gallery: product.gallery?.map(g => ({
+      id: g.id,
+      image: g.image,
+      sortOrder: g.sortOrder,
+    })) || [],
+    variants: product.variants?.map(v => ({
+      id: v.id,
+      nameAr: v.nameAr,
+      nameEn: v.nameEn,
+      price: Number(v.price),
+      isDefault: v.isDefault,
+    })) || [],
+  };
 
   return (
     <div>
@@ -50,9 +86,9 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         mode="edit" 
         action={updateProductWithId} 
         lang={lang} 
-        categories={serializedCategories}
-        initialData={serializedProduct}
-        product={serializedProduct}
+        categories={plainCategories}
+        initialData={plainProduct}
+        product={plainProduct}
       />
     </div>
   );
