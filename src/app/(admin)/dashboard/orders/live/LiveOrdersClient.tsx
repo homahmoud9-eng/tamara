@@ -142,7 +142,7 @@ export default function LiveOrdersClient({ initialOrders, lang }: { initialOrder
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', paddingTop: '12px', borderTop: '1px dashed var(--admin-border)' }}>
-                      <span style={{ fontWeight: 600, color: 'var(--admin-primary)' }}>{order.total} SAR</span>
+                      <span style={{ fontWeight: 600, color: 'var(--admin-primary)' }}>{order.total} AED</span>
                       <button 
                         onClick={() => handleUpdateStatus(order.id, col.nextStatus)}
                         disabled={isUpdating === order.id}

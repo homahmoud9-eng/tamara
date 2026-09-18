@@ -53,10 +53,9 @@ export function AccountClientWrapper({ customer, activeOrder, addresses }: Accou
   };
   
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(isAr ? 'ar-SA' : 'en-US', {
+    return new Intl.NumberFormat(isAr ? 'ar-AE' : 'en-US', {
       style: 'currency',
-      currency: 'SAR',
-      minimumFractionDigits: 0
+      currency: 'AED',
     }).format(amount);
   };
 

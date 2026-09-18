@@ -103,7 +103,7 @@ export default function CheckoutClient({
         clearCart();
         
         if (data.whatsappUrl) {
-          window.open(data.whatsappUrl, '_blank');
+          window.location.href = data.whatsappUrl;
         }
       } else {
         if (data.code === 'CART_UPDATED') {
@@ -149,7 +149,7 @@ export default function CheckoutClient({
         </p>
         {whatsappUrl && (
           <button 
-            onClick={() => window.open(whatsappUrl, '_blank')} 
+            onClick={() => window.location.href = whatsappUrl} 
             className={styles.whatsappBtn}
             style={{ marginBottom: '16px' }}
           >

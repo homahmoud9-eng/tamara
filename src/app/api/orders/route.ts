@@ -294,7 +294,7 @@ export async function POST(req: Request) {
     for (const item of order.items) {
       const vName = item.variantNameAr ? ` (${item.variantNameAr})` : '';
       msg += `${item.productNameAr}${vName} × ${item.quantity}\n`;
-      msg += `${item.lineTotal} ج.م\n`;
+      msg += `${item.lineTotal} درهم\n`;
       if (item.addons && item.addons.length > 0) {
         msg += `الإضافات:\n`;
         for (const addon of item.addons) {
@@ -312,14 +312,14 @@ export async function POST(req: Request) {
     }
 
     msg += `--------------------------------\n\n`;
-    msg += `الإجمالي الفرعي:\n${order.subtotal} ج.م\n\n`;
+    msg += `الإجمالي الفرعي:\n${order.subtotal} درهم\n\n`;
 
     if (appliedCouponCode) {
       msg += `كوبون الخصم:\n${appliedCouponCode}\n\n`;
-      msg += `الخصم:\n-${order.discountAmount} ج.م\n\n`;
+      msg += `الخصم:\n-${order.discountAmount} درهم\n\n`;
     }
 
-    msg += `الإجمالي بعد الخصم:\n${order.totalAmount} ج.م\n\n`;
+    msg += `الإجمالي بعد الخصم:\n${order.totalAmount} درهم\n\n`;
     msg += `الشحن:\nسيتم تحديد تكلفة الشحن وتأكيدها عبر واتساب.\n`;
 
     const encodedMsg = encodeURIComponent(msg);

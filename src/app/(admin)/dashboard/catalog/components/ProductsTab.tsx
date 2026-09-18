@@ -73,7 +73,7 @@ export function ProductsTab({ products, categories, lang }: { products: ProductW
                       {lang === 'ar' ? product.category.nameAr : product.category.nameEn}
                     </span>
                   </td>
-                  <td style={{ fontWeight: 500 }}>SAR {product.basePrice.toFixed(2)}</td>
+                  <td style={{ fontWeight: 500 }}>AED {product.basePrice.toFixed(2)}</td>
                   <td>
                     <span className={`admin-badge ${product.isActive ? 'success' : 'neutral'}`}>
                       {product.isActive ? (lang === 'ar' ? 'نشط' : 'Active') : (lang === 'ar' ? 'معطل' : 'Inactive')}

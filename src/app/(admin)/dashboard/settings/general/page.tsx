@@ -101,7 +101,6 @@ export default async function GeneralSettingsPage() {
                 <label className="admin-form-label">{lang === 'ar' ? 'العملة' : 'Currency'}</label>
                 <select name="setting_currency" className="admin-select" defaultValue="AED">
                   <option value="AED">AED - UAE Dirham</option>
-                  <option value="SAR">SAR - Saudi Riyal</option>
                   <option value="USD">USD - US Dollar</option>
                 </select>
               </div>
