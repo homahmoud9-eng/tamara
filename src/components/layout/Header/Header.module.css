@@ -251,19 +251,19 @@ html[dir="rtl"] .notificationBadge {
 
 .mobileMenuClose {
   flex: 1;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .mobileMenuDrawer {
   width: 80%;
   max-width: 320px;
-  background-color: var(--bg-main);
+  background-color: #0a0a0a;
   height: 100%;
   display: flex;
   flex-direction: column;
-  box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+  box-shadow: -4px 0 24px rgba(0,0,0,0.5);
 }
 
 html[dir="rtl"] .mobileMenuDrawer {
@@ -281,8 +281,11 @@ html[dir="rtl"] .mobileMenuDrawer {
 .mobileMenuNav {
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-6) var(--spacing-6);
-  gap: var(--spacing-6);
+  padding: var(--spacing-8) var(--spacing-6);
+  gap: var(--spacing-8);
+  align-items: center;
+  justify-content: center;
+  flex: 1;
 }
 
 .mobileNavLink {
@@ -291,8 +294,8 @@ html[dir="rtl"] .mobileMenuDrawer {
   color: var(--text-primary);
   text-decoration: none;
   padding-bottom: var(--spacing-3);
-  border-bottom: 1px solid var(--glass-border);
   transition: opacity 0.2s ease, transform 0.2s ease;
+  text-align: center;
 }
 
 .mobileNavLink:active {

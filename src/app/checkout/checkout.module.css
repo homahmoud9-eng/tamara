@@ -51,7 +51,7 @@
   color: var(--text-secondary);
 }
 
-.input {
+.input, .select {
   width: 100%;
   padding: var(--spacing-3) var(--spacing-4);
   border: 1px solid var(--glass-border);
@@ -62,9 +62,26 @@
   transition: border-color var(--transition-fast), background var(--transition-fast);
 }
 
-.input:focus {
+.select option {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.input:focus, .select:focus {
   outline: none;
   border-color: var(--brand-primary);
+}
+
+.addressGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-4);
+}
+
+@media (min-width: 768px) {
+  .addressGrid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .summaryRow {

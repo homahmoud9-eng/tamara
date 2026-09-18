@@ -31,7 +31,15 @@ export default function CheckoutClient({
     addressText: "",
     addressId: savedAddresses.length > 0 ? savedAddresses[0].id : "",
     isNewAddress: savedAddresses.length === 0,
-    customerNotes: orderNotes || ""
+    customerNotes: orderNotes || "",
+    deliveryDetails: {
+      emirate: "أبوظبي",
+      area: "",
+      street: "",
+      building: "",
+      apartment: "",
+      landmark: ""
+    }
   });
   
   const [paymentMethod, setPaymentMethod] = useState<"cash" | "card">("cash");
@@ -81,7 +89,7 @@ export default function CheckoutClient({
         customerName: formData.name,
         customerPhone: formData.phone,
         addressId: formData.isNewAddress ? undefined : formData.addressId,
-        addressText: formData.isNewAddress ? formData.addressText : undefined,
+        addressDetails: formData.isNewAddress ? formData.deliveryDetails : undefined,
         items: items,
         couponCode: appliedCoupon?.code || null,
         paymentMethod: paymentMethod,
@@ -129,7 +137,12 @@ export default function CheckoutClient({
 
   const isFormValid = formData.name.trim() !== "" && 
                       formData.phone.trim() !== "" && 
-                      (formData.isNewAddress ? formData.addressText.trim() !== "" : formData.addressId !== "");
+                      (formData.isNewAddress 
+                        ? (formData.deliveryDetails.emirate !== "" && 
+                           formData.deliveryDetails.area.trim() !== "" && 
+                           formData.deliveryDetails.street.trim() !== "" && 
+                           formData.deliveryDetails.building.trim() !== "") 
+                        : formData.addressId !== "");
 
   if (isSuccess) {
     return (
@@ -239,7 +252,7 @@ export default function CheckoutClient({
         {(savedAddresses.length === 0 || formData.isNewAddress || !isAuthenticated) && (
           <div className={styles.inputGroup}>
             {savedAddresses.length > 0 && (
-              <label className={styles.label}>
+              <label className={styles.label} style={{ marginBottom: '16px' }}>
                 <input 
                   type="radio" 
                   checked={formData.isNewAddress}
@@ -249,14 +262,80 @@ export default function CheckoutClient({
                 {language === "ar" ? "إضافة عنوان جديد" : "Add new address"}
               </label>
             )}
-            <textarea 
-              className={styles.input} 
-              rows={3}
-              value={formData.addressText}
-              onChange={e => setFormData({ ...formData, addressText: e.target.value })}
-              placeholder={language === "ar" ? "أدخل عنوان التوصيل بالتفصيل" : "Enter detailed delivery address"}
-              style={{ marginTop: '8px' }}
-            />
+            
+            <div className={styles.addressGrid}>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>{language === "ar" ? "الإمارة *" : "Emirate *"}</label>
+                <select 
+                  className={styles.select}
+                  value={formData.deliveryDetails.emirate}
+                  onChange={e => setFormData({ ...formData, deliveryDetails: { ...formData.deliveryDetails, emirate: e.target.value }})}
+                >
+                  <option value="أبوظبي">{language === "ar" ? "أبوظبي" : "Abu Dhabi"}</option>
+                  <option value="دبي">{language === "ar" ? "دبي" : "Dubai"}</option>
+                  <option value="الشارقة">{language === "ar" ? "الشارقة" : "Sharjah"}</option>
+                  <option value="عجمان">{language === "ar" ? "عجمان" : "Ajman"}</option>
+                  <option value="أم القيوين">{language === "ar" ? "أم القيوين" : "Umm Al-Quwain"}</option>
+                  <option value="رأس الخيمة">{language === "ar" ? "رأس الخيمة" : "Ras Al Khaimah"}</option>
+                  <option value="الفجيرة">{language === "ar" ? "الفجيرة" : "Fujairah"}</option>
+                </select>
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>{language === "ar" ? "المنطقة / الحي *" : "Area / Neighborhood *"}</label>
+                <input 
+                  type="text"
+                  className={styles.input} 
+                  value={formData.deliveryDetails.area}
+                  onChange={e => setFormData({ ...formData, deliveryDetails: { ...formData.deliveryDetails, area: e.target.value }})}
+                  placeholder={language === "ar" ? "أدخل اسم المنطقة" : "Enter area name"}
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>{language === "ar" ? "اسم الشارع *" : "Street Name *"}</label>
+                <input 
+                  type="text"
+                  className={styles.input} 
+                  value={formData.deliveryDetails.street}
+                  onChange={e => setFormData({ ...formData, deliveryDetails: { ...formData.deliveryDetails, street: e.target.value }})}
+                  placeholder={language === "ar" ? "أدخل اسم الشارع" : "Enter street name"}
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>{language === "ar" ? "المبنى / الفيلا *" : "Building / Villa *"}</label>
+                <input 
+                  type="text"
+                  className={styles.input} 
+                  value={formData.deliveryDetails.building}
+                  onChange={e => setFormData({ ...formData, deliveryDetails: { ...formData.deliveryDetails, building: e.target.value }})}
+                  placeholder={language === "ar" ? "رقم أو اسم المبنى" : "Building number or name"}
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>{language === "ar" ? "الشقة / الوحدة (اختياري)" : "Apartment / Unit (Optional)"}</label>
+                <input 
+                  type="text"
+                  className={styles.input} 
+                  value={formData.deliveryDetails.apartment}
+                  onChange={e => setFormData({ ...formData, deliveryDetails: { ...formData.deliveryDetails, apartment: e.target.value }})}
+                  placeholder={language === "ar" ? "رقم الشقة" : "Apartment number"}
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>{language === "ar" ? "أقرب معلم (اختياري)" : "Nearest Landmark (Optional)"}</label>
+                <input 
+                  type="text"
+                  className={styles.input} 
+                  value={formData.deliveryDetails.landmark}
+                  onChange={e => setFormData({ ...formData, deliveryDetails: { ...formData.deliveryDetails, landmark: e.target.value }})}
+                  placeholder={language === "ar" ? "بجوار..." : "Near..."}
+                />
+              </div>
+            </div>
           </div>
         )}
         

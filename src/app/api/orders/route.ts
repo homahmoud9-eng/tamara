@@ -44,14 +44,27 @@ export async function POST(req: Request) {
 
     // 2. Validate Address
     let finalAddressText = "";
+    let whatsappAddressText = "";
+    
     if (body.addressId) {
       const address = await prisma.address.findUnique({ where: { id: body.addressId } });
       if (!address || address.customerId !== customer.id) {
         return NextResponse.json({ success: false, message: "Invalid address" }, { status: 403 });
       }
       finalAddressText = `${address.addressText}${address.building ? `, Bldg ${address.building}` : ''}${address.apartment ? `, Apt ${address.apartment}` : ''}`;
-    } else if (body.addressText) {
-      finalAddressText = body.addressText;
+      whatsappAddressText = finalAddressText;
+    } else if (body.addressDetails) {
+      const d = body.addressDetails;
+      // String for database
+      finalAddressText = `${d.emirate}, ${d.area}, ${d.street}`;
+      if (d.building) finalAddressText += `, Bldg/Villa: ${d.building}`;
+      if (d.apartment) finalAddressText += `, Apt: ${d.apartment}`;
+      if (d.landmark) finalAddressText += `, Landmark: ${d.landmark}`;
+
+      // Clean string for WhatsApp in Arabic
+      whatsappAddressText = `${d.emirate}، ${d.area}، ${d.street}، مبنى/فيلا: ${d.building}`;
+      if (d.apartment) whatsappAddressText += `، شقة: ${d.apartment}`;
+      if (d.landmark) whatsappAddressText += `\nأقرب معلم: ${d.landmark}`;
     } else {
       return NextResponse.json({ success: false, message: "Address is required" }, { status: 400 });
     }
@@ -288,7 +301,7 @@ export async function POST(req: Request) {
     msg += `طلب جديد #${order.orderNumber}\n\n`;
     msg += `العميل:\n${customer.name}\n\n`;
     msg += `الهاتف:\n${customer.phone}\n\n`;
-    msg += `العنوان:\n${finalAddressText}\n\n`;
+    msg += `العنوان:\n${whatsappAddressText}\n\n`;
     msg += `--------------------------------\n\nالطلبات:\n\n`;
 
     for (const item of order.items) {
