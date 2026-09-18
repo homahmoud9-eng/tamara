@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-interface AdminFormProps extends React.FormHTMLAttributes<HTMLFormElement> {
+interface AdminFormProps extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'action'> {
   action: (formData: FormData) => Promise<{ success: boolean; error?: string }>;
   successMessage?: string;
   successMessageAr?: string;

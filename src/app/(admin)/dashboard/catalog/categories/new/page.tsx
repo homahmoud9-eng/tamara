@@ -1,7 +1,7 @@
 import { getAdminLang } from '@/lib/i18n';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { createCategory } from '../actions';
+import { createCategory } from '../../actions';
 import AdminForm from '@/components/admin/AdminForm';
 
 export default async function NewCategoryPage() {
@@ -92,7 +92,7 @@ export default async function NewCategoryPage() {
           </div>
         </div>
 
-        </div>
+
       </AdminForm>
     </div>
   );

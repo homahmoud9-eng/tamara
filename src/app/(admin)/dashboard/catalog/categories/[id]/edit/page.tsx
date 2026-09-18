@@ -2,8 +2,9 @@ import { getAdminLang } from '@/lib/i18n';
 import prisma from '@/lib/prisma';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { updateCategory } from '../../actions';
+import { updateCategory } from '../../../actions';
 import AdminForm from '@/components/admin/AdminForm';
+import { redirect } from 'next/navigation';
 
 export default async function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
   const lang = await getAdminLang();
@@ -124,7 +125,7 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
           </div>
         </div>
 
-        </div>
+
       </AdminForm>
     </div>
   );

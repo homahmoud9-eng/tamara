@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma';
 import { getAdminLang } from '@/lib/i18n';
 import Link from 'next/link';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
-import { deleteCategory } from './actions';
+import { deleteCategory } from '../actions';
 
 export default async function CategoriesPage() {
   const lang = await getAdminLang();
