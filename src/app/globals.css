@@ -116,16 +116,16 @@
 
 /* Dark Theme Variables */
 [data-theme="dark"] {
-  --bg-primary: #111614;
-  --bg-secondary: #171D1B;
-  --bg-main: var(--bg-primary);
-  --bg-surface: #1E2523;
-  --bg-surface-elevated: #262E2C;
+  --bg-primary: transparent;
+  --bg-secondary: rgba(8, 15, 13, 0.65);
+  --bg-main: transparent;
+  --bg-surface: rgba(8, 15, 13, 0.65);
+  --bg-surface-elevated: rgba(12, 20, 18, 0.75);
   --bg-elevated: var(--bg-surface-elevated);
   --text-primary: #FFFFFF;
   --text-secondary: #E0E5E2;
-  --border-color: rgba(247, 240, 227, 0.11);
-  --border-subtle: rgba(247, 240, 227, 0.05);
+  --border-color: rgba(247, 240, 227, 0.08);
+  --border-subtle: rgba(247, 240, 227, 0.03);
 
   --color-primary: #173F35;
   --brand-primary-bright: #3de0bd; /* Bright vibrant green for text on dark background */
@@ -135,9 +135,9 @@
   --color-warning: #B87B27;
   --color-error: #B33A32;
 
-  --glass-bg: rgba(30, 37, 35, 0.85);
-  --surface-glass: rgba(20, 30, 25, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-bg: rgba(8, 15, 13, 0.65);
+  --surface-glass: rgba(8, 15, 13, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.05);
   
   /* Glow Tokens */
   --glow-gold: rgba(198, 154, 82, 0.25);

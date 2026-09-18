@@ -7,11 +7,14 @@ import { useApp } from '@/components/providers/AppProvider';
 export function AnimatedBackground() {
   const { theme } = useApp();
   
+  // We apply the ambient background globally.
+  // The base color is handled within the CSS.
   return (
     <div className={styles.backgroundContainer} aria-hidden="true">
-      <div className={`${styles.orb} ${styles.orb1}`}></div>
-      <div className={`${styles.orb} ${styles.orb2}`}></div>
-      <div className={`${styles.orb} ${styles.orb3}`}></div>
+      <div className={`${styles.glowLayer} ${styles.primaryGold}`}></div>
+      <div className={`${styles.glowLayer} ${styles.secondaryGold}`}></div>
+      <div className={`${styles.glowLayer} ${styles.emeraldGlow}`}></div>
+      <div className={`${styles.glowLayer} ${styles.warmBrown}`}></div>
     </div>
   );
 }

@@ -4,65 +4,160 @@
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background-color: transparent;
+  background-color: #0A1210; /* Base near-black charcoal */
 }
 
-.orb {
+/* Subtle cinematic haze / Vignette */
+.backgroundContainer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(7, 16, 13, 0.85) 100%);
+  z-index: 2; /* Sits above the glows to create a vignette */
+}
+
+/* Extremely subtle noise/grain */
+.backgroundContainer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 3;
+}
+
+.glowLayer {
   position: absolute;
   border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.7;
-  animation: float 20s infinite ease-in-out alternate;
+  filter: blur(120px);
+  will-change: transform, opacity;
 }
 
-[data-theme="dark"] .orb {
-  opacity: 0.4; /* Subtle glow in dark mode */
-}
-
-/* Primary Brand Color Orb */
-.orb1 {
-  top: -10%;
-  left: -10%;
-  width: 50vw;
-  height: 50vw;
-  background: radial-gradient(circle, var(--color-success) 0%, transparent 70%);
-  animation-duration: 25s;
-  animation-delay: 0s;
-}
-
-/* Accent Gold Color Orb */
-.orb2 {
-  bottom: -20%;
-  right: -10%;
+/* 1. Primary GOLD glow: warm amber/gold, large, very soft, slow movement */
+.primaryGold {
+  top: 10%;
+  left: 20%;
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, var(--color-gold) 0%, transparent 70%);
-  animation-duration: 30s;
-  animation-delay: -5s;
+  background: radial-gradient(circle, rgba(200, 154, 69, 0.20) 0%, transparent 60%);
+  animation: movePrimaryGold 32s infinite ease-in-out alternate;
 }
 
-/* Secondary Terracotta Color Orb */
-.orb3 {
+/* 2. Secondary GOLD glow: smaller, lower opacity, different movement path */
+.secondaryGold {
+  bottom: 20%;
+  right: 15%;
+  width: 45vw;
+  height: 45vw;
+  background: radial-gradient(circle, rgba(213, 168, 79, 0.12) 0%, transparent 60%);
+  animation: moveSecondaryGold 45s infinite ease-in-out alternate;
+}
+
+/* 3. Dark EMERALD glow: subtle, positioned toward another area, slow movement */
+.emeraldGlow {
   top: 40%;
-  left: 30%;
-  width: 40vw;
-  height: 40vw;
-  background: radial-gradient(circle, var(--color-secondary) 0%, transparent 70%);
-  animation-duration: 35s;
-  animation-delay: -10s;
+  right: 10%;
+  width: 70vw;
+  height: 70vw;
+  background: radial-gradient(circle, rgba(11, 40, 30, 0.5) 0%, transparent 65%);
+  animation: moveEmerald 38s infinite ease-in-out alternate;
 }
 
-@keyframes float {
+/* 4. Very subtle WARM BROWN glow: almost invisible, adds depth */
+.warmBrown {
+  bottom: 5%;
+  left: 10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(100, 60, 30, 0.15) 0%, transparent 60%);
+  animation: moveBrown 52s infinite ease-in-out alternate;
+}
+
+@keyframes movePrimaryGold {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8;
+  }
+  33% {
+    transform: translate(15vw, 5vh) scale(1.1);
+    opacity: 1;
+  }
+  66% {
+    transform: translate(-10vw, 10vh) scale(0.95);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(5vw, -5vh) scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes moveSecondaryGold {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-20vw, -15vh) scale(1.15);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(10vw, 10vh) scale(0.9);
+    opacity: 0.6;
+  }
+}
+
+@keyframes moveEmerald {
   0% {
     transform: translate(0, 0) scale(1);
   }
-  33% {
-    transform: translate(5%, 10%) scale(1.1);
-  }
-  66% {
-    transform: translate(-5%, 5%) scale(0.9);
+  50% {
+    transform: translate(-10vw, 20vh) scale(1.05);
   }
   100% {
-    transform: translate(0, -5%) scale(1.05);
+    transform: translate(15vw, -10vh) scale(0.95);
+  }
+}
+
+@keyframes moveBrown {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(25vw, -10vh) scale(1.1);
+  }
+  100% {
+    transform: translate(-5vw, 15vh) scale(0.9);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .glowLayer {
+    filter: blur(80px);
+  }
+  .primaryGold {
+    width: 80vw;
+    height: 80vw;
+  }
+  .secondaryGold {
+    width: 60vw;
+    height: 60vw;
+  }
+  .emeraldGlow {
+    width: 90vw;
+    height: 90vw;
+  }
+  .warmBrown {
+    display: none; /* Reduce layers on mobile to save performance */
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .glowLayer {
+    animation: none !important;
+    transform: none !important;
   }
 }
