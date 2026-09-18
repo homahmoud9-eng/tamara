@@ -19,6 +19,7 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
   if (!category) redirect('/dashboard/catalog/categories');
 
   const updateCategoryWithId = updateCategory.bind(null, category.id);
+  const serializedCategory = JSON.parse(JSON.stringify(category));
 
   return (
     <div>
@@ -39,7 +40,7 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
         mode="edit" 
         action={updateCategoryWithId} 
         lang={lang} 
-        initialData={category}
+        initialData={serializedCategory}
       />
     </div>
   );

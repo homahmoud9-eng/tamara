@@ -21,9 +21,11 @@ interface ProductFormProps {
   lang: 'ar' | 'en';
   categories: any[];
   initialData?: any;
+  product?: any;
 }
 
-export default function ProductForm({ mode, action, lang, categories, initialData }: ProductFormProps) {
+export default function ProductForm({ mode, action, lang, categories, initialData: propInitialData, product }: ProductFormProps) {
+  const initialData = propInitialData || product;
   const [preview, setPreview] = useState({
     nameAr: initialData?.nameAr || '',
     nameEn: initialData?.nameEn || '',

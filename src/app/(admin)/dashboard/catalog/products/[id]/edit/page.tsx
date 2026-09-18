@@ -28,6 +28,9 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   const categories = await prisma.category.findMany({ orderBy: { sortOrder: 'asc' } });
   const updateProductWithId = updateProduct.bind(null, product.id);
 
+  const serializedProduct = JSON.parse(JSON.stringify(product));
+  const serializedCategories = JSON.parse(JSON.stringify(categories));
+
   return (
     <div>
       <div className="admin-page-header">
@@ -47,8 +50,9 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         mode="edit" 
         action={updateProductWithId} 
         lang={lang} 
-        categories={categories}
-        initialData={product}
+        categories={serializedCategories}
+        initialData={serializedProduct}
+        product={serializedProduct}
       />
     </div>
   );
