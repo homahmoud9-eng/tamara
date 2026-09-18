@@ -2,6 +2,7 @@ import { getAdminLang } from '@/lib/i18n';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { createCategory } from '../actions';
+import AdminForm from '@/components/admin/AdminForm';
 
 export default async function NewCategoryPage() {
   const lang = await getAdminLang();
@@ -19,7 +20,15 @@ export default async function NewCategoryPage() {
         </div>
       </div>
 
-      <form action={createCategory} className="admin-form-grid" style={{ maxWidth: '800px' }}>
+      <AdminForm 
+        action={createCategory} 
+        lang={lang} 
+        redirectUrl="/dashboard/catalog?tab=categories"
+        submitText="Save Category"
+        submitTextAr="حفظ القسم"
+        className="admin-form-grid" 
+        style={{ maxWidth: '800px' }}
+      >
         <div className="admin-card">
           <div className="admin-form-grid">
             <div className="admin-form-row">
@@ -83,12 +92,8 @@ export default async function NewCategoryPage() {
           </div>
         </div>
 
-        <div className="admin-form-actions">
-          <button type="submit" className="admin-btn-primary">
-            {lang === 'ar' ? 'حفظ القسم' : 'Save Category'}
-          </button>
         </div>
-      </form>
+      </AdminForm>
     </div>
   );
 }

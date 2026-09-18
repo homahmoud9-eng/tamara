@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { updateCategory } from '../../actions';
-import { redirect } from 'next/navigation';
+import AdminForm from '@/components/admin/AdminForm';
 
 export default async function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
   const lang = await getAdminLang();
@@ -34,7 +34,15 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
         </div>
       </div>
 
-      <form action={updateCategoryWithId} className="admin-form-grid" style={{ maxWidth: '800px' }}>
+      <AdminForm 
+        action={updateCategoryWithId} 
+        lang={lang} 
+        redirectUrl="/dashboard/catalog?tab=categories"
+        submitText="Save Changes"
+        submitTextAr="حفظ التعديلات"
+        className="admin-form-grid" 
+        style={{ maxWidth: '800px' }}
+      >
         <div className="admin-card">
           <div className="admin-form-grid">
             <div className="admin-form-row">
@@ -116,12 +124,8 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
           </div>
         </div>
 
-        <div className="admin-form-actions">
-          <button type="submit" className="admin-btn-primary">
-            {lang === 'ar' ? 'حفظ التعديلات' : 'Save Changes'}
-          </button>
         </div>
-      </form>
+      </AdminForm>
     </div>
   );
 }

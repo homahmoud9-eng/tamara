@@ -3,7 +3,8 @@ import prisma from '@/lib/prisma';
 import Link from 'next/link';
 import { ArrowLeft, Trash2 } from 'lucide-react';
 import { updateProduct, deleteGalleryImage } from '../../actions';
-import { redirect } from 'next/navigation';
+import AdminForm from '@/components/admin/AdminForm';
+import DeleteGalleryImageButton from '@/components/admin/DeleteGalleryImageButton';
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const lang = await getAdminLang();
@@ -50,7 +51,17 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         </Link>
       </div>
 
-      <form action={updateProductWithId} className="admin-form-grid" style={{ maxWidth: '800px' }}>
+      </div>
+
+      <AdminForm 
+        action={updateProductWithId} 
+        lang={lang} 
+        redirectUrl="/dashboard/catalog?tab=products"
+        submitText="Save Changes"
+        submitTextAr="حفظ التعديلات"
+        className="admin-form-grid" 
+        style={{ maxWidth: '800px' }}
+      >
         <div className="admin-card">
           <div className="admin-form-grid">
             <div className="admin-form-row">
@@ -137,18 +148,12 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
                   {product.gallery.map((img) => (
                     <div key={img.id} style={{ position: 'relative' }}>
                       <img src={img.image} alt="Gallery" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #ddd' }} />
-                      <button 
-                        type="submit" 
-                        formAction={deleteGalleryImage.bind(null, img.id, product.id)}
-                        title={lang === 'ar' ? 'حذف الصورة' : 'Delete Image'}
-                        style={{ 
-                          position: 'absolute', top: '-6px', right: '-6px', background: 'red', color: 'white', 
-                          border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px'
-                        }}
-                      >
-                        ×
-                      </button>
+                      <DeleteGalleryImageButton 
+                        imageId={img.id}
+                        productId={product.id}
+                        lang={lang as 'ar' | 'en'}
+                        action={deleteGalleryImage}
+                      />
                     </div>
                   ))}
                 </div>
@@ -177,12 +182,8 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           </div>
         </div>
 
-        <div className="admin-form-actions">
-          <button type="submit" className="admin-btn-primary">
-            {lang === 'ar' ? 'حفظ التعديلات' : 'Save Changes'}
-          </button>
         </div>
-      </form>
+      </AdminForm>
     </div>
   );
 }

@@ -6,114 +6,140 @@ import { redirect } from 'next/navigation';
 import { writeFile } from 'fs/promises';
 import path from 'path';
 
-async function uploadImage(file: File | null): Promise<string | null> {
-  if (!file || file.size === 0 || !file.name) return null;
+async function uploadImage(file: any): Promise<string | null> {
+  if (!file || typeof file === 'string' || !file.arrayBuffer || typeof file.size !== 'number' || file.size === 0) return null;
   
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
-  
-  const ext = file.name.split('.').pop() || 'png';
-  const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
-  const filepath = path.join(process.cwd(), 'public/uploads/products', filename);
-  
-  await writeFile(filepath, buffer);
-  return `/uploads/products/${filename}`;
+  try {
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    
+    const ext = file.name ? file.name.split('.').pop() || 'png' : 'png';
+    const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
+    const filepath = path.join(process.cwd(), 'public/uploads/products', filename);
+    
+    await writeFile(filepath, buffer);
+    return `/uploads/products/${filename}`;
+  } catch (err) {
+    console.error('Image upload error:', err);
+    return null;
+  }
 }
 
 export async function createProduct(formData: FormData) {
-  const primaryImageFile = formData.get('primaryImage') as File | null;
-  const primaryImage = await uploadImage(primaryImageFile);
-  
-  const galleryImages = formData.getAll('galleryImages') as File[];
-  const uploadedGalleryPaths: string[] = [];
-  for (const file of galleryImages) {
-    const p = await uploadImage(file);
-    if (p) uploadedGalleryPaths.push(p);
-  }
-
-  const data = {
-    nameEn: formData.get('nameEn') as string,
-    nameAr: formData.get('nameAr') as string,
-    descriptionEn: formData.get('descriptionEn') as string || null,
-    descriptionAr: formData.get('descriptionAr') as string || null,
-    categoryId: formData.get('categoryId') as string,
-    basePrice: parseFloat(formData.get('basePrice') as string) || 0,
-    isActive: formData.get('isActive') === 'on',
-    isFeatured: formData.get('isFeatured') === 'on',
-    isBestseller: formData.get('isBestseller') === 'on',
-    availability: (formData.get('availability') as string) || 'AVAILABLE',
-    prepTime: formData.get('prepTime') ? parseInt(formData.get('prepTime') as string) : null,
-    primaryImage,
-    sortOrder: parseInt(formData.get('sortOrder') as string) || 0,
-    seoTitleEn: formData.get('seoTitleEn') as string || null,
-    seoTitleAr: formData.get('seoTitleAr') as string || null,
-    seoDescEn: formData.get('seoDescEn') as string || null,
-    seoDescAr: formData.get('seoDescAr') as string || null,
-    gallery: {
-      create: uploadedGalleryPaths.map((image, index) => ({
-        image,
-        sortOrder: index
-      }))
+  try {
+    const nameEn = formData.get('nameEn') as string;
+    const nameAr = formData.get('nameAr') as string;
+    const categoryId = formData.get('categoryId') as string;
+    
+    if (!nameEn || !nameAr || !categoryId) {
+      return { success: false, error: 'Name and Category are required.' };
     }
-  };
 
-  await prisma.product.create({ data });
-  revalidatePath('/', 'layout');
-  revalidatePath('/', 'layout');
-  redirect('/dashboard/catalog/products');
+    const primaryImage = await uploadImage(formData.get('primaryImage'));
+    
+    const galleryImages = formData.getAll('galleryImages');
+    const uploadedGalleryPaths: string[] = [];
+    for (const file of galleryImages) {
+      const p = await uploadImage(file);
+      if (p) uploadedGalleryPaths.push(p);
+    }
+
+    const data = {
+      nameEn,
+      nameAr,
+      descriptionEn: formData.get('descriptionEn') as string || null,
+      descriptionAr: formData.get('descriptionAr') as string || null,
+      categoryId,
+      basePrice: parseFloat(formData.get('basePrice') as string) || 0,
+      isActive: formData.get('isActive') === 'on',
+      isFeatured: formData.get('isFeatured') === 'on',
+      isBestseller: formData.get('isBestseller') === 'on',
+      availability: (formData.get('availability') as string) || 'AVAILABLE',
+      prepTime: formData.get('prepTime') ? parseInt(formData.get('prepTime') as string) : null,
+      primaryImage,
+      sortOrder: parseInt(formData.get('sortOrder') as string) || 0,
+      seoTitleEn: formData.get('seoTitleEn') as string || null,
+      seoTitleAr: formData.get('seoTitleAr') as string || null,
+      seoDescEn: formData.get('seoDescEn') as string || null,
+      seoDescAr: formData.get('seoDescAr') as string || null,
+      gallery: {
+        create: uploadedGalleryPaths.map((image, index) => ({
+          image,
+          sortOrder: index
+        }))
+      }
+    };
+
+    await prisma.product.create({ data });
+    revalidatePath('/', 'layout');
+    return { success: true };
+  } catch (err: any) {
+    console.error('Create Product Error:', err);
+    return { success: false, error: err.message || 'Database error occurred' };
+  }
 }
 
 export async function updateProduct(id: string, formData: FormData) {
-  const primaryImageFile = formData.get('primaryImage') as File | null;
-  const newPrimaryImage = await uploadImage(primaryImageFile);
+  try {
+    const nameEn = formData.get('nameEn') as string;
+    const nameAr = formData.get('nameAr') as string;
+    const categoryId = formData.get('categoryId') as string;
+    
+    if (!nameEn || !nameAr || !categoryId) {
+      return { success: false, error: 'Name and Category are required.' };
+    }
 
-  const removePrimary = formData.get('removePrimaryImage') === 'true';
+    const newPrimaryImage = await uploadImage(formData.get('primaryImage'));
+    const removePrimary = formData.get('removePrimaryImage') === 'true';
 
-  const data: any = {
-    nameEn: formData.get('nameEn') as string,
-    nameAr: formData.get('nameAr') as string,
-    descriptionEn: formData.get('descriptionEn') as string || null,
-    descriptionAr: formData.get('descriptionAr') as string || null,
-    categoryId: formData.get('categoryId') as string,
-    basePrice: parseFloat(formData.get('basePrice') as string) || 0,
-    isActive: formData.get('isActive') === 'on',
-    isFeatured: formData.get('isFeatured') === 'on',
-    isBestseller: formData.get('isBestseller') === 'on',
-    availability: (formData.get('availability') as string) || 'AVAILABLE',
-    prepTime: formData.get('prepTime') ? parseInt(formData.get('prepTime') as string) : null,
-    sortOrder: parseInt(formData.get('sortOrder') as string) || 0,
-    seoTitleEn: formData.get('seoTitleEn') as string || null,
-    seoTitleAr: formData.get('seoTitleAr') as string || null,
-    seoDescEn: formData.get('seoDescEn') as string || null,
-    seoDescAr: formData.get('seoDescAr') as string || null,
-  };
-
-  if (newPrimaryImage) {
-    data.primaryImage = newPrimaryImage;
-  } else if (removePrimary) {
-    data.primaryImage = null;
-  }
-
-  const galleryImages = formData.getAll('galleryImages') as File[];
-  const uploadedGalleryPaths: string[] = [];
-  for (const file of galleryImages) {
-    const p = await uploadImage(file);
-    if (p) uploadedGalleryPaths.push(p);
-  }
-
-  if (uploadedGalleryPaths.length > 0) {
-    data.gallery = {
-      create: uploadedGalleryPaths.map((image, index) => ({
-        image,
-        sortOrder: index
-      }))
+    const data: any = {
+      nameEn,
+      nameAr,
+      descriptionEn: formData.get('descriptionEn') as string || null,
+      descriptionAr: formData.get('descriptionAr') as string || null,
+      categoryId,
+      basePrice: parseFloat(formData.get('basePrice') as string) || 0,
+      isActive: formData.get('isActive') === 'on',
+      isFeatured: formData.get('isFeatured') === 'on',
+      isBestseller: formData.get('isBestseller') === 'on',
+      availability: (formData.get('availability') as string) || 'AVAILABLE',
+      prepTime: formData.get('prepTime') ? parseInt(formData.get('prepTime') as string) : null,
+      sortOrder: parseInt(formData.get('sortOrder') as string) || 0,
+      seoTitleEn: formData.get('seoTitleEn') as string || null,
+      seoTitleAr: formData.get('seoTitleAr') as string || null,
+      seoDescEn: formData.get('seoDescEn') as string || null,
+      seoDescAr: formData.get('seoDescAr') as string || null,
     };
-  }
 
-  await prisma.product.update({ where: { id }, data });
-  revalidatePath('/', 'layout');
-  revalidatePath('/', 'layout');
-  redirect('/dashboard/catalog/products');
+    if (newPrimaryImage) {
+      data.primaryImage = newPrimaryImage;
+    } else if (removePrimary) {
+      data.primaryImage = null;
+    }
+
+    const galleryImages = formData.getAll('galleryImages');
+    const uploadedGalleryPaths: string[] = [];
+    for (const file of galleryImages) {
+      const p = await uploadImage(file);
+      if (p) uploadedGalleryPaths.push(p);
+    }
+
+    if (uploadedGalleryPaths.length > 0) {
+      data.gallery = {
+        create: uploadedGalleryPaths.map((image, index) => ({
+          image,
+          sortOrder: index
+        }))
+      };
+    }
+
+    await prisma.product.update({ where: { id }, data });
+    revalidatePath('/', 'layout');
+    return { success: true };
+  } catch (err: any) {
+    console.error('Update Product Error:', err);
+    return { success: false, error: err.message || 'Database error occurred' };
+  }
 }
 
 export async function deleteGalleryImage(id: string, productId: string) {

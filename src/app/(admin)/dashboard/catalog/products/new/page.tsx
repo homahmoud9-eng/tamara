@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { createProduct } from '../actions';
+import AdminForm from '@/components/admin/AdminForm';
 
 export default async function NewProductPage() {
   const lang = await getAdminLang();
@@ -21,7 +22,15 @@ export default async function NewProductPage() {
         </div>
       </div>
 
-      <form action={createProduct} className="admin-form-grid" style={{ maxWidth: '800px' }}>
+      <AdminForm 
+        action={createProduct} 
+        lang={lang} 
+        redirectUrl="/dashboard/catalog?tab=products"
+        submitText="Save Product"
+        submitTextAr="حفظ المنتج"
+        className="admin-form-grid" 
+        style={{ maxWidth: '800px' }}
+      >
         <div className="admin-card">
           <div className="admin-form-grid">
             <div className="admin-form-row">
@@ -116,12 +125,8 @@ export default async function NewProductPage() {
           </div>
         </div>
 
-        <div className="admin-form-actions">
-          <button type="submit" className="admin-btn-primary">
-            {lang === 'ar' ? 'حفظ المنتج' : 'Save Product'}
-          </button>
         </div>
-      </form>
+      </AdminForm>
     </div>
   );
 }

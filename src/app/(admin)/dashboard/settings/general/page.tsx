@@ -62,7 +62,7 @@ export default async function GeneralSettingsPage() {
         </div>
       </div>
 
-      <form action={saveSettings} className="admin-form-grid" style={{ maxWidth: '800px' }}>
+      <form encType="multipart/form-data" action={saveSettings} className="admin-form-grid" style={{ maxWidth: '800px' }}>
         {/* Business Info */}
         <div className="admin-card">
           <h3 className="admin-card-title" style={{ marginBottom: '16px' }}>{lang === 'ar' ? 'معلومات المتجر' : 'Business Info'}</h3>

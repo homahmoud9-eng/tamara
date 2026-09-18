@@ -42,7 +42,7 @@ export default function BlogForm({ lang, initialData }: { lang: 'ar' | 'en'; ini
         </div>
       </div>
 
-      <form action={action} className="admin-form-grid" style={{ marginTop: '24px' }}>
+      <form encType="multipart/form-data" action={action} className="admin-form-grid" style={{ marginTop: '24px' }}>
         <div className="admin-card">
           <h2 className="admin-card-title">{isArabic ? 'المعلومات الأساسية' : 'Basic Info'}</h2>
           

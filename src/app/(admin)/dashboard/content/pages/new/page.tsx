@@ -21,7 +21,7 @@ export default async function NewPage() {
         </div>
       </div>
 
-      <form action={createPage} className="admin-form-grid" style={{ maxWidth: '900px' }}>
+      <form encType="multipart/form-data" action={createPage} className="admin-form-grid" style={{ maxWidth: '900px' }}>
         <div className="admin-card">
           <div className="admin-form-grid">
             <div className="admin-form-row">

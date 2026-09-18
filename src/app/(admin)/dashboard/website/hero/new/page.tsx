@@ -19,7 +19,7 @@ export default async function NewHeroPage() {
         </div>
       </div>
 
-      <form action={createHeroSlide} className="admin-form-grid" style={{ maxWidth: '800px' }}>
+      <form encType="multipart/form-data" action={createHeroSlide} className="admin-form-grid" style={{ maxWidth: '800px' }}>
         <div className="admin-card">
           <div className="admin-form-grid">
             

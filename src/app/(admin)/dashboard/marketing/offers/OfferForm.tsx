@@ -21,7 +21,7 @@ export default function OfferForm({
   };
 
   return (
-    <form action={formAction} className="admin-form-grid" style={{ maxWidth: '800px' }}>
+    <form encType="multipart/form-data" action={formAction} className="admin-form-grid" style={{ maxWidth: '800px' }}>
       {state?.error && (
         <div className="admin-badge danger" style={{ padding: '12px', marginBottom: '16px', display: 'block', width: '100%' }}>
           {state.error}
