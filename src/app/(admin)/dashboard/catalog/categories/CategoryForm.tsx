@@ -17,7 +17,8 @@ export default function CategoryForm({ mode, action, lang, initialData }: Catego
     isActive: initialData?.isActive ?? true,
     sortOrder: initialData?.sortOrder || 0,
     image: initialData?.image || null,
-    titleImage: initialData?.titleImage || null,
+    titleImageAr: initialData?.titleImageAr || null,
+    titleImageEn: initialData?.titleImageEn || null,
   });
 
   const handlePreviewChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -30,7 +31,7 @@ export default function CategoryForm({ mode, action, lang, initialData }: Catego
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'image' | 'titleImage') => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'image' | 'titleImageAr' | 'titleImageEn') => {
     const file = e.target.files?.[0];
     if (file) {
       setPreview(prev => ({ ...prev, [fieldName]: URL.createObjectURL(file) }));
@@ -109,20 +110,38 @@ export default function CategoryForm({ mode, action, lang, initialData }: Catego
             )}
           </div>
 
-          {/* Banner Image */}
-          <div className="admin-form-group">
-            <label className="admin-form-label">{lang === 'ar' ? 'صورة العنوان / البانر (اختياري)' : 'Banner Image (Optional)'}</label>
+          {/* Arabic Banner Image */}
+          <div className="admin-form-group" style={{ marginBottom: '24px' }}>
+            <label className="admin-form-label">{lang === 'ar' ? 'صورة البانر (عربي) (اختياري)' : 'Arabic Banner Image (Optional)'}</label>
             <div style={{ border: '2px dashed var(--admin-border)', padding: '24px', textAlign: 'center', borderRadius: '8px', position: 'relative' }}>
-              <input type="file" name="titleImage" accept="image/png, image/jpeg, image/webp" onChange={(e) => handleImageChange(e, 'titleImage')} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} />
+              <input type="file" name="titleImageAr" accept="image/png, image/jpeg, image/webp" onChange={(e) => handleImageChange(e, 'titleImageAr')} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} />
               <div style={{ pointerEvents: 'none' }}>
-                <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>{lang === 'ar' ? 'اسحب الصورة هنا أو اضغط لاختيار صورة للبانر' : 'Drag banner image here or click to select'}</p>
+                <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>{lang === 'ar' ? 'اسحب الصورة هنا أو اضغط لاختيار صورة البانر العربي' : 'Drag Arabic banner image here or click to select'}</p>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--admin-text-muted)' }}>PNG, JPG, WEBP (Wide format)</p>
               </div>
             </div>
-            {mode === 'edit' && initialData?.titleImage && (
+            {mode === 'edit' && initialData?.titleImageAr && (
               <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <input type="checkbox" name="removeTitleImage" id="removeTitleImage" value="true" />
-                <label htmlFor="removeTitleImage" style={{ fontSize: '13px', color: 'red', cursor: 'pointer' }}>{lang === 'ar' ? 'حذف صورة البانر الحالية' : 'Remove current banner image'}</label>
+                <input type="checkbox" name="removeTitleImageAr" id="removeTitleImageAr" value="true" />
+                <label htmlFor="removeTitleImageAr" style={{ fontSize: '13px', color: 'red', cursor: 'pointer' }}>{lang === 'ar' ? 'حذف صورة البانر العربي الحالية' : 'Remove current Arabic banner image'}</label>
+              </div>
+            )}
+          </div>
+
+          {/* English Banner Image */}
+          <div className="admin-form-group">
+            <label className="admin-form-label">{lang === 'ar' ? 'صورة البانر (إنجليزي) (اختياري)' : 'English Banner Image (Optional)'}</label>
+            <div style={{ border: '2px dashed var(--admin-border)', padding: '24px', textAlign: 'center', borderRadius: '8px', position: 'relative' }}>
+              <input type="file" name="titleImageEn" accept="image/png, image/jpeg, image/webp" onChange={(e) => handleImageChange(e, 'titleImageEn')} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} />
+              <div style={{ pointerEvents: 'none' }}>
+                <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>{lang === 'ar' ? 'اسحب الصورة هنا أو اضغط لاختيار صورة البانر الإنجليزي' : 'Drag English banner image here or click to select'}</p>
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--admin-text-muted)' }}>PNG, JPG, WEBP (Wide format)</p>
+              </div>
+            </div>
+            {mode === 'edit' && initialData?.titleImageEn && (
+              <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input type="checkbox" name="removeTitleImageEn" id="removeTitleImageEn" value="true" />
+                <label htmlFor="removeTitleImageEn" style={{ fontSize: '13px', color: 'red', cursor: 'pointer' }}>{lang === 'ar' ? 'حذف صورة البانر الإنجليزي الحالية' : 'Remove current English banner image'}</label>
               </div>
             )}
           </div>

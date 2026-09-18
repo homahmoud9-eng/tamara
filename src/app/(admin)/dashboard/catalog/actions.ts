@@ -14,9 +14,9 @@ async function uploadImage(file: any, folder: string = 'media'): Promise<string 
     
     const blob = await put(filename, file, { access: 'public' });
     return blob.url;
-  } catch (err) {
+  } catch (err: any) {
     console.error('Image upload error:', err);
-    return null;
+    throw new Error(`Image upload failed: ${err.message || 'Check Vercel Blob configuration'}`);
   }
 }
 
@@ -34,7 +34,8 @@ export async function createCategory(formData: FormData) {
     const sortOrder = parseInt(formData.get('sortOrder') as string) || 0;
     
     const image = await uploadImage(formData.get('image'), 'categories');
-    const titleImage = await uploadImage(formData.get('titleImage'), 'categories');
+    const titleImageAr = await uploadImage(formData.get('titleImageAr'), 'categories');
+    const titleImageEn = await uploadImage(formData.get('titleImageEn'), 'categories');
 
     await prisma.category.create({
       data: {
@@ -47,7 +48,8 @@ export async function createCategory(formData: FormData) {
         isFeatured,
         sortOrder,
         image,
-        titleImage,
+        titleImageAr,
+        titleImageEn,
       }
     });
 
@@ -156,13 +158,22 @@ export async function updateCategory(id: string, formData: FormData) {
       dataToUpdate.image = newImage;
     }
 
-    const removeTitleImage = formData.get('removeTitleImage') === 'true';
-    const newTitleImage = await uploadImage(formData.get('titleImage'), 'categories');
+    const removeTitleImageAr = formData.get('removeTitleImageAr') === 'true';
+    const newTitleImageAr = await uploadImage(formData.get('titleImageAr'), 'categories');
 
-    if (removeTitleImage) {
-      dataToUpdate.titleImage = null;
-    } else if (newTitleImage) {
-      dataToUpdate.titleImage = newTitleImage;
+    if (removeTitleImageAr) {
+      dataToUpdate.titleImageAr = null;
+    } else if (newTitleImageAr) {
+      dataToUpdate.titleImageAr = newTitleImageAr;
+    }
+
+    const removeTitleImageEn = formData.get('removeTitleImageEn') === 'true';
+    const newTitleImageEn = await uploadImage(formData.get('titleImageEn'), 'categories');
+
+    if (removeTitleImageEn) {
+      dataToUpdate.titleImageEn = null;
+    } else if (newTitleImageEn) {
+      dataToUpdate.titleImageEn = newTitleImageEn;
     }
 
     await prisma.category.update({

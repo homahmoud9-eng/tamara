@@ -96,6 +96,8 @@ model Category {
   descriptionEn String?
   image         String?
   titleImage    String?
+  titleImageAr  String?
+  titleImageEn  String?
   sortOrder     Int      @default(0)
   isActive      Boolean  @default(true)
   isFeatured    Boolean  @default(false)

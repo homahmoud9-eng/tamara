@@ -16,6 +16,15 @@ interface CategoryClientProps {
 export function CategoryClient({ categories, category, products }: CategoryClientProps) {
   const { language } = useApp();
 
+  const getBannerImage = () => {
+    if (language === 'ar') {
+      return category.titleImageAr || category.titleImage || category.image;
+    }
+    return category.titleImageEn || category.titleImage || category.image;
+  };
+  
+  const bannerImage = getBannerImage();
+
   return (
     <div className={styles.categoryContainer}>
       <header className={styles.hero}>
@@ -27,10 +36,10 @@ export function CategoryClient({ categories, category, products }: CategoryClien
           style={{ objectFit: "cover" }}
         />
         <div className={`container ${styles.heroContent}`}>
-          {category.titleImage && language === 'ar' ? (
+          {bannerImage ? (
             <SafeImage
-              src={category.titleImage}
-              alt={category.name.ar}
+              src={bannerImage}
+              alt={language === "ar" ? category.name.ar : category.name.en}
               width={240}
               height={120}
               className={styles.titleImage}

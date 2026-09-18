@@ -52,6 +52,8 @@ export async function getFrontendCategories(): Promise<Category[]> {
     slug: c.slug,
     image: c.image || '/assets/images/placeholder.png',
     titleImage: c.titleImage || undefined,
+    titleImageAr: c.titleImageAr || undefined,
+    titleImageEn: c.titleImageEn || undefined,
     sortOrder: c.sortOrder,
     active: c.isActive
   }));

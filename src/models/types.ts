@@ -39,6 +39,8 @@ export interface Category {
   slug: string;
   image: string;
   titleImage?: string;
+  titleImageAr?: string;
+  titleImageEn?: string;
   sortOrder: number;
   active: boolean;
 }
