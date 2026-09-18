@@ -171,10 +171,6 @@ html[dir="rtl"] .imageElement {
   .layoutWrapper {
     flex-direction: row;
     min-height: 85vh;
-    max-width: var(--max-width);
-    margin: 0 auto;
-    position: relative;
-    width: 100%;
   }
 
   .visualHalf {
@@ -206,9 +202,9 @@ html[dir="rtl"] .imageElement {
     padding-bottom: var(--spacing-16);
     justify-content: center;
     padding-inline-end: var(--spacing-12);
-    /* Align with the constrained layoutWrapper */
-    margin-inline: 0 auto;
-    padding-inline-start: 2rem;
+    /* Align with the main container edge instead of centering in the 50% width */
+    margin-inline: 0 auto; /* Overrides the .container's margin-inline: auto */
+    padding-inline-start: max(var(--spacing-6), calc((100vw - var(--max-width)) / 2));
   }
 
   .headline {

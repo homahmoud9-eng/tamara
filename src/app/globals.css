@@ -42,7 +42,7 @@
   /* Layout */
   --header-height: 60px;
   --bottom-nav-height: 64px;
-  --max-width: 1200px;
+  --max-width: 1280px;
 
   /* Spacing Grid (4/8 hybrid) */
   --spacing-1: 4px;
@@ -250,9 +250,6 @@ button {
 @media (min-width: 1024px) {
   :root {
     --header-height: 72px;
-  }
-  .container {
-    padding-inline: 2rem;
   }
 }
 

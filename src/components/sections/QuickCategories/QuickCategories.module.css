@@ -102,22 +102,3 @@
     font-size: 15px;
   }
 }
-
-@media (min-width: 1024px) {
-  .categoriesGrid {
-    gap: var(--spacing-12);
-  }
-
-  .categoryCard {
-    min-width: 150px;
-  }
-
-  .imageWrapper {
-    width: 140px;
-    height: 140px;
-  }
-
-  .name {
-    font-size: 16px;
-  }
-}
