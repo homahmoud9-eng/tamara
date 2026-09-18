@@ -3,22 +3,17 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { writeFile } from 'fs/promises';
-import path from 'path';
+import { put } from '@vercel/blob';
 
-async function uploadImage(file: any): Promise<string | null> {
+async function uploadImage(file: any, folder: string = 'media'): Promise<string | null> {
   if (!file || typeof file === 'string' || !file.arrayBuffer || typeof file.size !== 'number' || file.size === 0) return null;
   
   try {
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    
     const ext = file.name ? file.name.split('.').pop() || 'png' : 'png';
-    const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
-    const filepath = path.join(process.cwd(), 'public/uploads/products', filename);
+    const filename = `${folder}/${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
     
-    await writeFile(filepath, buffer);
-    return `/uploads/products/${filename}`;
+    const blob = await put(filename, file, { access: 'public' });
+    return blob.url;
   } catch (err) {
     console.error('Image upload error:', err);
     return null;
@@ -38,8 +33,8 @@ export async function createCategory(formData: FormData) {
     const isFeatured = formData.get('isFeatured') === 'on';
     const sortOrder = parseInt(formData.get('sortOrder') as string) || 0;
     
-    const image = await uploadImage(formData.get('image'));
-    const titleImage = await uploadImage(formData.get('titleImage'));
+    const image = await uploadImage(formData.get('image'), 'categories');
+    const titleImage = await uploadImage(formData.get('titleImage'), 'categories');
 
     await prisma.category.create({
       data: {
@@ -91,14 +86,14 @@ export async function createProduct(formData: FormData) {
     const prepTimeStr = formData.get('prepTime') as string;
     const prepTime = prepTimeStr ? parseInt(prepTimeStr) : null;
     
-    const primaryImage = await uploadImage(formData.get('primaryImage'));
+    const primaryImage = await uploadImage(formData.get('primaryImage'), 'products');
 
     // Handle gallery images
     const galleryImages = formData.getAll('galleryImages');
     const uploadedGalleryPaths: string[] = [];
     
     for (const file of galleryImages) {
-      const path = await uploadImage(file);
+      const path = await uploadImage(file, 'products');
       if (path) uploadedGalleryPaths.push(path);
     }
 
@@ -153,7 +148,7 @@ export async function updateCategory(id: string, formData: FormData) {
     };
 
     const removeImage = formData.get('removeImage') === 'true';
-    const newImage = await uploadImage(formData.get('image'));
+    const newImage = await uploadImage(formData.get('image'), 'categories');
 
     if (removeImage) {
       dataToUpdate.image = null;
@@ -162,7 +157,7 @@ export async function updateCategory(id: string, formData: FormData) {
     }
 
     const removeTitleImage = formData.get('removeTitleImage') === 'true';
-    const newTitleImage = await uploadImage(formData.get('titleImage'));
+    const newTitleImage = await uploadImage(formData.get('titleImage'), 'categories');
 
     if (removeTitleImage) {
       dataToUpdate.titleImage = null;
@@ -210,7 +205,7 @@ export async function updateProduct(id: string, formData: FormData) {
     const prepTimeStr = formData.get('prepTime') as string;
     const prepTime = prepTimeStr ? parseInt(prepTimeStr) : null;
     
-    const newPrimaryImage = await uploadImage(formData.get('primaryImage'));
+    const newPrimaryImage = await uploadImage(formData.get('primaryImage'), 'products');
 
     const dataToUpdate: any = {
       nameEn, nameAr, descriptionEn, descriptionAr, categoryId,
@@ -226,7 +221,7 @@ export async function updateProduct(id: string, formData: FormData) {
     const uploadedGalleryPaths: string[] = [];
     
     for (const file of galleryImages) {
-      const path = await uploadImage(file);
+      const path = await uploadImage(file, 'products');
       if (path) uploadedGalleryPaths.push(path);
     }
 
