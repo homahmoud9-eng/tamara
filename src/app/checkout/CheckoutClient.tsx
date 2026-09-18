@@ -61,7 +61,7 @@ export default function CheckoutClient({
         case 'invalid': setCouponError(language === 'ar' ? 'كود الخصم غير صحيح' : 'Invalid coupon code'); break;
         case 'inactive': setCouponError(language === 'ar' ? 'كود الخصم غير فعال' : 'Inactive coupon code'); break;
         case 'expired': setCouponError(language === 'ar' ? 'كود الخصم منتهي الصلاحية' : 'Expired coupon code'); break;
-        case 'min_order': setCouponError(language === 'ar' ? `الحد الأدنى للطلب هو ${res.minOrder} ج.م` : `Minimum order is ${res.minOrder} EGP`); break;
+        case 'min_order': setCouponError(language === 'ar' ? `الحد الأدنى للطلب هو ${res.minOrder} درهم` : `Minimum order is ${res.minOrder} AED`); break;
         default: setCouponError(language === 'ar' ? 'حدث خطأ' : 'An error occurred'); break;
       }
     } else if (res.success && res.coupon) {
@@ -192,7 +192,6 @@ export default function CheckoutClient({
             value={formData.name}
             onChange={e => setFormData({ ...formData, name: e.target.value })}
             placeholder={language === "ar" ? "أدخل اسمك" : "Enter your name"}
-            disabled={isAuthenticated}
           />
         </div>
         <div className={styles.inputGroup}>
@@ -203,7 +202,6 @@ export default function CheckoutClient({
             value={formData.phone}
             onChange={e => setFormData({ ...formData, phone: e.target.value })}
             placeholder={language === "ar" ? "أدخل رقمك" : "Enter your phone"}
-            disabled={isAuthenticated}
           />
         </div>
       </section>
@@ -314,7 +312,7 @@ export default function CheckoutClient({
                   </div>
                 )}
               </div>
-              <div>{(item.totalPrice * item.quantity).toFixed(2)} {language === "ar" ? "ج.م" : "EGP"}</div>
+              <div>{(item.totalPrice * item.quantity).toFixed(2)} {language === "ar" ? "د.إ" : "AED"}</div>
             </div>
           ))}
         </div>
@@ -358,17 +356,17 @@ export default function CheckoutClient({
 
         <div className={styles.summaryRow}>
           <span>{language === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
-          <span>{totalAmount.toFixed(2)} {language === "ar" ? "ج.م" : "EGP"}</span>
+          <span>{totalAmount.toFixed(2)} {language === "ar" ? "د.إ" : "AED"}</span>
         </div>
         {appliedCoupon && (
           <div className={styles.summaryRow} style={{ color: 'var(--brand-primary)' }}>
             <span>{language === "ar" ? "الخصم" : "Discount"}</span>
-            <span>-{appliedCoupon.discountAmount.toFixed(2)} {language === "ar" ? "ج.م" : "EGP"}</span>
+            <span>-{appliedCoupon.discountAmount.toFixed(2)} {language === "ar" ? "د.إ" : "AED"}</span>
           </div>
         )}
         <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
           <span>{language === "ar" ? "الإجمالي قبل الشحن" : "Total Before Delivery"}</span>
-          <span>{grandTotal.toFixed(2)} {language === "ar" ? "ج.م" : "EGP"}</span>
+          <span>{grandTotal.toFixed(2)} {language === "ar" ? "د.إ" : "AED"}</span>
         </div>
         <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(255,165,0,0.1)', color: '#b27300', borderRadius: '8px', fontSize: '13px', lineHeight: '1.5' }}>
           <strong>{language === 'ar' ? 'ملاحظة هامة:' : 'Important Note:'} </strong>

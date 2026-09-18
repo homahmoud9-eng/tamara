@@ -16,16 +16,16 @@
   z-index: 2; /* Sits above the glows to create a vignette */
 }
 
-/* Extremely subtle noise/grain */
-.backgroundContainer::after {
+/* Removed noise/grain per request for perfectly smooth background */
+/* .backgroundContainer::after {
   content: "";
   position: absolute;
   inset: 0;
   opacity: 0.15;
   mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,... noise ...");
   z-index: 3;
-}
+} */
 
 .glowLayer {
   position: absolute;
@@ -80,11 +80,11 @@
     opacity: 0.8;
   }
   33% {
-    transform: translate(15vw, 5vh) scale(1.1);
+    transform: translate(15vw, 5vh) scale(1.15);
     opacity: 1;
   }
   66% {
-    transform: translate(-10vw, 10vh) scale(0.95);
+    transform: translate(-10vw, 10vh) scale(0.9);
     opacity: 0.85;
   }
   100% {
@@ -99,11 +99,11 @@
     opacity: 0.7;
   }
   50% {
-    transform: translate(-20vw, -15vh) scale(1.15);
-    opacity: 0.9;
+    transform: translate(-20vw, -15vh) scale(1.2);
+    opacity: 0.95;
   }
   100% {
-    transform: translate(10vw, 10vh) scale(0.9);
+    transform: translate(10vw, 10vh) scale(0.85);
     opacity: 0.6;
   }
 }

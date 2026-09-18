@@ -282,7 +282,7 @@ export async function POST(req: Request) {
 
     // 7. Generate WhatsApp Message
     const businessSettings = await prisma.businessSetting.findFirst();
-    const whatsappNumber = businessSettings?.whatsapp || "201000000000";
+    const whatsappNumber = "+971541744773"; // Hardcoded per user request to guarantee redirection
 
     let msg = `*Tamara Kitchen*\n\n`;
     msg += `طلب جديد #${order.orderNumber}\n\n`;
