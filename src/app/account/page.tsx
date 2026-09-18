@@ -34,7 +34,9 @@ export default async function AccountPage() {
   const deliveredOrders = await prisma.order.findMany({
     where: {
       customerId: customer.id,
-      status: 'DELIVERED',
+      status: {
+        not: 'CANCELLED'
+      },
     },
     select: {
       totalAmount: true

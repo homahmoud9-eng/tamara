@@ -93,7 +93,7 @@
 
 [data-theme="dark"] .cartIconWrapper {
   background-color: var(--color-gold);
-  color: var(--bg-main);
+  color: #ffffff;
   box-shadow: 0 4px 12px rgba(198, 154, 82, 0.25);
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useApp } from "@/components/providers/AppProvider";
 import { useCart } from "@/components/providers/CartProvider";
@@ -21,6 +21,19 @@ export default function CheckoutClient({
   const { language } = useApp();
   const { items, totalAmount, orderNotes, clearCart } = useCart();
   
+  const [isEmirateDropdownOpen, setIsEmirateDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsEmirateDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const [isSuccess, setIsSuccess] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
@@ -266,19 +279,50 @@ export default function CheckoutClient({
             <div className={styles.addressGrid}>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>{language === "ar" ? "الإمارة *" : "Emirate *"}</label>
-                <select 
-                  className={styles.select}
-                  value={formData.deliveryDetails.emirate}
-                  onChange={e => setFormData({ ...formData, deliveryDetails: { ...formData.deliveryDetails, emirate: e.target.value }})}
-                >
-                  <option value="أبوظبي">{language === "ar" ? "أبوظبي" : "Abu Dhabi"}</option>
-                  <option value="دبي">{language === "ar" ? "دبي" : "Dubai"}</option>
-                  <option value="الشارقة">{language === "ar" ? "الشارقة" : "Sharjah"}</option>
-                  <option value="عجمان">{language === "ar" ? "عجمان" : "Ajman"}</option>
-                  <option value="أم القيوين">{language === "ar" ? "أم القيوين" : "Umm Al-Quwain"}</option>
-                  <option value="رأس الخيمة">{language === "ar" ? "رأس الخيمة" : "Ras Al Khaimah"}</option>
-                  <option value="الفجيرة">{language === "ar" ? "الفجيرة" : "Fujairah"}</option>
-                </select>
+                <div className={styles.dropdownContainer} ref={dropdownRef}>
+                  <div 
+                    className={`${styles.input} ${styles.dropdownHeader} ${isEmirateDropdownOpen ? styles.isOpen : ''}`}
+                    onClick={() => setIsEmirateDropdownOpen(!isEmirateDropdownOpen)}
+                  >
+                    <span>
+                      {formData.deliveryDetails.emirate === "أبوظبي" && (language === "ar" ? "أبوظبي" : "Abu Dhabi")}
+                      {formData.deliveryDetails.emirate === "دبي" && (language === "ar" ? "دبي" : "Dubai")}
+                      {formData.deliveryDetails.emirate === "الشارقة" && (language === "ar" ? "الشارقة" : "Sharjah")}
+                      {formData.deliveryDetails.emirate === "عجمان" && (language === "ar" ? "عجمان" : "Ajman")}
+                      {formData.deliveryDetails.emirate === "أم القيوين" && (language === "ar" ? "أم القيوين" : "Umm Al-Quwain")}
+                      {formData.deliveryDetails.emirate === "رأس الخيمة" && (language === "ar" ? "رأس الخيمة" : "Ras Al Khaimah")}
+                      {formData.deliveryDetails.emirate === "الفجيرة" && (language === "ar" ? "الفجيرة" : "Fujairah")}
+                    </span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isEmirateDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                  
+                  {isEmirateDropdownOpen && (
+                    <div className={styles.dropdownList}>
+                      {[
+                        { ar: "أبوظبي", en: "Abu Dhabi", val: "أبوظبي" },
+                        { ar: "دبي", en: "Dubai", val: "دبي" },
+                        { ar: "الشارقة", en: "Sharjah", val: "الشارقة" },
+                        { ar: "عجمان", en: "Ajman", val: "عجمان" },
+                        { ar: "أم القيوين", en: "Umm Al-Quwain", val: "أم القيوين" },
+                        { ar: "رأس الخيمة", en: "Ras Al Khaimah", val: "رأس الخيمة" },
+                        { ar: "الفجيرة", en: "Fujairah", val: "الفجيرة" }
+                      ].map(option => (
+                        <div 
+                          key={option.val}
+                          className={`${styles.dropdownOption} ${formData.deliveryDetails.emirate === option.val ? styles.selected : ''}`}
+                          onClick={() => {
+                            setFormData({ ...formData, deliveryDetails: { ...formData.deliveryDetails, emirate: option.val }});
+                            setIsEmirateDropdownOpen(false);
+                          }}
+                        >
+                          {language === "ar" ? option.ar : option.en}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className={styles.inputGroup}>
