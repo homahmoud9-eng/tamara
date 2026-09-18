@@ -20,19 +20,21 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
 
   const updateCategoryWithId = updateCategory.bind(null, category.id);
   const plainCategory = {
-    id: category.id,
-    nameAr: category.nameAr,
-    nameEn: category.nameEn,
-    slug: category.slug,
-    descriptionAr: category.descriptionAr,
-    descriptionEn: category.descriptionEn,
-    image: category.image,
-    titleImage: category.titleImage,
-    titleImageAr: category.titleImageAr,
-    titleImageEn: category.titleImageEn,
-    sortOrder: category.sortOrder,
-    isActive: category.isActive,
-    isFeatured: category.isFeatured,
+    id: category.id ?? null,
+    nameAr: category.nameAr ?? null,
+    nameEn: category.nameEn ?? null,
+    slug: category.slug ?? null,
+    descriptionAr: category.descriptionAr ?? null,
+    descriptionEn: category.descriptionEn ?? null,
+    image: category.image ?? null,
+    titleImage: category.titleImage ?? null,
+    titleImageAr: category.titleImageAr ?? null,
+    titleImageEn: category.titleImageEn ?? null,
+    sortOrder: category.sortOrder ?? 0,
+    isActive: category.isActive ?? true,
+    isFeatured: category.isFeatured ?? false,
+    createdAt: category.createdAt ? category.createdAt.toISOString() : null,
+    updatedAt: category.updatedAt ? category.updatedAt.toISOString() : null,
   };
 
   return (

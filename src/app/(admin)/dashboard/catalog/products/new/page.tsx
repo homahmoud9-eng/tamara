@@ -9,9 +9,9 @@ export default async function NewProductPage() {
   const lang = await getAdminLang();
   const categories = await prisma.category.findMany({ orderBy: { sortOrder: 'asc' } });
   const plainCategories = categories.map(c => ({
-    id: c.id,
-    nameAr: c.nameAr,
-    nameEn: c.nameEn,
+    id: c.id ?? null,
+    nameAr: c.nameAr ?? null,
+    nameEn: c.nameEn ?? null,
   }));
 
   return (
