@@ -3,25 +3,20 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { writeFile } from 'fs/promises';
-import path from 'path';
+import { put } from '@vercel/blob';
 
 async function uploadImage(file: any): Promise<string | null> {
   if (!file || typeof file === 'string' || !file.arrayBuffer || typeof file.size !== 'number' || file.size === 0) return null;
   
   try {
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    
     const ext = file.name ? file.name.split('.').pop() || 'png' : 'png';
-    const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
-    const filepath = path.join(process.cwd(), 'public/uploads/products', filename);
+    const filename = `products/${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
     
-    await writeFile(filepath, buffer);
-    return `/uploads/products/${filename}`;
-  } catch (err) {
+    const blob = await put(filename, file, { access: 'public' });
+    return blob.url;
+  } catch (err: any) {
     console.error('Image upload error:', err);
-    return null;
+    throw new Error(`Image upload failed: ${err.message || String(err)}`);
   }
 }
 
