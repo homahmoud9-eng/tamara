@@ -35,6 +35,8 @@ export default function CategoryForm({ mode, action, lang, initialData }: Catego
     const file = e.target.files?.[0];
     if (file) {
       setPreview(prev => ({ ...prev, [fieldName]: URL.createObjectURL(file) }));
+    } else {
+      setPreview(prev => ({ ...prev, [fieldName]: null }));
     }
   };
 

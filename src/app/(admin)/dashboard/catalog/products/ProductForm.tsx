@@ -112,6 +112,8 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
     const file = e.target.files?.[0];
     if (file) {
       setPreview(prev => ({ ...prev, primaryImage: URL.createObjectURL(file) }));
+    } else {
+      setPreview(prev => ({ ...prev, primaryImage: null }));
     }
   };
 
