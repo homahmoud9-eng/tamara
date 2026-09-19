@@ -36,12 +36,8 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [isMounted, setIsMounted] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   useEffect(() => setIsMounted(true), []);
-  const galleryItemsRef = useRef<(HTMLDivElement | null)[]>([]);
-
-  const scrollToImage = (index: number) => {
-    galleryItemsRef.current[index]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-  };
 
   const startRecording = async () => {
     try {
@@ -188,10 +184,16 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
           {isMounted ? (
             <>
               {/* Swipable Gallery Container */}
-              <div style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', width: '100%', height: '100%' }}>
+              <div 
+                onScroll={(e) => {
+                  const target = e.currentTarget;
+                  const index = Math.round(Math.abs(target.scrollLeft) / target.clientWidth);
+                  setActiveImageIndex(index);
+                }}
+                style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', width: '100%', height: '100%' }}
+              >
                 {/* Main Image */}
                 <div 
-                  ref={(el) => { galleryItemsRef.current[0] = el; }} 
                   style={{ flex: '0 0 100%', scrollSnapAlign: 'start', position: 'relative', width: '100%', height: '100%' }}
                 >
                   <SafeImage
@@ -203,10 +205,9 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
                   />
                 </div>
                 {/* Secondary Images */}
-                {product.gallery?.map((gImg, idx) => (
+                {product.gallery?.map((gImg) => (
                   <div 
                     key={gImg.id} 
-                    ref={(el) => { galleryItemsRef.current[idx + 1] = el; }} 
                     style={{ flex: '0 0 100%', scrollSnapAlign: 'start', position: 'relative', width: '100%', height: '100%' }}
                   >
                     <SafeImage src={gImg.image} alt="Gallery" fill style={{ objectFit: 'cover' }} />
@@ -214,27 +215,20 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
                 ))}
               </div>
 
-              {/* Thumbnails below for desktop navigation */}
+              {/* Pagination Dots */}
               {product.gallery && product.gallery.length > 0 && (
-                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '12px', background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-color)', position: 'absolute', bottom: 0, width: '100%', zIndex: 10 }}>
-                  <div 
-                    onClick={() => scrollToImage(0)}
-                    style={{ flex: '0 0 60px', height: '60px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border-color)' }}
-                  >
-                    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                      <SafeImage src={product.baseImage || product.image || ""} alt="Main" fill style={{ objectFit: 'cover' }} />
-                    </div>
-                  </div>
-                  {product.gallery.map((gImg, idx) => (
+                <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: '6px', zIndex: 10 }}>
+                  {Array.from({ length: product.gallery.length + 1 }).map((_, idx) => (
                     <div 
-                      key={gImg.id}
-                      onClick={() => scrollToImage(idx + 1)}
-                      style={{ flex: '0 0 60px', height: '60px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border-color)' }}
-                    >
-                      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                        <SafeImage src={gImg.image} alt="Gallery" fill style={{ objectFit: 'cover' }} />
-                      </div>
-                    </div>
+                      key={idx}
+                      style={{
+                        width: activeImageIndex === idx ? '20px' : '6px',
+                        height: '6px',
+                        borderRadius: '3px',
+                        backgroundColor: activeImageIndex === idx ? 'var(--brand-primary)' : 'rgba(255,255,255,0.7)',
+                        transition: 'all 0.3s ease'
+                      }}
+                    />
                   ))}
                 </div>
               )}
