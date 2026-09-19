@@ -267,13 +267,12 @@ export function Header({ announcement }: { announcement?: any }) {
               <Link href="/offers" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>{language === 'ar' ? 'العروض' : 'Offers'}</Link>
               <Link href="/packages" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>{language === 'ar' ? 'الباقات' : 'Packages'}</Link>
               <Link href="/blog" className={styles.mobileNavLink} onClick={() => setIsMobileMenuOpen(false)}>{language === 'ar' ? 'المدونة' : 'Blog'}</Link>
+              <div className={styles.mobileMenuActionsDrawer}>
+                <button className={styles.mobileMenuActionBtn} onClick={() => { toggleLanguage(); setIsMobileMenuOpen(false); }}>
+                  {language === 'ar' ? 'Switch to English' : 'التبديل للعربية'}
+                </button>
+              </div>
             </nav>
-            <div className={styles.mobileMenuActionsDrawer}>
-              <button className={styles.mobileMenuActionBtn} onClick={() => { toggleLanguage(); setIsMobileMenuOpen(false); }}>
-                {language === 'ar' ? 'Switch to English' : 'التبديل للعربية'}
-              </button>
-
-            </div>
           </div>
         </div>
       )}

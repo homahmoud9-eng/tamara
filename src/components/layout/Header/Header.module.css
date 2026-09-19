@@ -264,6 +264,7 @@ html[dir="rtl"] .notificationBadge {
   display: flex;
   flex-direction: column;
   box-shadow: -4px 0 24px rgba(0,0,0,0.5);
+  overflow-y: auto;
 }
 
 html[dir="rtl"] .mobileMenuDrawer {
@@ -276,16 +277,16 @@ html[dir="rtl"] .mobileMenuDrawer {
   justify-content: space-between;
   padding: var(--spacing-4);
   border-bottom: 1px solid var(--glass-border);
+  flex-shrink: 0;
 }
 
 .mobileMenuNav {
   display: flex;
   flex-direction: column;
   padding: var(--spacing-8) var(--spacing-6);
-  gap: var(--spacing-8);
+  gap: var(--spacing-6);
   align-items: center;
-  justify-content: center;
-  flex: 1;
+  justify-content: flex-start;
 }
 
 .mobileNavLink {
@@ -308,12 +309,13 @@ html[dir="rtl"] .mobileNavLink:active {
 }
 
 .mobileMenuActionsDrawer {
-  margin-top: auto;
-  padding: var(--spacing-4);
+  margin-top: var(--spacing-6);
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
-  border-top: 1px solid var(--glass-border);
+  width: 100%;
+  max-width: 220px;
 }
 
 .mobileMenuActionBtn {
@@ -324,6 +326,16 @@ html[dir="rtl"] .mobileNavLink:active {
   font-weight: 600;
   color: var(--text-primary);
   text-align: center;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .mobileMenuActionBtn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--color-primary);
+  }
 }
 
 /* Notification Dropdown */
