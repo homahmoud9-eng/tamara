@@ -32,34 +32,40 @@
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(100px) brightness(1.5);
+  filter: blur(140px);
   will-change: transform, opacity;
   z-index: 2;
 }
 
-/* Single primary glow: vibrant yellow (#facc15 / yellow-400), massive spread reaching all edges */
+/* Elegant, subtle ambient yellow glow (yellow-500 / 18% max opacity) */
 .primaryGlow {
-  top: -20vh;
-  right: -20vw;
-  width: 140vw;
-  height: 140vw;
-  background: radial-gradient(circle, #facc15 0%, rgba(250, 204, 21, 0.85) 30%, rgba(234, 179, 8, 0.45) 60%, rgba(234, 179, 8, 0.15) 80%, transparent 90%);
-  animation: movePrimaryGlow 3.5s ease-in-out infinite alternate;
+  top: 15%;
+  right: 15%;
+  width: 55vw;
+  height: 55vw;
+  max-width: 750px;
+  max-height: 750px;
+  background: radial-gradient(circle at center, rgba(234, 179, 8, 0.18) 0%, rgba(234, 179, 8, 0.10) 40%, rgba(234, 179, 8, 0.03) 65%, transparent 75%);
+  animation: movePrimaryGlow 4s ease-in-out infinite alternate;
+}
+
+:global(html[dir="ltr"]) .primaryGlow {
+  right: auto;
+  left: 15%;
 }
 
 @keyframes movePrimaryGlow {
   0% {
-    transform: translate(0, 0) scale(0.92);
-    opacity: 0.8;
+    transform: translate(0, 0) scale(0.95);
+    opacity: 0.75;
   }
   50% {
-    transform: translate(-5vw, 4vh) scale(1.08);
+    transform: translate(-3vw, 2vh) scale(1.08);
     opacity: 1;
-    filter: blur(85px) brightness(1.6);
   }
   100% {
-    transform: translate(4vw, -3vh) scale(1.0);
-    opacity: 0.88;
+    transform: translate(2vw, -1vh) scale(1.0);
+    opacity: 0.85;
   }
 }
 
@@ -127,29 +133,32 @@
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .glowLayer {
-    filter: blur(90px) brightness(1.5);
+    filter: blur(120px);
   }
   .primaryGlow {
-    top: -20vh;
+    top: 5%;
     left: 50%;
+    right: auto;
     transform: translateX(-50%);
-    width: 180vw;
-    height: 180vw;
-    animation: movePrimaryGlowMobile 3.5s ease-in-out infinite alternate;
+    width: 85vw;
+    height: 85vw;
+    max-width: 420px;
+    max-height: 420px;
+    background: radial-gradient(circle at center, rgba(234, 179, 8, 0.18) 0%, rgba(234, 179, 8, 0.08) 45%, transparent 70%);
+    animation: movePrimaryGlowMobile 4s ease-in-out infinite alternate;
   }
   @keyframes movePrimaryGlowMobile {
     0% {
-      transform: translate(-50%, 0) scale(0.92);
-      opacity: 0.8;
+      transform: translate(-50%, 0) scale(0.95);
+      opacity: 0.75;
     }
     50% {
-      transform: translate(-50%, 3vh) scale(1.1);
+      transform: translate(-50%, 2vh) scale(1.08);
       opacity: 1;
-      filter: blur(80px) brightness(1.6);
     }
     100% {
-      transform: translate(-50%, -2vh) scale(1.0);
-      opacity: 0.88;
+      transform: translate(-50%, -1vh) scale(1.0);
+      opacity: 0.85;
     }
   }
   .shootingStar {
