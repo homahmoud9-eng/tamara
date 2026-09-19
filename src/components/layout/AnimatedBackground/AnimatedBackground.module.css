@@ -4,7 +4,7 @@
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background-color: #0d1f11;
+  background-color: #151916;
 }
 
 /* Subtle cinematic haze / Vignette behind the glow */
@@ -12,7 +12,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 20%, rgba(13, 31, 17, 0.75) 100%);
+  background: radial-gradient(circle at center, transparent 20%, rgba(21, 25, 22, 0.75) 100%);
   z-index: 1;
   pointer-events: none;
 }
@@ -37,13 +37,13 @@
   z-index: 2;
 }
 
-/* Single primary GOLD glow: #d6bf61, positioned middle-right on desktop with high vibrancy */
+/* Single primary glow: #29721a, positioned middle-right on desktop with high vibrancy */
 .primaryGlow {
   top: 20%;
   right: 10%;
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, #d6bf61 0%, rgba(214, 191, 97, 0.9) 20%, rgba(214, 191, 97, 0.6) 45%, rgba(214, 191, 97, 0.2) 65%, transparent 75%);
+  background: radial-gradient(circle, #29721a 0%, rgba(41, 114, 26, 0.9) 20%, rgba(41, 114, 26, 0.6) 45%, rgba(41, 114, 26, 0.2) 65%, transparent 75%);
   animation: movePrimaryGlow 20s ease-in-out infinite alternate;
 }
 

@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#0d1f11",
+  themeColor: "#151916",
 };
 
 import { prisma } from "@/lib/prisma";
