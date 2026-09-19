@@ -4,16 +4,17 @@
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background-color: #002a0a;
+  background-color: #0d1f11;
 }
 
-/* Subtle cinematic haze / Vignette */
+/* Subtle cinematic haze / Vignette behind the glow */
 .backgroundContainer::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 0%, rgba(0, 42, 10, 0.85) 100%);
-  z-index: 2; /* Sits above the glows to create a vignette */
+  background: radial-gradient(circle at center, transparent 20%, rgba(13, 31, 17, 0.75) 100%);
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* Removed noise/grain per request for perfectly smooth background */
@@ -30,24 +31,26 @@
 .glowLayer {
   position: absolute;
   border-radius: 50%;
-  filter: blur(150px);
+  pointer-events: none;
+  filter: blur(100px) brightness(1.5);
   will-change: transform, opacity;
+  z-index: 2;
 }
 
-/* Single primary GOLD glow: #d6bf61, positioned middle-right on desktop */
+/* Single primary GOLD glow: #d6bf61, positioned middle-right on desktop with high vibrancy */
 .primaryGlow {
   top: 20%;
   right: 10%;
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, rgba(214, 191, 97, 0.45) 0%, transparent 70%);
+  background: radial-gradient(circle, #d6bf61 0%, rgba(214, 191, 97, 0.9) 20%, rgba(214, 191, 97, 0.6) 45%, rgba(214, 191, 97, 0.2) 65%, transparent 75%);
   animation: movePrimaryGlow 20s ease-in-out infinite alternate;
 }
 
 @keyframes movePrimaryGlow {
   0% {
     transform: translate(0, 0) scale(1);
-    opacity: 0.8;
+    opacity: 0.9;
   }
   50% {
     transform: translate(-10vw, 10vh) scale(1.1);
@@ -55,7 +58,7 @@
   }
   100% {
     transform: translate(5vw, -5vh) scale(0.95);
-    opacity: 0.85;
+    opacity: 0.9;
   }
 }
 
@@ -123,7 +126,7 @@
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .glowLayer {
-    filter: blur(150px);
+    filter: blur(100px) brightness(1.5);
   }
   .primaryGlow {
     top: 5%;
@@ -136,7 +139,7 @@
   @keyframes movePrimaryGlowMobile {
     0% {
       transform: translate(-50%, 0) scale(1);
-      opacity: 0.8;
+      opacity: 0.9;
     }
     50% {
       transform: translate(-50%, 5vh) scale(1.1);
@@ -144,7 +147,7 @@
     }
     100% {
       transform: translate(-50%, -5vh) scale(0.95);
-      opacity: 0.85;
+      opacity: 0.9;
     }
   }
   .shootingStar {
