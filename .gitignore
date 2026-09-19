@@ -46,3 +46,5 @@ next-env.d.ts
 
 # large media files
 *.mov
+  
+action-error.log 
