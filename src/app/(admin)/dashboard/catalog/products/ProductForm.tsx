@@ -115,6 +115,8 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
 
   const primaryImageInputRef = React.useRef<HTMLInputElement>(null);
 
+  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (preview.primaryImage && preview.primaryImage.startsWith('blob:')) {
@@ -127,6 +129,17 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
       setPreview(prev => ({ ...prev, primaryImage: null }));
     }
   };
+
+  const handleGalleryImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    // Revoke old blob URLs
+    galleryPreviews.forEach(url => URL.revokeObjectURL(url));
+    
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    setGalleryPreviews(newPreviews);
+  };
+
 
   const handleRemovePrimaryImage = () => {
     if (preview.primaryImage && preview.primaryImage.startsWith('blob:')) {
@@ -414,23 +427,30 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
 
           <div className="admin-form-group" style={{ marginTop: '24px' }}>
             <label className="admin-form-label">{lang === 'ar' ? 'معرض الصور (صور إضافية)' : 'Gallery Images (Additional)'}</label>
-            <input type="file" name="galleryImages" accept="image/png, image/jpeg, image/webp" multiple className="admin-input" />
+            <input type="file" name="galleryImages" accept="image/png, image/jpeg, image/webp" multiple onChange={handleGalleryImagesChange} className="admin-input" />
             
-            {mode === 'edit' && initialData?.gallery && initialData.gallery.length > 0 && (
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
-                {initialData.gallery.map((img: any) => (
-                  <div key={img.id} style={{ position: 'relative' }}>
-                    <img src={img.image} alt="Gallery" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--admin-border)' }} />
-                    <DeleteGalleryImageButton 
-                      imageId={img.id}
-                      productId={initialData.id}
-                      lang={lang}
-                      action={deleteGalleryImage}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
+              {/* Existing Server Images */}
+              {mode === 'edit' && initialData?.gallery && initialData.gallery.length > 0 && initialData.gallery.map((img: any) => (
+                <div key={img.id} style={{ position: 'relative' }}>
+                  <img src={img.image} alt="Gallery" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--admin-border)' }} />
+                  <DeleteGalleryImageButton 
+                    imageId={img.id}
+                    productId={initialData.id}
+                    lang={lang}
+                    action={deleteGalleryImage}
+                  />
+                </div>
+              ))}
+              
+              {/* Local Previews for New Images (with Hydration Guard) */}
+              {isMounted && galleryPreviews.map((url, idx) => (
+                <div key={idx} style={{ position: 'relative' }}>
+                  <img src={url} alt={`New Gallery ${idx}`} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '2px solid var(--brand-primary)', opacity: 0.8 }} />
+                  <div style={{ position: 'absolute', top: '-6px', right: '-6px', background: 'var(--brand-primary)', color: 'white', borderRadius: '10px', fontSize: '10px', padding: '2px 6px' }}>New</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

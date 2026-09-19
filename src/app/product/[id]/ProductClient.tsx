@@ -88,9 +88,10 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
   };
 
   // Derived State
+  const [activeGalleryImage, setActiveGalleryImage] = useState<string | null>(null);
   const selectedVariant = product?.variants?.find(v => v.id === selectedVariantId);
   const isPackage = product?.categoryId === 'cat-packages';
-  const activeImage = selectedVariant?.image || product?.baseImage || product?.image || "";
+  const activeImage = activeGalleryImage || selectedVariant?.image || product?.baseImage || product?.image || "";
   
   // Calculate price dynamically
   const basePrice = selectedVariant ? selectedVariant.price : (product?.price || 0);
@@ -180,9 +181,40 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
           src={activeImage}
           alt={language === "ar" ? product.name.ar : product.name.en}
           fill
-          className="object-cover"
+          style={{ objectFit: 'cover' }}
           priority
         />
+        {product.gallery && product.gallery.length > 0 && (
+          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '12px', background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-color)', position: 'absolute', bottom: 0, width: '100%', zIndex: 10 }}>
+            {/* Main image thumbnail */}
+            <div 
+              onClick={() => setActiveGalleryImage(null)}
+              style={{ 
+                flex: '0 0 60px', height: '60px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer',
+                border: activeGalleryImage === null ? '2px solid var(--brand-primary)' : '2px solid transparent'
+              }}
+            >
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                <SafeImage src={product.baseImage || product.image || ""} alt="Main" fill style={{ objectFit: 'cover' }} />
+              </div>
+            </div>
+            {/* Gallery thumbnails */}
+            {product.gallery.map((gImg) => (
+              <div 
+                key={gImg.id}
+                onClick={() => setActiveGalleryImage(gImg.image)}
+                style={{ 
+                  flex: '0 0 60px', height: '60px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer',
+                  border: activeGalleryImage === gImg.image ? '2px solid var(--brand-primary)' : '2px solid transparent'
+                }}
+              >
+                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                  <SafeImage src={gImg.image} alt="Gallery" fill style={{ objectFit: 'cover' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className={`container ${styles.detailsSection}`}>

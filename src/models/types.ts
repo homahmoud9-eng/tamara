@@ -65,6 +65,7 @@ export interface Product {
   name: LocalizedString;
   description: LocalizedString;
   baseImage: string; // Used if no variant is selected, or as fallback
+  gallery?: { id: string; image: string }[];
   mobileImage?: string;
   active: boolean;
   featured: boolean;

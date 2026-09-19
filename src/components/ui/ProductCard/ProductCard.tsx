@@ -50,7 +50,7 @@ export function ProductCard({ product }: { product: Product }) {
           src={product.baseImage || product.image || ""}
           alt={language === "ar" ? product.name.ar : product.name.en}
           fill
-          className="object-cover"
+          style={{ objectFit: 'cover' }}
         />
       </div>
       <div className={styles.productInfo}>
