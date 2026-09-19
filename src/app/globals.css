@@ -14,7 +14,7 @@
        url('/fonts/FodaKufi.ttf') format('truetype'),
        url('/fonts/Foda-Kufi.ttf') format('truetype'),
        url('/fonts/FodaKufi.otf') format('opentype');
-  font-weight: 400 900;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
