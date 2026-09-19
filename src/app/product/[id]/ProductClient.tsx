@@ -8,6 +8,7 @@ import { useFavorites } from "@/components/providers/FavoritesProvider";
 import { mockReviews } from "@/models/mock/data";
 import { SafeImage } from "@/components/ui/SafeImage/SafeImage";
 import { PackageCustomizer } from "@/components/ui/PackageCustomizer/PackageCustomizer";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import styles from "./product.module.css";
 import { Product } from "@/models/types";
 
@@ -38,6 +39,11 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   useEffect(() => setIsMounted(true), []);
+  const galleryItemsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  const scrollToImage = (index: number) => {
+    galleryItemsRef.current[index]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  };
 
   const startRecording = async () => {
     try {
@@ -185,15 +191,17 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
             <>
               {/* Swipable Gallery Container */}
               <div 
+                className={styles.hideScrollbar}
                 onScroll={(e) => {
                   const target = e.currentTarget;
                   const index = Math.round(Math.abs(target.scrollLeft) / target.clientWidth);
                   setActiveImageIndex(index);
                 }}
-                style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', width: '100%', height: '100%' }}
+                style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', width: '100%', height: '100%', scrollBehavior: 'smooth' }}
               >
                 {/* Main Image */}
                 <div 
+                  ref={(el) => { galleryItemsRef.current[0] = el; }} 
                   style={{ flex: '0 0 100%', scrollSnapAlign: 'start', position: 'relative', width: '100%', height: '100%' }}
                 >
                   <SafeImage
@@ -205,9 +213,10 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
                   />
                 </div>
                 {/* Secondary Images */}
-                {product.gallery?.map((gImg) => (
+                {product.gallery?.map((gImg, idx) => (
                   <div 
                     key={gImg.id} 
+                    ref={(el) => { galleryItemsRef.current[idx + 1] = el; }} 
                     style={{ flex: '0 0 100%', scrollSnapAlign: 'start', position: 'relative', width: '100%', height: '100%' }}
                   >
                     <SafeImage src={gImg.image} alt="Gallery" fill style={{ objectFit: 'cover' }} />
@@ -215,18 +224,40 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
                 ))}
               </div>
 
+              {/* Desktop Navigation Arrows */}
+              {product.gallery && product.gallery.length > 0 && activeImageIndex > 0 && (
+                <button 
+                  onClick={() => scrollToImage(activeImageIndex - 1)}
+                  className={`${styles.navArrow} ${styles.navArrowLeft}`}
+                  aria-label="Previous Image"
+                >
+                  {language === 'ar' ? <ChevronRight size={24} /> : <ChevronLeft size={24} />}
+                </button>
+              )}
+              {product.gallery && product.gallery.length > 0 && activeImageIndex < product.gallery.length && (
+                <button 
+                  onClick={() => scrollToImage(activeImageIndex + 1)}
+                  className={`${styles.navArrow} ${styles.navArrowRight}`}
+                  aria-label="Next Image"
+                >
+                  {language === 'ar' ? <ChevronLeft size={24} /> : <ChevronRight size={24} />}
+                </button>
+              )}
+
               {/* Pagination Dots */}
               {product.gallery && product.gallery.length > 0 && (
                 <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: '6px', zIndex: 10 }}>
                   {Array.from({ length: product.gallery.length + 1 }).map((_, idx) => (
                     <div 
                       key={idx}
+                      onClick={() => scrollToImage(idx)}
                       style={{
                         width: activeImageIndex === idx ? '20px' : '6px',
                         height: '6px',
                         borderRadius: '3px',
                         backgroundColor: activeImageIndex === idx ? 'var(--brand-primary)' : 'rgba(255,255,255,0.7)',
-                        transition: 'all 0.3s ease'
+                        transition: 'all 0.3s ease',
+                        cursor: 'pointer'
                       }}
                     />
                   ))}

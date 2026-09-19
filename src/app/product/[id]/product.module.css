@@ -40,6 +40,52 @@
   }
 }
 
+.hideScrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.navArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: var(--shadow-sm);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.navArrow:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.navArrowLeft {
+  left: 16px;
+}
+
+.navArrowRight {
+  right: 16px;
+}
+
+@media (max-width: 1023px) {
+  .navArrow {
+    display: none;
+  }
+}
+
 .backBtn {
   position: absolute;
   top: var(--spacing-4);
