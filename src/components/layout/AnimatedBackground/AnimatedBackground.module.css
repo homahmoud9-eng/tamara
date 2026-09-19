@@ -4,7 +4,7 @@
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background-color: #161a1d; /* Base softened dark tone */
+  background-color: #06583e;
 }
 
 /* Subtle cinematic haze / Vignette */
@@ -12,7 +12,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 0%, rgba(22, 26, 29, 0.85) 100%);
+  background: radial-gradient(circle at center, transparent 0%, rgba(6, 88, 62, 0.85) 100%);
   z-index: 2; /* Sits above the glows to create a vignette */
 }
 
@@ -132,25 +132,90 @@
   }
 }
 
+/* Shooting Stars */
+.shootingStarContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.shootingStar {
+  position: absolute;
+  width: 150px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+  filter: blur(1px);
+  opacity: 0;
+  transform: rotate(-45deg);
+  will-change: transform, opacity;
+}
+
+.star1 {
+  top: 10%;
+  left: 80%;
+  animation: shootingStarAnim 8s linear infinite;
+  animation-delay: 1s;
+}
+
+.star2 {
+  top: -10%;
+  left: 50%;
+  animation: shootingStarAnim 12s linear infinite;
+  animation-delay: 6s;
+}
+
+.star3 {
+  top: 40%;
+  left: 90%;
+  animation: shootingStarAnim 15s linear infinite;
+  animation-delay: 11s;
+}
+
+@keyframes shootingStarAnim {
+  0% {
+    transform: rotate(-45deg) translateX(0) scaleX(1);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  15% {
+    transform: rotate(-45deg) translateX(-120vw) scaleX(2);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(-45deg) translateX(-120vw) scaleX(2);
+    opacity: 0;
+  }
+}
+
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .glowLayer {
-    filter: blur(80px);
+    filter: blur(140px);
   }
   .primaryGold {
-    width: 80vw;
-    height: 80vw;
+    width: 150vw;
+    height: 150vw;
   }
   .secondaryGold {
-    width: 60vw;
-    height: 60vw;
+    width: 120vw;
+    height: 120vw;
   }
   .emeraldGlow {
-    width: 90vw;
-    height: 90vw;
+    width: 140vw;
+    height: 140vw;
   }
   .warmBrown {
-    display: none; /* Reduce layers on mobile to save performance */
+    width: 120vw;
+    height: 120vw;
+  }
+  .shootingStar {
+    width: 250px;
+    height: 3px;
+    filter: blur(2px);
   }
 }
 

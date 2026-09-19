@@ -15,6 +15,12 @@ export function AnimatedBackground() {
       <div className={`${styles.glowLayer} ${styles.secondaryGold}`}></div>
       <div className={`${styles.glowLayer} ${styles.emeraldGlow}`}></div>
       <div className={`${styles.glowLayer} ${styles.warmBrown}`}></div>
+      {/* Shooting Stars */}
+      <div className={styles.shootingStarContainer}>
+        <div className={`${styles.shootingStar} ${styles.star1}`}></div>
+        <div className={`${styles.shootingStar} ${styles.star2}`}></div>
+        <div className={`${styles.shootingStar} ${styles.star3}`}></div>
+      </div>
     </div>
   );
 }
