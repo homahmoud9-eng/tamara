@@ -11,10 +11,7 @@ export function AnimatedBackground() {
   // The base color is handled within the CSS.
   return (
     <div className={styles.backgroundContainer} aria-hidden="true">
-      <div className={`${styles.glowLayer} ${styles.primaryGold}`}></div>
-      <div className={`${styles.glowLayer} ${styles.secondaryGold}`}></div>
-      <div className={`${styles.glowLayer} ${styles.emeraldGlow}`}></div>
-      <div className={`${styles.glowLayer} ${styles.warmBrown}`}></div>
+      <div className={`${styles.glowLayer} ${styles.primaryGlow}`}></div>
       {/* Shooting Stars */}
       <div className={styles.shootingStarContainer}>
         <div className={`${styles.shootingStar} ${styles.star1}`}></div>

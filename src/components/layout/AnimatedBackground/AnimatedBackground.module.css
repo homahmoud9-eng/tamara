@@ -4,7 +4,7 @@
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
-  background-color: #06583e;
+  background-color: #002a0a;
 }
 
 /* Subtle cinematic haze / Vignette */
@@ -12,7 +12,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 0%, rgba(6, 88, 62, 0.85) 100%);
+  background: radial-gradient(circle at center, transparent 0%, rgba(0, 42, 10, 0.85) 100%);
   z-index: 2; /* Sits above the glows to create a vignette */
 }
 
@@ -30,107 +30,36 @@
 .glowLayer {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
+  filter: blur(150px);
   will-change: transform, opacity;
 }
 
-/* 1. Primary GOLD glow: warm amber/gold, large, very soft, slow movement */
-.primaryGold {
-  top: 10%;
-  left: 20%;
-  width: 70vw;
-  height: 70vw;
-  background: radial-gradient(circle, rgba(200, 154, 69, 0.50) 0%, transparent 70%);
-  animation: movePrimaryGold 15s ease-in-out infinite alternate;
-}
-
-/* 2. Secondary GOLD glow: smaller, lower opacity, different movement path */
-.secondaryGold {
-  bottom: 20%;
-  right: 15%;
-  width: 55vw;
-  height: 55vw;
-  background: radial-gradient(circle, rgba(213, 168, 79, 0.35) 0%, transparent 70%);
-  animation: moveSecondaryGold 20s ease-in-out infinite alternate;
-}
-
-/* 3. Dark EMERALD glow: subtle, positioned toward another area, slow movement */
-.emeraldGlow {
-  top: 40%;
+/* Single primary GOLD glow: #d6bf61, positioned middle-right on desktop */
+.primaryGlow {
+  top: 20%;
   right: 10%;
-  width: 70vw;
-  height: 70vw;
-  background: radial-gradient(circle, rgba(11, 40, 30, 0.5) 0%, transparent 65%);
-  animation: moveEmerald 18s ease-in-out infinite alternate;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(214, 191, 97, 0.45) 0%, transparent 70%);
+  animation: movePrimaryGlow 20s ease-in-out infinite alternate;
 }
 
-/* 4. Very subtle WARM BROWN glow: almost invisible, adds depth */
-.warmBrown {
-  bottom: 5%;
-  left: 10%;
-  width: 50vw;
-  height: 50vw;
-  background: radial-gradient(circle, rgba(100, 60, 30, 0.15) 0%, transparent 60%);
-  animation: moveBrown 25s ease-in-out infinite alternate;
-}
-
-@keyframes movePrimaryGold {
+@keyframes movePrimaryGlow {
   0% {
     transform: translate(0, 0) scale(1);
     opacity: 0.8;
   }
-  33% {
-    transform: translate(15vw, 5vh) scale(1.15);
+  50% {
+    transform: translate(-10vw, 10vh) scale(1.1);
     opacity: 1;
   }
-  66% {
-    transform: translate(-10vw, 10vh) scale(0.9);
+  100% {
+    transform: translate(5vw, -5vh) scale(0.95);
     opacity: 0.85;
   }
-  100% {
-    transform: translate(5vw, -5vh) scale(1.05);
-    opacity: 0.9;
-  }
 }
 
-@keyframes moveSecondaryGold {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.7;
-  }
-  50% {
-    transform: translate(-20vw, -15vh) scale(1.2);
-    opacity: 0.95;
-  }
-  100% {
-    transform: translate(10vw, 10vh) scale(0.85);
-    opacity: 0.6;
-  }
-}
 
-@keyframes moveEmerald {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(-10vw, 20vh) scale(1.05);
-  }
-  100% {
-    transform: translate(15vw, -10vh) scale(0.95);
-  }
-}
-
-@keyframes moveBrown {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(25vw, -10vh) scale(1.1);
-  }
-  100% {
-    transform: translate(-5vw, 15vh) scale(0.9);
-  }
-}
 
 /* Shooting Stars */
 .shootingStarContainer {
@@ -194,23 +123,29 @@
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .glowLayer {
-    filter: blur(140px);
+    filter: blur(150px);
   }
-  .primaryGold {
+  .primaryGlow {
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
     width: 150vw;
     height: 150vw;
+    animation: movePrimaryGlowMobile 20s ease-in-out infinite alternate;
   }
-  .secondaryGold {
-    width: 120vw;
-    height: 120vw;
-  }
-  .emeraldGlow {
-    width: 140vw;
-    height: 140vw;
-  }
-  .warmBrown {
-    width: 120vw;
-    height: 120vw;
+  @keyframes movePrimaryGlowMobile {
+    0% {
+      transform: translate(-50%, 0) scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translate(-50%, 5vh) scale(1.1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -5vh) scale(0.95);
+      opacity: 0.85;
+    }
   }
   .shootingStar {
     width: 250px;
