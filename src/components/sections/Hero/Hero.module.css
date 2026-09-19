@@ -121,24 +121,34 @@ html[dir="rtl"] .imageElement {
 }
 
 .headline {
-  font-family: var(--font-cairo);
-  font-size: clamp(28px, 8vw, 36px);
+  font-family: var(--font-foda);
+  font-size: clamp(42px, 13vw, 76px);
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.05;
   margin-bottom: var(--spacing-4);
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
   gap: 4px;
+  word-break: keep-all;
+  letter-spacing: -0.01em;
 }
 
 :global([lang="en"]) .headline {
-  font-family: var(--font-dm-serif-display);
-  font-weight: 400;
+  font-family: var(--font-foda), var(--font-dm-serif-display, serif);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .headlineLine {
   display: block;
+}
+
+@media (min-width: 768px) {
+  .headline {
+    font-size: clamp(76px, 10vw, 110px);
+    line-height: 1.0;
+  }
 }
 
 .subtitle {
@@ -200,7 +210,7 @@ html[dir="rtl"] .imageElement {
   }
 
   .contentHalf {
-    width: 50%;
+    width: 55%;
     margin-top: 0;
     padding-top: var(--spacing-16);
     padding-bottom: var(--spacing-16);
@@ -211,14 +221,19 @@ html[dir="rtl"] .imageElement {
     padding-inline-start: max(var(--spacing-6), calc((100vw - var(--max-width)) / 2));
   }
 
+  .textContent {
+    max-width: 850px;
+  }
+
   .headline {
-    font-size: 64px;
+    font-size: clamp(100px, 11vw, 150px);
+    line-height: 0.95;
     margin-bottom: var(--spacing-6);
   }
 
   .subtitle {
     font-size: 18px;
-    max-width: 480px;
+    max-width: 520px;
   }
 
   .actions {
@@ -229,6 +244,24 @@ html[dir="rtl"] .imageElement {
   .primaryBtn, .secondaryBtn {
     width: auto;
     min-width: 200px;
+  }
+}
+
+/* Large screens: 200px Headline as requested with tight leading */
+@media (min-width: 1280px) {
+  .contentHalf {
+    width: 60%;
+  }
+
+  .textContent {
+    max-width: 1050px;
+  }
+
+  .headline {
+    font-size: 200px;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--spacing-8);
   }
 }
 

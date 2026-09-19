@@ -8,6 +8,17 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Foda Kufi';
+  src: url('/fonts/FodaKufi.woff2') format('woff2'),
+       url('/fonts/FodaKufi.ttf') format('truetype'),
+       url('/fonts/Foda-Kufi.ttf') format('truetype'),
+       url('/fonts/FodaKufi.otf') format('opentype');
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Brand Colors */
   --brand-primary: #173F35;
@@ -21,6 +32,7 @@
   --color-warning: #f59e0b;
 
   /* Typography */
+  --font-foda: 'Foda Kufi', 'STC', 'Cairo', sans-serif;
   --font-stc: 'STC', sans-serif;
   --font-arabic-display: 'Cairo', sans-serif;
   --font-arabic-heading: 'STC', sans-serif;
