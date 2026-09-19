@@ -86,7 +86,7 @@ export function Hero({ slides = [], freeDeliveryThreshold = 500 }: { slides?: an
         <div className={`container ${styles.contentHalf}`}>
           <div className={styles.textContent}>
             <div className={styles.badge}>{text.badge}</div>
-            <h1 className={styles.headline}>
+            <h1 className={`${styles.headline} ${language === 'en' ? styles.englishHeadline : ''}`}>
               {text.headline.split('\n').map((line: string, i: number) => (
                 <span key={i} className={styles.headlineLine}>{line}</span>
               ))}

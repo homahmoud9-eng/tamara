@@ -19,6 +19,20 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Tactic Sans Extended';
+  src: url('/fonts/TacticSans-ExtUltraItalic.woff2') format('woff2'),
+       url('/fonts/TacticSans-ExtUltraItalic.ttf') format('truetype'),
+       url('/fonts/TacticSans-ExtUltraItalic.otf') format('opentype'),
+       url('/fonts/TacticSansExtended-UltraItalic.woff2') format('woff2'),
+       url('/fonts/TacticSansExtended-UltraItalic.ttf') format('truetype'),
+       url('/fonts/TacticSansExtended-UltraItalic.otf') format('opentype'),
+       url('/fonts/TacticSans-UltraItalic.ttf') format('truetype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   /* Brand Colors */
   --brand-primary: #173F35;
@@ -33,6 +47,7 @@
 
   /* Typography */
   --font-foda: 'Foda Kufi', 'STC', 'Cairo', sans-serif;
+  --font-tactic: 'Tactic Sans Extended', 'Impact', 'Arial Black', sans-serif;
   --font-stc: 'STC', sans-serif;
   --font-arabic-display: 'Cairo', sans-serif;
   --font-arabic-heading: 'STC', sans-serif;

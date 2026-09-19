@@ -122,7 +122,7 @@ html[dir="rtl"] .imageElement {
 
 .headline {
   font-family: var(--font-foda);
-  font-size: clamp(42px, 13vw, 76px);
+  font-size: clamp(38px, 11vw, 56px);
   font-weight: 800;
   line-height: 1.05;
   margin-bottom: var(--spacing-4);
@@ -134,9 +134,12 @@ html[dir="rtl"] .imageElement {
   letter-spacing: -0.01em;
 }
 
-:global([lang="en"]) .headline {
-  font-family: var(--font-foda), var(--font-dm-serif-display, serif);
-  font-weight: 700;
+:global([lang="en"]) .headline,
+:global(html[dir="ltr"]) .headline,
+.englishHeadline {
+  font-family: var(--font-tactic);
+  font-weight: 900;
+  font-style: italic;
   letter-spacing: -0.02em;
 }
 
@@ -146,19 +149,23 @@ html[dir="rtl"] .imageElement {
 
 @media (min-width: 768px) {
   .headline {
-    font-size: clamp(76px, 10vw, 110px);
+    font-size: clamp(58px, 8vw, 84px);
     line-height: 1.0;
+  }
+
+  .subtitle {
+    font-size: 1.5rem; /* text-2xl */
   }
 }
 
 .subtitle {
   font-family: var(--font-cairo);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: clamp(1.25rem, 4vw, 1.4rem); /* text-xl on mobile */
+  line-height: 1.5;
   color: var(--text-secondary);
-  margin-bottom: var(--spacing-8);
+  margin-bottom: var(--spacing-6);
   font-weight: 500;
-  max-width: 480px;
+  max-width: 520px;
 }
 
 :global([lang="en"]) .subtitle {
@@ -226,14 +233,16 @@ html[dir="rtl"] .imageElement {
   }
 
   .headline {
-    font-size: clamp(100px, 11vw, 150px);
-    line-height: 0.95;
+    font-size: clamp(88px, 9vw, 125px);
+    line-height: 0.98;
     margin-bottom: var(--spacing-6);
   }
 
   .subtitle {
-    font-size: 18px;
-    max-width: 520px;
+    font-size: clamp(1.5rem, 1.8vw, 1.75rem);
+    line-height: 1.45;
+    max-width: 620px;
+    margin-bottom: var(--spacing-8);
   }
 
   .actions {
@@ -247,20 +256,27 @@ html[dir="rtl"] .imageElement {
   }
 }
 
-/* Large screens: 200px Headline as requested with tight leading */
+/* Large screens: 140px-150px Headline with text-3xl Subtitle */
 @media (min-width: 1280px) {
   .contentHalf {
     width: 60%;
   }
 
   .textContent {
-    max-width: 1050px;
+    max-width: 950px;
   }
 
   .headline {
-    font-size: 200px;
-    line-height: 0.92;
-    letter-spacing: -0.03em;
+    font-size: 150px;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--spacing-6);
+  }
+
+  .subtitle {
+    font-size: 1.875rem; /* text-3xl */
+    line-height: 1.4;
+    max-width: 720px;
     margin-bottom: var(--spacing-8);
   }
 }

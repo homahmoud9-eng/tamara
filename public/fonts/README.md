@@ -1,9 +1,20 @@
 # Custom Fonts Directory
 
-To use the custom **Foda Kufi** font for the landing page Hero heading, place your font file here with one of the following names:
+### 1. Arabic Main Heading: Foda Kufi
+Place your font file here with one of the following names:
 - `FodaKufi.woff2` (recommended)
 - `FodaKufi.ttf`
 - `Foda-Kufi.ttf`
 - `FodaKufi.otf`
 
-The application will automatically detect and load the font via `@font-face` and fall back to `STC` / `Cairo` until the file is provided.
+### 2. English Main Heading: Tactic Sans Extended Ultra Italic
+Place your font file here with one of the following names:
+- `TacticSans-ExtUltraItalic.woff2` (recommended)
+- `TacticSans-ExtUltraItalic.ttf`
+- `TacticSans-ExtUltraItalic.otf`
+- `TacticSansExtended-UltraItalic.woff2`
+- `TacticSansExtended-UltraItalic.ttf`
+- `TacticSansExtended-UltraItalic.otf`
+- `TacticSans-UltraItalic.ttf`
+
+The application automatically maps these via `@font-face` and gracefully falls back until the files are placed in this folder.
