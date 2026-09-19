@@ -127,7 +127,6 @@ export default function CategoryForm({ mode, action, lang, initialData }: Catego
                 accept="image/png, image/jpeg, image/webp" 
                 onChange={(e) => handleImageChange(e, 'image')} 
                 ref={imageInputRef}
-                key={preview.image ? 'has-image' : 'no-image'}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} 
               />
               <div style={{ pointerEvents: 'none' }}>
@@ -160,7 +159,6 @@ export default function CategoryForm({ mode, action, lang, initialData }: Catego
                 accept="image/png, image/jpeg, image/webp" 
                 onChange={(e) => handleImageChange(e, 'titleImageAr')} 
                 ref={titleImageArInputRef}
-                key={preview.titleImageAr ? 'has-image-ar' : 'no-image-ar'}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} 
               />
               <div style={{ pointerEvents: 'none' }}>
@@ -193,7 +191,6 @@ export default function CategoryForm({ mode, action, lang, initialData }: Catego
                 accept="image/png, image/jpeg, image/webp" 
                 onChange={(e) => handleImageChange(e, 'titleImageEn')} 
                 ref={titleImageEnInputRef}
-                key={preview.titleImageEn ? 'has-image-en' : 'no-image-en'}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} 
               />
               <div style={{ pointerEvents: 'none' }}>

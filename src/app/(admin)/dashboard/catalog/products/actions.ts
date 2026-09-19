@@ -115,7 +115,15 @@ export async function updateProduct(id: string, formData: FormData) {
       return { success: false, error: 'Name and Category are required.' };
     }
 
-    const newPrimaryImage = await uploadImage(formData.get('primaryImage'));
+    const primaryImageFile = formData.get('primaryImage');
+    console.log('--- SERVER ACTION updateProduct ---');
+    console.log('ID:', id);
+    console.log('Name:', nameEn);
+    console.log('primaryImage File:', primaryImageFile);
+    console.log('removePrimaryImage:', formData.get('removePrimaryImage'));
+    console.log('-----------------------------------');
+
+    const newPrimaryImage = await uploadImage(primaryImageFile);
     const removePrimary = formData.get('removePrimaryImage') === 'true';
 
     const variantsJson = formData.get('variantsJson') as string;

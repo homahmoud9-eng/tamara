@@ -133,6 +133,18 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
     }
   };
 
+  const handleAction = async (formData: FormData) => {
+    console.log('--- CLIENT SUBMIT ---');
+    console.log('Name:', formData.get('nameEn'));
+    const primaryImg = formData.get('primaryImage') as File;
+    console.log('primaryImage in FormData:', primaryImg ? `${primaryImg.name} (${primaryImg.size} bytes)` : 'null');
+    console.log('removePrimaryImage:', formData.get('removePrimaryImage'));
+    console.log('variantsJson:', formData.get('variantsJson'));
+    console.log('---------------------');
+    
+    return action(formData);
+  };
+
   const getCategoryName = (id: string) => {
     const cat = categories.find(c => c.id === id);
     return cat ? (lang === 'ar' ? cat.nameAr : cat.nameEn) : '---';
@@ -140,7 +152,7 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
 
   return (
     <AdminForm 
-      action={action} 
+      action={handleAction} 
       lang={lang} 
       redirectUrl="/dashboard/catalog?tab=products"
       submitText={mode === 'create' ? "Save Product" : "Save Changes"}
@@ -373,7 +385,6 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
                 accept="image/png, image/jpeg, image/webp" 
                 onChange={handleImageChange} 
                 ref={primaryImageInputRef}
-                key={preview.primaryImage ? 'has-image' : 'no-image'}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} 
               />
               <div style={{ pointerEvents: 'none' }}>
@@ -523,6 +534,8 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
             AdminForm appends <div className="admin-form-actions">...</div> automatically. */}
 
       </div>
+
+      <input type="hidden" name="variantsJson" value={JSON.stringify(variants)} />
     </AdminForm>
   );
 }
