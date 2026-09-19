@@ -12,7 +12,7 @@ interface OfferRailProps {
 }
 
 export function OfferRail({ offers }: OfferRailProps) {
-  const { language, direction } = useApp();
+  const { language, direction, t } = useApp();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (dir: 'left' | 'right') => {
@@ -27,10 +27,12 @@ export function OfferRail({ offers }: OfferRailProps) {
     }
   };
 
+  if (!offers || offers.length === 0) return null;
+
   return (
     <section className={styles.offerSection}>
       <div className={`container ${styles.header}`}>
-        <h2 className={styles.title}>{language === 'ar' ? 'عروض حصرية' : 'Exclusive Offers'}</h2>
+        <h2 className={styles.title}>{t('exclusive_offers')}</h2>
         <div className={styles.controls}>
           <button className={styles.controlBtn} onClick={() => scroll(direction === 'rtl' ? 'right' : 'left')} aria-label="Scroll back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -50,8 +52,11 @@ export function OfferRail({ offers }: OfferRailProps) {
           {offers.map((offer) => (
             <Link href={offer.ctaLink} key={offer.id} className={styles.offerCard}>
               <div className={styles.badge}>
-                خصم {offer.discountValue}
-                {offer.discountType === 'percentage' ? '%' : ' د.إ'}
+                {language === 'ar' ? (
+                  <span>{t('discount')} {offer.discountValue}{offer.discountType === 'percentage' ? '%' : ' د.إ'}</span>
+                ) : (
+                  <span>{offer.discountValue}{offer.discountType === 'percentage' ? '%' : ' AED'} {t('discount')}</span>
+                )}
               </div>
               <div className={styles.imageWrapper}>
                 <SafeImage

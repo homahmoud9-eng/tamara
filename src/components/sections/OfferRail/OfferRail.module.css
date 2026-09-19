@@ -146,7 +146,7 @@
 .badge {
   position: absolute;
   top: var(--spacing-4);
-  left: var(--spacing-4);
+  inset-inline-start: var(--spacing-4);
   background-color: var(--color-primary); /* bright primary color */
   color: #ffffff;
   padding: 6px 14px;
@@ -159,6 +159,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 }
 
 .content {

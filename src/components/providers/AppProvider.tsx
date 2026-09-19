@@ -15,6 +15,8 @@ interface UserProfile {
   profileImage: string | null;
 }
 
+import { t as translate, TranslationKey } from "@/lib/translations";
+
 interface AppContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
@@ -23,6 +25,7 @@ interface AppContextType {
   direction: Direction;
   userProfile: UserProfile;
   updateProfile: (updates: Partial<UserProfile>) => void;
+  t: (key: TranslationKey | string) => string;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -111,9 +114,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [language]);
 
   const direction: Direction = language === "ar" ? "rtl" : "ltr";
+  const t = (key: TranslationKey | string) => translate(key as any, language);
 
   return (
-    <AppContext.Provider value={{ theme, setTheme, language, setLanguage, direction, userProfile, updateProfile }}>
+    <AppContext.Provider value={{ theme, setTheme, language, setLanguage, direction, userProfile, updateProfile, t }}>
       <Toaster position="top-center" />
       {children}
     </AppContext.Provider>
@@ -126,4 +130,9 @@ export function useApp() {
     throw new Error("useApp must be used within an AppProvider");
   }
   return context;
+}
+
+export function useTranslation() {
+  const { t, language, direction } = useApp();
+  return { t, language, direction };
 }
