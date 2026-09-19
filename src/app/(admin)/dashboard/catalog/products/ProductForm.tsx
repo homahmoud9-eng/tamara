@@ -108,12 +108,28 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
     }
   };
 
+  const primaryImageInputRef = React.useRef<HTMLInputElement>(null);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (preview.primaryImage && preview.primaryImage.startsWith('blob:')) {
+      URL.revokeObjectURL(preview.primaryImage);
+    }
+    
     if (file) {
       setPreview(prev => ({ ...prev, primaryImage: URL.createObjectURL(file) }));
     } else {
       setPreview(prev => ({ ...prev, primaryImage: null }));
+    }
+  };
+
+  const handleRemovePrimaryImage = () => {
+    if (preview.primaryImage && preview.primaryImage.startsWith('blob:')) {
+      URL.revokeObjectURL(preview.primaryImage);
+    }
+    setPreview(prev => ({ ...prev, primaryImage: null }));
+    if (primaryImageInputRef.current) {
+      primaryImageInputRef.current.value = '';
     }
   };
 
@@ -351,12 +367,27 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
           <div className="admin-form-group">
             <label className="admin-form-label">{lang === 'ar' ? 'الصورة الرئيسية (اختياري)' : 'Primary Image (Optional)'}</label>
             <div style={{ border: '2px dashed var(--admin-border)', padding: '24px', textAlign: 'center', borderRadius: '8px', position: 'relative' }}>
-              <input type="file" name="primaryImage" accept="image/png, image/jpeg, image/webp" onChange={handleImageChange} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} />
+              <input 
+                type="file" 
+                name="primaryImage" 
+                accept="image/png, image/jpeg, image/webp" 
+                onChange={handleImageChange} 
+                ref={primaryImageInputRef}
+                key={preview.primaryImage ? 'has-image' : 'no-image'}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} 
+              />
               <div style={{ pointerEvents: 'none' }}>
                 <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>{lang === 'ar' ? 'اسحب الصورة هنا أو اضغط لاختيار صورة' : 'Drag image here or click to select'}</p>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--admin-text-muted)' }}>PNG, JPG, WEBP (800x800 px)</p>
               </div>
             </div>
+            {preview.primaryImage && preview.primaryImage.startsWith('blob:') && (
+              <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button type="button" onClick={handleRemovePrimaryImage} style={{ fontSize: '13px', color: 'red', cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}>
+                  {lang === 'ar' ? 'إلغاء الصورة المحددة' : 'Remove selected image'}
+                </button>
+              </div>
+            )}
             {mode === 'edit' && initialData?.primaryImage && (
               <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <input type="checkbox" name="removePrimaryImage" id="removePrimaryImage" value="true" />
