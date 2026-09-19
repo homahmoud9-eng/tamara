@@ -7,7 +7,15 @@ import { SafeImage } from '@/components/ui/SafeImage/SafeImage';
 import Link from 'next/link';
 import styles from './Hero.module.css';
 
-export function Hero({ slides = [], freeDeliveryThreshold = 500 }: { slides?: any[], freeDeliveryThreshold?: number }) {
+export function Hero({ 
+  slides = [], 
+  heroAnnouncement,
+  freeDeliveryThreshold 
+}: { 
+  slides?: any[];
+  heroAnnouncement?: { ar?: string | null; en?: string | null };
+  freeDeliveryThreshold?: number;
+}) {
   const { language } = useApp();
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -35,14 +43,14 @@ export function Hero({ slides = [], freeDeliveryThreshold = 500 }: { slides?: an
       subtitle: 'تمارا....طعم يقرب المسافة',
       primaryCta: 'اطلب الآن',
       secondaryCta: 'تصفح المنيو',
-      badge: `التوصيل مجاني للطلبات فوق ${freeDeliveryThreshold} درهم`
+      badge: heroAnnouncement?.ar || (freeDeliveryThreshold ? `التوصيل مجاني للطلبات فوق ${freeDeliveryThreshold} درهم` : 'التوصيل مجاني للطلبات فوق 500 درهم')
     },
     en: {
       headline: 'Tamara Kitchen',
       subtitle: 'Tamara.... A taste that brings us closer',
       primaryCta: 'Order Now',
       secondaryCta: 'View Menu',
-      badge: `Free delivery for orders over ${freeDeliveryThreshold} AED`
+      badge: heroAnnouncement?.en || (freeDeliveryThreshold ? `Free delivery for orders over ${freeDeliveryThreshold} AED` : 'Free delivery for orders over 500 AED')
     }
   };
 

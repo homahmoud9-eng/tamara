@@ -516,12 +516,14 @@ model PaymentSetting {
 }
 
 model DeliveryConfig {
-  id             String   @id @default("1") 
-  isEnabled      Boolean  @default(true)
-  baseFee        Float    @default(0)
-  freeThreshold  Float?
-  minOrder       Float    @default(0)
-  estTimeMinutes Int      @default(45)
+  id                      String   @id @default("1") 
+  isEnabled               Boolean  @default(true)
+  baseFee                 Float    @default(0)
+  freeThreshold           Float?
+  heroAnnouncementTextAr  String?  @default("التوصيل مجاني للطلبات فوق 500 درهم")
+  heroAnnouncementTextEn  String?  @default("Free delivery for orders over 500 AED")
+  minOrder                Float    @default(0)
+  estTimeMinutes          Int      @default(45)
 }
 
 model DeliveryZone {

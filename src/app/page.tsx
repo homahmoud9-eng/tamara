@@ -27,7 +27,10 @@ export default async function Home() {
   const sections = await getFrontendHomepageSections();
   
   const deliveryConfig = await prisma.deliveryConfig.findUnique({ where: { id: "1" } });
-  const freeThreshold = deliveryConfig?.freeThreshold ?? 500;
+  const heroAnnouncement = {
+    ar: deliveryConfig?.heroAnnouncementTextAr || (deliveryConfig?.freeThreshold ? `التوصيل مجاني للطلبات فوق ${deliveryConfig.freeThreshold} درهم` : 'التوصيل مجاني للطلبات فوق 500 درهم'),
+    en: deliveryConfig?.heroAnnouncementTextEn || (deliveryConfig?.freeThreshold ? `Free delivery for orders over ${deliveryConfig.freeThreshold} AED` : 'Free delivery for orders over 500 AED')
+  };
   
   const businessSetting = await prisma.businessSetting.findUnique({ where: { id: "1" } });
 
@@ -56,7 +59,7 @@ export default async function Home() {
   return (
     <>
       <JsonLd schema={restaurantSchema} />
-      <Hero slides={heroSlides} freeDeliveryThreshold={freeThreshold} />
+      <Hero slides={heroSlides} heroAnnouncement={heroAnnouncement} />
       <OfferRail offers={offers} />
       <QuickCategories categories={categories} />
       <CuratedCategories categories={categories} products={products} />

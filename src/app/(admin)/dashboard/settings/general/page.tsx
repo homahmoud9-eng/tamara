@@ -27,17 +27,22 @@ async function saveSettings(formData: FormData) {
     }
   });
 
+  const heroAnnouncementTextAr = (formData.get('setting_heroAnnouncementTextAr') as string)?.trim() || null;
+  const heroAnnouncementTextEn = (formData.get('setting_heroAnnouncementTextEn') as string)?.trim() || null;
+
   await prisma.deliveryConfig.upsert({
     where: { id: "1" },
     update: {
       minOrder: parseFloat(formData.get('setting_minOrder') as string) || 0,
-      freeThreshold: parseFloat(formData.get('setting_freeDeliveryThreshold') as string) || null,
+      heroAnnouncementTextAr,
+      heroAnnouncementTextEn,
       baseFee: parseFloat(formData.get('setting_defaultDeliveryFee') as string) || 0,
     },
     create: {
       id: "1",
       minOrder: parseFloat(formData.get('setting_minOrder') as string) || 0,
-      freeThreshold: parseFloat(formData.get('setting_freeDeliveryThreshold') as string) || null,
+      heroAnnouncementTextAr,
+      heroAnnouncementTextEn,
       baseFee: parseFloat(formData.get('setting_defaultDeliveryFee') as string) || 0,
     }
   });
@@ -121,15 +126,33 @@ export default async function GeneralSettingsPage() {
           </div>
         </div>
 
-        {/* Free Delivery Threshold */}
+        {/* Hero Announcement Banner */}
         <div className="admin-card">
-          <h3 className="admin-card-title" style={{ marginBottom: '16px' }}>{lang === 'ar' ? 'حد التوصيل المجاني' : 'Free Delivery Threshold'}</h3>
+          <h3 className="admin-card-title" style={{ marginBottom: '16px' }}>{lang === 'ar' ? 'نص شريط إعلان الهيرو' : 'Hero Announcement Banner'}</h3>
           <div className="admin-form-grid">
             <div className="admin-form-row">
-              <div className="admin-form-group">
-                <label className="admin-form-label">{lang === 'ar' ? 'الحد الأدنى للتوصيل المجاني' : 'Free Delivery Above'}</label>
-                <input type="number" name="setting_freeDeliveryThreshold" defaultValue={deliveryConfig?.freeThreshold ?? 500} className="admin-input" style={{ width: '200px' }} />
+              <div className="admin-form-group" style={{ flex: 1 }}>
+                <label className="admin-form-label">{lang === 'ar' ? 'نص شريط الإعلان (بالعربية)' : 'Hero Announcement Text (Arabic)'}</label>
+                <input 
+                  type="text" 
+                  name="setting_heroAnnouncementTextAr" 
+                  defaultValue={deliveryConfig?.heroAnnouncementTextAr ?? (deliveryConfig?.freeThreshold ? `التوصيل مجاني للطلبات فوق ${deliveryConfig.freeThreshold} درهم` : 'التوصيل مجاني للطلبات فوق 500 درهم')} 
+                  className="admin-input" 
+                  placeholder={lang === 'ar' ? 'مثال: التوصيل مجاني للطلبات فوق 500 درهم' : 'e.g. Free delivery for orders over 500 AED'}
+                />
               </div>
+              <div className="admin-form-group" style={{ flex: 1 }}>
+                <label className="admin-form-label">{lang === 'ar' ? 'نص شريط الإعلان (بالإنجليزية)' : 'Hero Announcement Text (English)'}</label>
+                <input 
+                  type="text" 
+                  name="setting_heroAnnouncementTextEn" 
+                  defaultValue={deliveryConfig?.heroAnnouncementTextEn ?? (deliveryConfig?.freeThreshold ? `Free delivery for orders over ${deliveryConfig.freeThreshold} AED` : 'Free delivery for orders over 500 AED')} 
+                  className="admin-input" 
+                  placeholder="e.g. Free delivery for orders over 500 AED"
+                />
+              </div>
+            </div>
+            <div className="admin-form-row">
               <div className="admin-form-group">
                 <label className="admin-form-label">{lang === 'ar' ? 'رسوم التوصيل الافتراضية' : 'Default Delivery Fee'}</label>
                 <input type="number" name="setting_defaultDeliveryFee" defaultValue={deliveryConfig?.baseFee ?? 25} className="admin-input" style={{ width: '200px' }} />
