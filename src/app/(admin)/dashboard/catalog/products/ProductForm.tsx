@@ -480,11 +480,22 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
           </h2>
           <div style={{ border: '1px solid var(--admin-border)', borderRadius: '8px', overflow: 'hidden' }}>
             <div style={{ width: '100%', height: '200px', backgroundColor: 'var(--admin-bg-alt)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-              {(preview.primaryImage && typeof preview.primaryImage === 'string' && preview.primaryImage.length > 0) ? (
-                <img src={preview.primaryImage} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : (
-                <span style={{ color: 'var(--admin-text-muted)' }}>{lang === 'ar' ? 'لا توجد صورة' : 'No image'}</span>
-              )}
+              <img 
+                src={preview.primaryImage || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='} 
+                alt="Preview" 
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  objectFit: 'cover', 
+                  display: (preview.primaryImage && typeof preview.primaryImage === 'string' && preview.primaryImage.length > 0) ? 'block' : 'none' 
+                }} 
+              />
+              <span style={{ 
+                color: 'var(--admin-text-muted)', 
+                display: (preview.primaryImage && typeof preview.primaryImage === 'string' && preview.primaryImage.length > 0) ? 'none' : 'block' 
+              }}>
+                {lang === 'ar' ? 'لا توجد صورة' : 'No image'}
+              </span>
             </div>
             <div style={{ padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
