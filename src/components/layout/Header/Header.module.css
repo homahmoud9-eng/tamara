@@ -41,7 +41,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: 64px;
   width: 100%;
 }
 
@@ -56,8 +56,31 @@
   }
 }
 
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .logoImage {
   object-fit: contain;
+  width: auto;
+  height: 50px;
+  max-height: 52px;
+  transition: transform var(--transition-fast), height var(--transition-fast);
+}
+
+@media (min-width: 1024px) {
+  .logoImage {
+    height: 66px;
+    max-height: 68px;
+  }
+  
+  .scrolled .logoImage {
+    height: 56px;
+    max-height: 58px;
+  }
 }
 
 [data-theme="dark"] .logoImage {
@@ -191,6 +214,8 @@ html[dir="rtl"] .notificationBadge {
 
 .mobileLogo {
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (min-width: 1024px) {

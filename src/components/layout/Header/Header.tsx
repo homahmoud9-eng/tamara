@@ -130,8 +130,8 @@ export function Header({ announcement }: { announcement?: any }) {
             <SafeImage 
               src="/assets/tamara_logo_1788544990894.png" 
               alt="Tamara Kitchen Logo" 
-              width={180} 
-              height={60} 
+              width={200} 
+              height={68} 
               className={styles.logoImage} 
               priority
             />
@@ -145,12 +145,12 @@ export function Header({ announcement }: { announcement?: any }) {
 
         {/* Mobile Center: Logo */}
         <div className={styles.mobileLogo}>
-          <Link href="/">
+          <Link href="/" className={styles.logoLink}>
              <SafeImage 
               src="/assets/tamara_logo_1788544990894.png" 
               alt="Tamara Kitchen Logo" 
-              width={150} 
-              height={48} 
+              width={160} 
+              height={52} 
               className={styles.logoImage} 
               priority
             />
@@ -253,7 +253,7 @@ export function Header({ announcement }: { announcement?: any }) {
           <div className={styles.mobileMenuClose} onClick={() => setIsMobileMenuOpen(false)}></div>
           <div className={styles.mobileMenuDrawer}>
             <div className={styles.mobileMenuHeader}>
-              <SafeImage src="/assets/tamara_logo_1788544990894.png" alt="Logo" width={150} height={48} className={styles.logoImage} />
+              <SafeImage src="/assets/tamara_logo_1788544990894.png" alt="Logo" width={160} height={52} className={styles.logoImage} />
               <button className={styles.iconButton} onClick={() => setIsMobileMenuOpen(false)} aria-label="Close Menu">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
