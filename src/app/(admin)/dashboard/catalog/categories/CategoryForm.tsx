@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminForm from '@/components/admin/AdminForm';
 
 interface CategoryFormProps {
@@ -20,6 +20,11 @@ export default function CategoryForm({ mode, action, lang, initialData }: Catego
     titleImageAr: initialData?.titleImageAr || null,
     titleImageEn: initialData?.titleImageEn || null,
   });
+
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handlePreviewChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -225,22 +230,13 @@ export default function CategoryForm({ mode, action, lang, initialData }: Catego
           </h2>
           <div style={{ border: '1px solid var(--admin-border)', borderRadius: '8px', overflow: 'hidden' }}>
             <div style={{ width: '100%', height: '160px', backgroundColor: 'var(--admin-bg-alt)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-              <img 
-                src={preview.image || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='} 
-                alt="Preview" 
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  objectFit: 'cover', 
-                  display: (preview.image && typeof preview.image === 'string' && preview.image.length > 0) ? 'block' : 'none' 
-                }} 
-              />
-              <span style={{ 
-                color: 'var(--admin-text-muted)', 
-                display: (preview.image && typeof preview.image === 'string' && preview.image.length > 0) ? 'none' : 'block' 
-              }}>
-                {lang === 'ar' ? 'لا توجد صورة' : 'No image'}
-              </span>
+              {isMounted && preview.image && typeof preview.image === 'string' && preview.image.length > 0 ? (
+                <img src={preview.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <span style={{ color: 'var(--admin-text-muted)' }}>
+                  {!isMounted ? '...' : (lang === 'ar' ? 'لا توجد صورة' : 'No image')}
+                </span>
+              )}
             </div>
             <div style={{ padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
