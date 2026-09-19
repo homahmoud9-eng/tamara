@@ -123,7 +123,7 @@ html[dir="rtl"] .imageElement {
 .headline {
   font-family: var(--font-foda);
   font-size: clamp(38px, 11vw, 56px);
-  font-weight: 800;
+  font-weight: 400; /* Regular weight for Arabic Foda Kufi */
   line-height: 1.05;
   margin-bottom: var(--spacing-4);
   color: var(--text-primary);
@@ -131,7 +131,14 @@ html[dir="rtl"] .imageElement {
   flex-direction: column;
   gap: 4px;
   word-break: keep-all;
-  letter-spacing: -0.01em;
+  letter-spacing: normal; /* Preserves cursive Arabic connections */
+}
+
+.arabicHeadline,
+:global([lang="ar"]) .headline,
+:global(html[dir="rtl"]) .headline {
+  font-weight: 400;
+  letter-spacing: normal;
 }
 
 :global([lang="en"]) .headline,
@@ -140,7 +147,7 @@ html[dir="rtl"] .imageElement {
   font-family: var(--font-tactic);
   font-weight: 900;
   font-style: italic;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em; /* Slight positive breathing room for Tactic Sans Extended */
 }
 
 .headlineLine {
@@ -269,7 +276,6 @@ html[dir="rtl"] .imageElement {
   .headline {
     font-size: 150px;
     line-height: 0.95;
-    letter-spacing: -0.02em;
     margin-bottom: var(--spacing-6);
   }
 
