@@ -31,15 +31,15 @@ export function Hero({ slides = [], freeDeliveryThreshold = 500 }: { slides?: an
 
   const fallbackContent = {
     ar: {
-      headline: 'طعم البيت المصري،\nأقرب مما تتخيل',
-      subtitle: 'أكل مصري بيتعمل بحب وطعم البيت، متفرزن أو مطبوخ، بيوصلك طازة في أبوظبي.',
+      headline: 'مطبخ تمارا',
+      subtitle: 'تمارا....طعم يقرب المسافة',
       primaryCta: 'اطلب الآن',
       secondaryCta: 'تصفح المنيو',
       badge: `التوصيل مجاني للطلبات فوق ${freeDeliveryThreshold} درهم`
     },
     en: {
-      headline: 'Authentic Egyptian Taste,\nCloser Than You Think',
-      subtitle: 'Homemade Egyptian food made with love, frozen or cooked, delivered fresh in Abu Dhabi.',
+      headline: 'Tamara Kitchen',
+      subtitle: 'Tamara.... A taste that brings us closer',
       primaryCta: 'Order Now',
       secondaryCta: 'View Menu',
       badge: `Free delivery for orders over ${freeDeliveryThreshold} AED`
