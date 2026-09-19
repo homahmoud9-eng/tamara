@@ -76,6 +76,9 @@ export async function getFrontendProducts(): Promise<Product[]> {
             orderBy: { sortOrder: 'asc' }
           }
         }
+      },
+      gallery: {
+        orderBy: { sortOrder: 'asc' }
       }
     },
     orderBy: { sortOrder: 'asc' }
@@ -101,6 +104,7 @@ export async function getFrontendProducts(): Promise<Product[]> {
       reviewsCount: 0,
       price: price,
       image: variantImage || fallbackImage,
+      gallery: p.gallery?.map(g => ({ id: g.id, image: g.image })) || [],
       variants: p.variants.map(v => ({
         id: v.id,
         productId: v.productId,
@@ -148,6 +152,9 @@ export async function getFrontendProduct(id: string): Promise<Product | null> {
             orderBy: { sortOrder: 'asc' }
           }
         }
+      },
+      gallery: {
+        orderBy: { sortOrder: 'asc' }
       }
     }
   });
@@ -173,6 +180,7 @@ export async function getFrontendProduct(id: string): Promise<Product | null> {
     reviewsCount: 0, 
     price: price,
     image: variantImage || fallbackImage,
+    gallery: p.gallery?.map(g => ({ id: g.id, image: g.image })) || [],
     variants: p.variants.map(v => ({
       id: v.id,
       productId: v.productId,

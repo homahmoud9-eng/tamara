@@ -180,6 +180,20 @@ export async function updateProduct(id: string, formData: FormData) {
       const p = await uploadImage(file);
       if (p) uploadedGalleryPaths.push(p);
     }
+    
+    const deletedGalleryIdsStr = formData.get('deletedGalleryIds') as string;
+    if (deletedGalleryIdsStr) {
+      try {
+        const deletedIds = JSON.parse(deletedGalleryIdsStr);
+        if (Array.isArray(deletedIds) && deletedIds.length > 0) {
+          await prisma.productGallery.deleteMany({
+            where: { id: { in: deletedIds }, productId: id }
+          });
+        }
+      } catch (e) {
+        console.error("Failed to parse deletedGalleryIds", e);
+      }
+    }
 
     if (uploadedGalleryPaths.length > 0) {
       data.gallery = {

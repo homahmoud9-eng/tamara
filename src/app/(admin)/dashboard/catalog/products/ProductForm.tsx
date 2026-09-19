@@ -114,8 +114,11 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
   };
 
   const primaryImageInputRef = React.useRef<HTMLInputElement>(null);
+  const galleryImageInputRef = React.useRef<HTMLInputElement>(null);
 
   const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
+  const [pendingGalleryFiles, setPendingGalleryFiles] = useState<File[]>([]);
+  const [deletedGalleryIds, setDeletedGalleryIds] = useState<string[]>([]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -132,12 +135,26 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
 
   const handleGalleryImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    
-    // Revoke old blob URLs
-    galleryPreviews.forEach(url => URL.revokeObjectURL(url));
+    if (files.length === 0) return;
     
     const newPreviews = files.map(file => URL.createObjectURL(file));
-    setGalleryPreviews(newPreviews);
+    setGalleryPreviews(prev => [...prev, ...newPreviews]);
+    setPendingGalleryFiles(prev => [...prev, ...files]);
+    
+    // Clear input so same file can be selected again
+    if (galleryImageInputRef.current) {
+      galleryImageInputRef.current.value = '';
+    }
+  };
+
+  const removePendingGalleryImage = (index: number) => {
+    URL.revokeObjectURL(galleryPreviews[index]);
+    setGalleryPreviews(prev => prev.filter((_, i) => i !== index));
+    setPendingGalleryFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const markExistingGalleryImageForDeletion = (id: string) => {
+    setDeletedGalleryIds(prev => [...prev, id]);
   };
 
 
@@ -159,6 +176,15 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
     console.log('removePrimaryImage:', formData.get('removePrimaryImage'));
     console.log('variantsJson:', formData.get('variantsJson'));
     console.log('---------------------');
+    
+    // Override the galleryImages from the input element with our controlled pending state
+    formData.delete('galleryImages');
+    pendingGalleryFiles.forEach(file => {
+      formData.append('galleryImages', file);
+    });
+    
+    // Send deleted IDs
+    formData.append('deletedGalleryIds', JSON.stringify(deletedGalleryIds));
     
     return action(formData);
   };
@@ -427,19 +453,21 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
 
           <div className="admin-form-group" style={{ marginTop: '24px' }}>
             <label className="admin-form-label">{lang === 'ar' ? 'معرض الصور (صور إضافية)' : 'Gallery Images (Additional)'}</label>
-            <input type="file" name="galleryImages" accept="image/png, image/jpeg, image/webp" multiple onChange={handleGalleryImagesChange} className="admin-input" />
+            <input ref={galleryImageInputRef} type="file" accept="image/png, image/jpeg, image/webp" multiple onChange={handleGalleryImagesChange} className="admin-input" />
             
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
               {/* Existing Server Images */}
-              {mode === 'edit' && initialData?.gallery && initialData.gallery.length > 0 && initialData.gallery.map((img: any) => (
+              {mode === 'edit' && initialData?.gallery && initialData.gallery.length > 0 && initialData.gallery.filter((img: any) => !deletedGalleryIds.includes(img.id)).map((img: any) => (
                 <div key={img.id} style={{ position: 'relative' }}>
                   <img src={img.image} alt="Gallery" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--admin-border)' }} />
-                  <DeleteGalleryImageButton 
-                    imageId={img.id}
-                    productId={initialData.id}
-                    lang={lang}
-                    action={deleteGalleryImage}
-                  />
+                  <button 
+                    type="button" 
+                    onClick={() => markExistingGalleryImageForDeletion(img.id)}
+                    style={{ position: 'absolute', top: '-6px', left: '-6px', background: 'white', color: 'red', border: '1px solid var(--admin-border)', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px' }}
+                    title={lang === 'ar' ? 'حذف' : 'Delete'}
+                  >
+                    ✕
+                  </button>
                 </div>
               ))}
               
@@ -447,7 +475,15 @@ export default function ProductForm({ mode, action, lang, categories, initialDat
               {isMounted && galleryPreviews.map((url, idx) => (
                 <div key={idx} style={{ position: 'relative' }}>
                   <img src={url} alt={`New Gallery ${idx}`} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '2px solid var(--brand-primary)', opacity: 0.8 }} />
-                  <div style={{ position: 'absolute', top: '-6px', right: '-6px', background: 'var(--brand-primary)', color: 'white', borderRadius: '10px', fontSize: '10px', padding: '2px 6px' }}>New</div>
+                  <div style={{ position: 'absolute', bottom: '4px', right: '4px', background: 'var(--brand-primary)', color: 'white', borderRadius: '10px', fontSize: '10px', padding: '2px 6px' }}>New</div>
+                  <button 
+                    type="button" 
+                    onClick={() => removePendingGalleryImage(idx)}
+                    style={{ position: 'absolute', top: '-6px', left: '-6px', background: 'white', color: 'red', border: '1px solid var(--brand-primary)', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px' }}
+                    title={lang === 'ar' ? 'إزالة' : 'Remove'}
+                  >
+                    ✕
+                  </button>
                 </div>
               ))}
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/components/providers/AppProvider";
 import { useCart } from "@/components/providers/CartProvider";
@@ -34,6 +34,14 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
   const audioChunksRef = useRef<Blob[]>([]);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+  const galleryItemsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  const scrollToImage = (index: number) => {
+    galleryItemsRef.current[index]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  };
 
   const startRecording = async () => {
     try {
@@ -177,45 +185,64 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
 
       <div className={styles.desktopWrapper}>
         <div className={styles.imageSection}>
-        <SafeImage
-          src={activeImage}
-          alt={language === "ar" ? product.name.ar : product.name.en}
-          fill
-          style={{ objectFit: 'cover' }}
-          priority
-        />
-        {product.gallery && product.gallery.length > 0 && (
-          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '12px', background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-color)', position: 'absolute', bottom: 0, width: '100%', zIndex: 10 }}>
-            {/* Main image thumbnail */}
-            <div 
-              onClick={() => setActiveGalleryImage(null)}
-              style={{ 
-                flex: '0 0 60px', height: '60px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer',
-                border: activeGalleryImage === null ? '2px solid var(--brand-primary)' : '2px solid transparent'
-              }}
-            >
-              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                <SafeImage src={product.baseImage || product.image || ""} alt="Main" fill style={{ objectFit: 'cover' }} />
-              </div>
-            </div>
-            {/* Gallery thumbnails */}
-            {product.gallery.map((gImg) => (
-              <div 
-                key={gImg.id}
-                onClick={() => setActiveGalleryImage(gImg.image)}
-                style={{ 
-                  flex: '0 0 60px', height: '60px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer',
-                  border: activeGalleryImage === gImg.image ? '2px solid var(--brand-primary)' : '2px solid transparent'
-                }}
-              >
-                <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                  <SafeImage src={gImg.image} alt="Gallery" fill style={{ objectFit: 'cover' }} />
+          {isMounted ? (
+            <>
+              {/* Swipable Gallery Container */}
+              <div style={{ display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', width: '100%', height: '100%' }}>
+                {/* Main Image */}
+                <div 
+                  ref={(el) => { galleryItemsRef.current[0] = el; }} 
+                  style={{ flex: '0 0 100%', scrollSnapAlign: 'start', position: 'relative', width: '100%', height: '100%' }}
+                >
+                  <SafeImage
+                    src={product.baseImage || product.image || ""}
+                    alt={language === "ar" ? product.name.ar : product.name.en}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    priority
+                  />
                 </div>
+                {/* Secondary Images */}
+                {product.gallery?.map((gImg, idx) => (
+                  <div 
+                    key={gImg.id} 
+                    ref={(el) => { galleryItemsRef.current[idx + 1] = el; }} 
+                    style={{ flex: '0 0 100%', scrollSnapAlign: 'start', position: 'relative', width: '100%', height: '100%' }}
+                  >
+                    <SafeImage src={gImg.image} alt="Gallery" fill style={{ objectFit: 'cover' }} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+
+              {/* Thumbnails below for desktop navigation */}
+              {product.gallery && product.gallery.length > 0 && (
+                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '12px', background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-color)', position: 'absolute', bottom: 0, width: '100%', zIndex: 10 }}>
+                  <div 
+                    onClick={() => scrollToImage(0)}
+                    style={{ flex: '0 0 60px', height: '60px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border-color)' }}
+                  >
+                    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                      <SafeImage src={product.baseImage || product.image || ""} alt="Main" fill style={{ objectFit: 'cover' }} />
+                    </div>
+                  </div>
+                  {product.gallery.map((gImg, idx) => (
+                    <div 
+                      key={gImg.id}
+                      onClick={() => scrollToImage(idx + 1)}
+                      style={{ flex: '0 0 60px', height: '60px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border-color)' }}
+                    >
+                      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                        <SafeImage src={gImg.image} alt="Gallery" fill style={{ objectFit: 'cover' }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <div style={{ width: '100%', height: '100%', background: 'var(--skeleton-bg, #e2e8f0)' }} />
+          )}
+        </div>
 
       <div className={`container ${styles.detailsSection}`}>
         <div className={styles.headerRow}>
