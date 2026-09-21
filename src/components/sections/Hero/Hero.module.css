@@ -35,9 +35,15 @@
   height: 100%;
   opacity: 0;
   transition: opacity 1.2s ease-in-out;
-  /* Soft masking around the edges - cinematic vignette */
-  mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,1) 100%);
-  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,1) 100%);
+  /* Feather / vignette: fade ALL edges into the dark bg */
+  mask-image:
+    linear-gradient(to bottom, transparent 0%, black 12%, black 80%, transparent 100%),
+    linear-gradient(to right,  transparent 0%, black 8%,  black 92%, transparent 100%);
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0%, black 12%, black 80%, transparent 100%),
+    linear-gradient(to right,  transparent 0%, black 8%,  black 92%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
 }
 
 .heroImage.active {
@@ -46,7 +52,7 @@
 
 .imageElement {
   object-fit: cover;
-  object-position: center 20%; /* LTR default */
+  object-position: center 35%; /* Shifted down */
 }
 
 /* RTL Focal Points */
@@ -57,23 +63,31 @@ html[dir="rtl"] .imageElement {
 /* Desktop focal points */
 @media (min-width: 1024px) {
   .imageElement {
-    object-position: center 30%;
+    object-position: center 45%;
   }
   
   html[dir="rtl"] .imageElement {
-    object-position: 70% 30%;
+    object-position: 70% 45%;
   }
   
   .heroImage {
-    mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 25%), linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 35%);
-    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 25%), linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 35%);
+    mask-image:
+      linear-gradient(to bottom, transparent 0%, black 10%, black 75%, transparent 100%),
+      linear-gradient(to right,  transparent 0%, black 6%,  black 94%, transparent 100%);
+    -webkit-mask-image:
+      linear-gradient(to bottom, transparent 0%, black 10%, black 75%, transparent 100%),
+      linear-gradient(to right,  transparent 0%, black 6%,  black 94%, transparent 100%);
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
   }
   
   html[dir="rtl"] .heroImage {
-    mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 25%), linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 35%);
-    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 25%), linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 35%);
+    mask-image:
+      linear-gradient(to bottom, transparent 0%, black 10%, black 75%, transparent 100%),
+      linear-gradient(to left,   transparent 0%, black 6%,  black 94%, transparent 100%);
+    -webkit-mask-image:
+      linear-gradient(to bottom, transparent 0%, black 10%, black 75%, transparent 100%),
+      linear-gradient(to left,   transparent 0%, black 6%,  black 94%, transparent 100%);
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
   }

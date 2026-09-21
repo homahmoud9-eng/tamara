@@ -12,6 +12,9 @@ import styles from './Header.module.css';
 
 import { useCart } from '@/components/providers/CartProvider';
 
+const LOGO_WHITE = '/assets/images/blog/logo_T-png_RGB_W.png';
+const LOGO_DEFAULT = '/assets/tamara_logo_1788544990894.png';
+
 export function Header({ announcement }: { announcement?: any }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -82,7 +85,8 @@ export function Header({ announcement }: { announcement?: any }) {
     setLanguage(language === 'ar' ? 'en' : 'ar');
   };
 
-
+  // Dynamic logo: white at top, colored when scrolled
+  const headerLogo = isScrolled ? LOGO_DEFAULT : LOGO_WHITE;
 
   const isMenuPage = pathname?.startsWith('/menu');
   const isOffersPage = pathname?.startsWith('/offers');
@@ -128,7 +132,7 @@ export function Header({ announcement }: { announcement?: any }) {
         <nav className={styles.desktopNavStart}>
           <Link href="/" className={styles.logoLink}>
             <SafeImage 
-              src="/assets/tamara_logo_1788544990894.png" 
+              src={headerLogo} 
               alt="Tamara Kitchen Logo" 
               width={200} 
               height={68} 
@@ -147,7 +151,7 @@ export function Header({ announcement }: { announcement?: any }) {
         <div className={styles.mobileLogo}>
           <Link href="/" className={styles.logoLink}>
              <SafeImage 
-              src="/assets/tamara_logo_1788544990894.png" 
+              src={headerLogo} 
               alt="Tamara Kitchen Logo" 
               width={160} 
               height={52} 

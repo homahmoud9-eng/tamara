@@ -11,11 +11,27 @@ export function Footer() {
 
   return (
     <footer className={styles.footer}>
-      {/* Dark overlay for readability over bg image */}
+      {/* Background image as <img> tag for guaranteed rendering */}
+      <img
+        src="/assets/images/blog/foter.jpg"
+        alt=""
+        aria-hidden="true"
+        className={styles.bgImage}
+        onError={(e) => {
+          // Fallback to .png if .jpg fails
+          const target = e.target as HTMLImageElement;
+          if (target.src.endsWith('.jpg')) {
+            target.src = '/assets/images/blog/foter.png';
+          }
+        }}
+      />
+
+      {/* Dark overlay for readability */}
       <div className={styles.overlay} />
 
       <div className={`container ${styles.container}`}>
         <div className={styles.top}>
+          {/* Left: Logo only */}
           <div className={styles.brand}>
             <SafeImage 
               src="/assets/images/blog/logo_T-png_RGB_W.png" 
@@ -24,27 +40,32 @@ export function Footer() {
               height={120} 
               className={styles.logoImage}
             />
+          </div>
+
+          {/* Right: Links + Description underneath */}
+          <div className={styles.rightSection}>
+            <div className={styles.linksWrapper}>
+              <div className={styles.linkGroup}>
+                <h4 className={styles.groupTitle}>{language === 'ar' ? 'روابط سريعة' : 'Quick Links'}</h4>
+                <Link href="/menu" className={styles.link}>{language === 'ar' ? 'المنيو' : 'Menu'}</Link>
+                <Link href="/packages" className={styles.link}>{language === 'ar' ? 'الباقات' : 'Packages'}</Link>
+                <Link href="/offers" className={styles.link}>{language === 'ar' ? 'العروض' : 'Offers'}</Link>
+              </div>
+              
+              <div className={styles.linkGroup}>
+                <h4 className={styles.groupTitle}>{language === 'ar' ? 'المساعدة' : 'Help'}</h4>
+                <Link href="/contact" className={styles.link}>{language === 'ar' ? 'تواصل معنا' : 'Contact Us'}</Link>
+                <Link href="/faq" className={styles.link}>{language === 'ar' ? 'الأسئلة الشائعة' : 'FAQs'}</Link>
+                <Link href="/terms" className={styles.link}>{language === 'ar' ? 'الشروط والأحكام' : 'Terms & Conditions'}</Link>
+              </div>
+            </div>
+
+            {/* Description moved here, under the links */}
             <p className={styles.description}>
               {language === 'ar' 
                 ? 'طعم البيت المصري الأصيل، أقرب مما تتخيل. بنقدملك أكل بيتي مطبوخ بحب ويوصلك طازة كل يوم في أبوظبي.' 
                 : 'Authentic Egyptian homemade taste, closer than you think. We offer homemade food cooked with love, delivered fresh every day in Abu Dhabi.'}
             </p>
-          </div>
-
-          <div className={styles.linksWrapper}>
-            <div className={styles.linkGroup}>
-              <h4 className={styles.groupTitle}>{language === 'ar' ? 'روابط سريعة' : 'Quick Links'}</h4>
-              <Link href="/menu" className={styles.link}>{language === 'ar' ? 'المنيو' : 'Menu'}</Link>
-              <Link href="/packages" className={styles.link}>{language === 'ar' ? 'الباقات' : 'Packages'}</Link>
-              <Link href="/offers" className={styles.link}>{language === 'ar' ? 'العروض' : 'Offers'}</Link>
-            </div>
-            
-            <div className={styles.linkGroup}>
-              <h4 className={styles.groupTitle}>{language === 'ar' ? 'المساعدة' : 'Help'}</h4>
-              <Link href="/contact" className={styles.link}>{language === 'ar' ? 'تواصل معنا' : 'Contact Us'}</Link>
-              <Link href="/faq" className={styles.link}>{language === 'ar' ? 'الأسئلة الشائعة' : 'FAQs'}</Link>
-              <Link href="/terms" className={styles.link}>{language === 'ar' ? 'الشروط والأحكام' : 'Terms & Conditions'}</Link>
-            </div>
           </div>
         </div>
 
