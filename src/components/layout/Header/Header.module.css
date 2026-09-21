@@ -1,12 +1,8 @@
 .header {
   top: 0;
   z-index: var(--z-header);
-  transition: all var(--transition-normal);
   width: 100%;
-}
-
-.header.scrolled {
-  top: calc(16px + var(--safe-area-top));
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .headerFixed {
@@ -17,24 +13,29 @@
   position: relative;
 }
 
+/* ── Default state: full-width, transparent, generous padding ── */
 .headerContainer {
-  background: var(--bg-main);
-  border-bottom: 1px solid var(--glass-border);
+  background: transparent;
+  border-bottom: none;
   width: 100%;
-  transition: all 0.3s ease;
   margin: 0 auto;
   border-radius: 0;
+  padding: 0.5rem 0;
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Scrolled state: floating pill shape ── */
 .scrolled .headerContainer {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  width: 95%;
+  background: rgba(10, 20, 16, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  width: 80%;
   max-width: 1200px;
-  border-radius: 100px;
+  border-radius: 9999px;
+  margin-top: 1.25rem;
+  padding: 0;
 }
 
 .headerInner {
@@ -43,19 +44,25 @@
   justify-content: space-between;
   height: 64px;
   width: 100%;
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (min-width: 1024px) {
-  .headerInner {
-    height: 80px;
-    padding-inline: var(--spacing-8);
+  .headerContainer {
+    padding: 1rem 0;
   }
-  
+
+  .headerInner {
+    height: auto;
+    padding: 2rem 2.5rem;
+  }
+
   .scrolled .headerInner {
-    height: 70px;
+    padding: 0.75rem 2rem;
   }
 }
 
+/* ── Logo ── */
 .logoLink {
   display: inline-flex;
   align-items: center;
@@ -68,18 +75,20 @@
   width: auto;
   height: 50px;
   max-height: 52px;
-  transition: transform var(--transition-fast), height var(--transition-fast);
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (min-width: 1024px) {
+  /* Default: large logo */
   .logoImage {
-    height: 66px;
-    max-height: 68px;
+    height: 120px;
+    max-height: 130px;
   }
-  
+
+  /* Scrolled: shrunk logo */
   .scrolled .logoImage {
     height: 56px;
-    max-height: 58px;
+    max-height: 64px;
   }
 }
 
@@ -87,6 +96,7 @@
   filter: drop-shadow(0 0 8px rgba(198, 154, 82, 0.15));
 }
 
+/* ── Icon buttons ── */
 .iconButton {
   width: 36px;
   height: 36px;
@@ -124,6 +134,7 @@
   background-color: var(--glass-border);
 }
 
+/* ── Cart button ── */
 .cartButton {
   position: relative;
   width: 36px;

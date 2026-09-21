@@ -11,14 +11,17 @@ export function Footer() {
 
   return (
     <footer className={styles.footer}>
+      {/* Dark overlay for readability over bg image */}
+      <div className={styles.overlay} />
+
       <div className={`container ${styles.container}`}>
         <div className={styles.top}>
           <div className={styles.brand}>
             <SafeImage 
-              src="/assets/tamara_logo_1788544990894.png" 
+              src="/assets/images/blog/logo_T-png_RGB_W.png" 
               alt="Tamara Kitchen Logo" 
-              width={140} 
-              height={46} 
+              width={320} 
+              height={120} 
               className={styles.logoImage}
             />
             <p className={styles.description}>
