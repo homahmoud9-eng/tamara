@@ -28,8 +28,6 @@
   position: relative;
   width: 100%;
   height: 100%;
-  mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
 }
 
 .heroImage {
@@ -40,9 +38,6 @@
   height: 100%;
   opacity: 0;
   transition: opacity 1.2s ease-in-out;
-  /* Feather / Blend Effect: radial fade into #0a1410 bg */
-  mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
 }
 
 .heroImage.active {
@@ -52,8 +47,6 @@
 .imageElement {
   object-fit: cover;
   object-position: center 10%; /* Show top of food images */
-  mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
 }
 
 /* RTL Focal Points */
@@ -65,37 +58,11 @@ html[dir="rtl"] .imageElement {
 @media (min-width: 1024px) {
   .imageElement {
     object-position: center 45%;
-    mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
   }
   
   html[dir="rtl"] .imageElement {
     object-position: 70% 45%;
   }
-  
-  .heroImage {
-    mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
-  }
-  
-  html[dir="rtl"] .heroImage {
-    mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
-  }
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 4;
-  /* Seamless blend into #0a1410 background without harsh lines */
-  background: 
-    radial-gradient(ellipse at center, transparent 60%, #0a1410 100%),
-    linear-gradient(to bottom, transparent 60%, #0a1410 100%);
-  pointer-events: none;
 }
 
 /* Content Half (Mobile Bottom) */
@@ -233,20 +200,6 @@ html[dir="rtl"] .imageElement {
   html[dir="rtl"] .visualHalf {
     right: auto;
     left: 0;
-  }
-  
-  .overlay {
-    background: 
-      linear-gradient(to right, #0a1410 0%, transparent 35%),
-      linear-gradient(to bottom, transparent 60%, #0a1410 100%),
-      radial-gradient(ellipse at center, transparent 55%, #0a1410 100%);
-  }
-  
-  html[dir="rtl"] .overlay {
-    background: 
-      linear-gradient(to left, #0a1410 0%, transparent 35%),
-      linear-gradient(to bottom, transparent 60%, #0a1410 100%),
-      radial-gradient(ellipse at center, transparent 55%, #0a1410 100%);
   }
 
   .contentHalf {

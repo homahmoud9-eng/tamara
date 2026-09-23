@@ -69,16 +69,12 @@ export function Hero({
       <div className={styles.layoutWrapper}>
         
         {/* Visual Half (Single Image Rotation) */}
-        <div className={styles.visualHalf}>
-          <div className={styles.imageGallery}>
+        <div className={`${styles.visualHalf} relative`}>
+          <div className={`${styles.imageGallery} relative`}>
             {(hasSlides ? slides : fallbackImages.map((src, i) => ({ desktopImg: src, id: i }))).map((slide, index) => (
               <div 
                 key={slide.id} 
                 className={`${styles.heroImage} ${index === activeIndex ? styles.active : ''}`}
-                style={{
-                  maskImage: 'radial-gradient(ellipse at center, black 65%, transparent 100%)',
-                  WebkitMaskImage: 'radial-gradient(ellipse at center, black 65%, transparent 100%)'
-                }}
               >
                 <SafeImage
                   src={slide.desktopImg}
@@ -87,15 +83,15 @@ export function Hero({
                   priority={index === 0}
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className={styles.imageElement}
-                  style={{
-                    maskImage: 'radial-gradient(ellipse at center, black 65%, transparent 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 65%, transparent 100%)'
-                  }}
                 />
               </div>
             ))}
+
+            {/* Side blending overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0a1410]/60 to-[#0a1410] z-10 pointer-events-none"></div>
+            {/* Bottom edge blending overlay */}
+            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0a1410] to-transparent z-10 pointer-events-none"></div>
           </div>
-          <div className={styles.overlay}></div>
         </div>
 
         {/* Content Half */}
