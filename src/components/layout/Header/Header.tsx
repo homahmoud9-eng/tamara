@@ -73,8 +73,9 @@ export function Header({ announcement }: { announcement?: any }) {
   };
 
   // Route detection: Only the homepage gets the large hero header variant
-  const cleanPath = pathname?.replace(/\/$/, '') || '';
-  const isHomePage = !pathname || cleanPath === '' || cleanPath === '/index' || cleanPath === 'index';
+  // Deterministic check: null/undefined or unknown path must NEVER default to homepage
+  const cleanPath = pathname ? pathname.replace(/\/$/, '') : null;
+  const isHomePage = cleanPath === '' || cleanPath === '/index' || cleanPath === 'index';
 
   // Scroll logic: Strictly for homepage only
   // Deterministic initialization: Homepage starts at top (false) unless scrolled.

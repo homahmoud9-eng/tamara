@@ -1,8 +1,7 @@
 .hero {
   position: relative;
   min-height: 100vh;
-  /* Pull hero above the fixed-header content offset so bg starts at viewport top */
-  margin-top: -80px;
+  margin-top: 0;
   background-color: transparent;
   overflow: hidden;
 }
@@ -178,7 +177,7 @@ html[dir="rtl"] .imageElement {
 @media (min-width: 1024px) {
   .hero {
     min-height: 85vh;
-    margin-top: -120px;
+    margin-top: 0;
     background-color: transparent;
   }
   
