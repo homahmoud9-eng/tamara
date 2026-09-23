@@ -39,14 +39,16 @@ export function Hero({
 
   const fallbackContent = {
     ar: {
-      headline: 'مطبخ تمارا',
+      headline: 'Tamara\nKitchen',
+      brandDetail: 'مطبخ تمارا',
       subtitle: 'تمارا....طعم يقرب المسافة',
       primaryCta: 'اطلب الآن',
       secondaryCta: 'تصفح المنيو',
       badge: heroAnnouncement?.ar || (freeDeliveryThreshold ? `التوصيل مجاني للطلبات فوق ${freeDeliveryThreshold} درهم` : 'التوصيل مجاني للطلبات فوق 500 درهم')
     },
     en: {
-      headline: 'Tamara Kitchen',
+      headline: 'Tamara\nKitchen',
+      brandDetail: 'مطبخ تمارا',
       subtitle: 'Tamara.... A taste that brings us closer',
       primaryCta: 'Order Now',
       secondaryCta: 'View Menu',
@@ -57,18 +59,24 @@ export function Hero({
   const text = hasSlides 
     ? {
         headline: activeSlide.title[language] || fallbackContent[language].headline,
+        brandDetail: fallbackContent[language].brandDetail,
         subtitle: activeSlide.subtitle[language] || fallbackContent[language].subtitle,
         primaryCta: activeSlide.ctaText[language] || fallbackContent[language].primaryCta,
-        secondaryCta: fallbackContent[language].secondaryCta, // Keeping secondary CTA static for now
+        secondaryCta: fallbackContent[language].secondaryCta,
         badge: fallbackContent[language].badge
       }
     : fallbackContent[language];
+
+  // Ensure headline shows "Tamara \n Kitchen" as requested if default/Arabic
+  const headlineText = text.headline.includes('\n') 
+    ? text.headline 
+    : (text.headline === 'مطبخ تمارا' ? 'Tamara\nKitchen' : text.headline);
 
   return (
     <section className={styles.hero}>
       <div className={styles.layoutWrapper}>
         
-        {/* Visual Half (Single Image Rotation) */}
+        {/* Visual Half (Food Scene on Right) */}
         <div className={styles.visualHalf}>
           <div className={styles.imageGallery}>
             {(hasSlides ? slides : fallbackImages.map((src, i) => ({ desktopImg: src, id: i }))).map((slide, index) => (
@@ -81,7 +89,7 @@ export function Hero({
                   alt="Tamara Kitchen Hero"
                   fill
                   priority={index === 0}
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  sizes="(max-width: 1024px) 100vw, 65vw"
                   className={styles.imageElement}
                 />
               </div>
@@ -89,15 +97,20 @@ export function Hero({
           </div>
         </div>
 
-        {/* Content Half */}
+        {/* Content Half (Left Side: Badge, Brand Detail, Headline, Tagline, CTAs) */}
         <div className={`container ${styles.contentHalf}`}>
           <div className={styles.textContent}>
-            <div className={styles.badge}>{text.badge}</div>
-            <h1 className={`${styles.headline} ${language === 'en' ? styles.englishHeadline : styles.arabicHeadline}`}>
-              {text.headline.split('\n').map((line: string, i: number) => (
+            <div className={styles.metaRow}>
+              <div className={styles.badge}>{text.badge}</div>
+              <span className={styles.arabicBrandBadge}>مطبخ تمارا</span>
+            </div>
+
+            <h1 className={`${styles.headline} ${styles.englishHeadline}`}>
+              {headlineText.split('\n').map((line: string, i: number) => (
                 <span key={i} className={styles.headlineLine}>{line}</span>
               ))}
             </h1>
+            
             <p className={styles.subtitle}>{text.subtitle}</p>
             
             <div className={styles.actions}>
@@ -119,3 +132,4 @@ export function Hero({
     </section>
   );
 }
+

@@ -86,32 +86,53 @@ html[dir="rtl"] .imageElement {
   width: 100%;
 }
 
+.metaRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-6);
+}
+
 .badge {
-  display: inline-block;
-  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
   border-radius: 20px;
   background-color: var(--bg-surface-elevated);
   color: var(--brand-accent);
   border: 1px solid var(--border-subtle);
   font-size: 13px;
   font-weight: 700;
-  margin-bottom: var(--spacing-6);
   box-shadow: var(--shadow-sm);
 }
 
-.headline {
+.arabicBrandBadge {
   font-family: var(--font-foda);
-  font-size: clamp(38px, 11vw, 56px);
-  font-weight: 400 !important; /* Regular weight (400) for Arabic Foda Kufi */
-  font-synthesis: none; /* Prevent synthetic faux bolding by browsers */
-  line-height: 1.05;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-gold);
+  letter-spacing: normal;
+  padding: 4px 12px;
+  background-color: rgba(198, 154, 82, 0.1);
+  border: 1px solid rgba(198, 154, 82, 0.25);
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.headline {
+  font-family: var(--font-tactic);
+  font-weight: 900 !important;
+  font-style: italic;
+  letter-spacing: 0.02em !important;
+  font-size: clamp(48px, 9vw, 68px);
+  line-height: 0.95;
   margin-bottom: var(--spacing-4);
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  word-break: keep-all;
-  letter-spacing: normal !important; /* Preserves cursive Arabic connections */
+  gap: 2px;
 }
 
 .arabicHeadline,
@@ -174,92 +195,79 @@ html[dir="rtl"] .imageElement {
   width: 100%;
 }
 
-/* Desktop Asymmetric Layout */
+/* Desktop Asymmetric Layout: Text on LEFT, Large Food Photo on RIGHT */
 @media (min-width: 1024px) {
   .hero {
     min-height: 85vh;
-    margin-top: -120px;
+    margin-top: -100px;
     background-color: transparent;
   }
   
   .layoutWrapper {
     flex-direction: row;
     min-height: 85vh;
+    align-items: center;
   }
 
+  /* Food photography on the RIGHT */
   .visualHalf {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0;
-    width: 65%;
+    right: 0 !important;
+    left: auto !important;
+    width: 62%;
     height: 100%;
     margin-top: 0;
     padding-top: 0;
     background-color: transparent;
     pointer-events: none;
-    /* Soft bottom fade to melt seamlessly into the next section below */
-    mask-image: linear-gradient(to bottom, black 82%, rgba(0,0,0,0.6) 93%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 82%, rgba(0,0,0,0.6) 93%, transparent 100%);
-  }
-  
-  html[dir="ltr"] .visualHalf {
-    left: auto;
-    right: 0;
+    z-index: 1;
+    /* Soft top & bottom feather: subtle cinematic fade */
+    mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 82%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 82%, transparent 100%);
   }
 
-  /* Soft fade on the edge facing the content (in RTL: fade to right; in LTR: fade to left) */
+  /* Left fade into the text area */
   .imageGallery {
-    mask-image: linear-gradient(to right, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
-  }
-  
-  html[dir="ltr"] .imageGallery {
-    mask-image: linear-gradient(to left, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to left, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 12%, black 32%, black 96%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 12%, black 32%, black 96%, transparent 100%);
   }
 
+  /* Image sits lower to blend with header area */
   .imageElement {
-    object-position: center 40%;
-  }
-  
-  html[dir="rtl"] .imageElement {
-    object-position: 65% 40%;
+    object-position: center 55% !important;
   }
 
+  /* Text area on the LEFT */
   .contentHalf {
-    width: 55%;
+    position: relative;
+    z-index: 3;
+    width: 50%;
     margin-top: 0;
-    /* Proper padding so text clears the fixed transparent header with elegant breathing room */
-    padding-top: 8rem;
+    padding-top: 6.5rem;
     padding-bottom: var(--spacing-16);
     justify-content: center;
-    padding-inline-end: var(--spacing-12);
-    /* Align with the main container edge instead of centering in the 50% width */
-    margin-inline: 0 auto; /* Overrides the .container's margin-inline: auto */
-    padding-inline-start: max(var(--spacing-6), calc((100vw - var(--max-width)) / 2));
-    /* Soft ambient vignette behind Arabic text: no hard vertical lines, subtle localized contrast */
-    background: radial-gradient(ellipse at 85% 50%, rgba(21, 25, 22, 0.7) 0%, rgba(21, 25, 22, 0.35) 50%, transparent 80%);
-  }
-
-  html[dir="ltr"] .contentHalf {
-    background: radial-gradient(ellipse at 15% 50%, rgba(21, 25, 22, 0.7) 0%, rgba(21, 25, 22, 0.35) 50%, transparent 80%);
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    padding-left: max(var(--spacing-6), calc((100vw - var(--max-width)) / 2)) !important;
+    padding-right: var(--spacing-8) !important;
   }
 
   .textContent {
-    max-width: 850px;
+    max-width: 620px;
   }
 
   .headline {
-    font-size: clamp(88px, 9vw, 125px);
-    line-height: 0.98;
+    font-size: clamp(68px, 6vw, 98px);
+    line-height: 0.95;
     margin-bottom: var(--spacing-6);
   }
 
   .subtitle {
-    font-size: clamp(1.5rem, 1.8vw, 1.75rem);
+    font-size: clamp(1.35rem, 1.6vw, 1.55rem);
     line-height: 1.45;
-    max-width: 620px;
+    max-width: 560px;
     margin-bottom: var(--spacing-8);
   }
 
@@ -270,31 +278,18 @@ html[dir="rtl"] .imageElement {
 
   .primaryBtn, .secondaryBtn {
     width: auto;
-    min-width: 200px;
+    min-width: 190px;
   }
 }
 
-/* Large screens: 140px-150px Headline with text-3xl Subtitle */
 @media (min-width: 1280px) {
-  .contentHalf {
-    width: 60%;
-  }
-
-  .textContent {
-    max-width: 950px;
-  }
-
   .headline {
-    font-size: 150px;
-    line-height: 0.95;
-    margin-bottom: var(--spacing-6);
+    font-size: 104px;
+    line-height: 0.92;
   }
-
-  .subtitle {
-    font-size: 1.875rem; /* text-3xl */
-    line-height: 1.4;
-    max-width: 720px;
-    margin-bottom: var(--spacing-8);
+  
+  .visualHalf {
+    width: 64%;
   }
 }
 
