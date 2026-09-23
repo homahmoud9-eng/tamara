@@ -17,7 +17,7 @@
   position: relative;
 }
 
-/* ── Default state: full-width, transparent, generous padding ── */
+/* ── Base Container Defaults ── */
 .headerContainer {
   background: transparent;
   border-bottom: none;
@@ -29,9 +29,37 @@
   pointer-events: auto;
 }
 
-/* ── Scrolled state: floating pill shape with REAL premium glassmorphism ── */
-.scrolled .headerContainer {
-  /* Translucent dark emerald surface with low-to-moderate opacity so background is visible */
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  width: 100%;
+  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   VARIANT 1: HOMEPAGE HERO HEADER (.variantHero)
+   Large, transparent at top over Hero, luxury floating pill on scroll
+   ========================================================================== */
+@media (min-width: 1024px) {
+  .variantHero .headerContainer {
+    padding: 1rem 0;
+  }
+
+  .variantHero .headerInner {
+    height: auto;
+    padding: 2rem 2.5rem;
+  }
+
+  .variantHero .logoImage {
+    height: 120px;
+    max-height: 130px;
+  }
+}
+
+/* Scrolled state on Homepage: floating pill shape with REAL premium glassmorphism */
+.variantHero.scrolled .headerContainer {
   background: linear-gradient(
     180deg,
     rgba(14, 30, 24, 0.62) 0%,
@@ -51,32 +79,119 @@
   padding: 0;
 }
 
-.headerInner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 64px;
-  width: 100%;
-  transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 @media (min-width: 1024px) {
-  .headerContainer {
-    padding: 1rem 0;
-  }
-
-  .scrolled .headerContainer {
+  .variantHero.scrolled .headerContainer {
     width: 80%;
     margin-top: 1.25rem;
   }
 
-  .headerInner {
-    height: auto;
-    padding: 2rem 2.5rem;
+  .variantHero.scrolled .headerInner {
+    padding: 0.75rem 2rem;
   }
 
-  .scrolled .headerInner {
-    padding: 0.75rem 2rem;
+  .variantHero.scrolled .logoImage {
+    height: 56px;
+    max-height: 64px;
+  }
+}
+
+/* ==========================================================================
+   VARIANT 2: COMPACT GLOBAL HEADER (.variantCompact)
+   For all internal pages (/menu, /cart, /checkout, /offers, /blog, /account, etc.)
+   Sleek professional height, sticky at top, dark emerald glass, normal logo
+   ========================================================================== */
+.variantCompact .headerContainer {
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  padding: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(14, 28, 22, 0.88) 0%,
+    rgba(10, 20, 16, 0.82) 100%
+  );
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+}
+
+.variantCompact .headerInner {
+  height: 64px;
+  padding: 0 var(--spacing-4);
+  width: 100%;
+}
+
+.variantCompact .logoImage {
+  height: 48px;
+  max-height: 52px;
+}
+
+.variantCompact .mobileLogo .logoImage {
+  height: 52px;
+  max-height: 56px;
+}
+
+@media (min-width: 1024px) {
+  .variantCompact .headerContainer {
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 0;
+    border-radius: 0;
+  }
+
+  .variantCompact .headerInner {
+    height: 72px;
+    padding: 0 var(--spacing-8);
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
+  .variantCompact .logoImage {
+    height: 50px;
+    max-height: 54px;
+  }
+
+  .variantCompact .desktopNavStart {
+    gap: var(--spacing-5);
+  }
+
+  .variantCompact .desktopNavEnd {
+    gap: var(--spacing-3);
+  }
+
+  .variantCompact .navLink {
+    font-size: 15px;
+    font-weight: 500;
+  }
+}
+
+/* Scrolled state on internal pages: retains compact fixed bar, slightly deeper glass */
+.variantCompact.scrolled .headerContainer {
+  background: linear-gradient(
+    180deg,
+    rgba(12, 24, 19, 0.94) 0%,
+    rgba(8, 18, 14, 0.90) 100%
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 6px 24px -2px rgba(0, 0, 0, 0.45);
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0;
+  margin-top: 0;
+  padding: 0;
+}
+
+@media (min-width: 1024px) {
+  .variantCompact.scrolled .headerInner {
+    height: 72px;
+    padding: 0 var(--spacing-8);
+  }
+
+  .variantCompact.scrolled .logoImage {
+    height: 50px;
+    max-height: 54px;
   }
 }
 
@@ -94,20 +209,6 @@
   height: 72px;
   max-height: 76px;
   transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@media (min-width: 1024px) {
-  /* Default: large logo */
-  .logoImage {
-    height: 120px;
-    max-height: 130px;
-  }
-
-  /* Scrolled: shrunk logo */
-  .scrolled .logoImage {
-    height: 56px;
-    max-height: 64px;
-  }
 }
 
 [data-theme="dark"] .logoImage {

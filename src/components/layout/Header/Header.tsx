@@ -85,14 +85,14 @@ export function Header({ announcement }: { announcement?: any }) {
     setLanguage(language === 'ar' ? 'en' : 'ar');
   };
 
-  // Dynamic logo: white at top, colored when scrolled
-  const headerLogo = isScrolled ? LOGO_DEFAULT : LOGO_WHITE;
+  // Route detection: Only the homepage gets the large hero header variant
+  const normalizedPath = pathname?.replace(/\/$/, '') || '';
+  const isHomePage = normalizedPath === '';
+  const variantClass = isHomePage ? styles.variantHero : styles.variantCompact;
 
-  const isMenuPage = pathname?.startsWith('/menu');
-  const isOffersPage = pathname?.startsWith('/offers');
-  const isPackagesPage = pathname?.startsWith('/packages');
-  const isSettingsPage = pathname?.startsWith('/settings');
-  const isOrdersPage = pathname?.startsWith('/orders');
+  // Dynamic logo: on homepage, white at top and colored when scrolled; on internal pages, always colored brand logo
+  const headerLogo = isHomePage ? (isScrolled ? LOGO_DEFAULT : LOGO_WHITE) : LOGO_DEFAULT;
+
   const isProductPage = pathname?.startsWith('/product/');
   const positionClass = styles.headerFixed;
 
@@ -113,7 +113,7 @@ export function Header({ announcement }: { announcement?: any }) {
           />
         </div>
       )}
-      <header className={`${styles.header} ${positionClass} ${isScrolled ? styles.scrolled : ''}`}>
+      <header className={`${styles.header} ${variantClass} ${positionClass} ${isScrolled ? styles.scrolled : ''}`}>
         <div className={styles.headerContainer}>
         <div className={`container ${styles.headerInner}`}>
           

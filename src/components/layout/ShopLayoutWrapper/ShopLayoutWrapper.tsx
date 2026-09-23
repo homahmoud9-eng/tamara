@@ -23,11 +23,14 @@ export function ShopLayoutWrapper({
     return <>{children}</>;
   }
 
+  const normalizedPath = pathname?.replace(/\/$/, '') || '';
+  const isHome = normalizedPath === '';
+
   return (
     <div className="app-container">
       <SplashScreen />
       <Header announcement={announcement} />
-      <main className="main-content">
+      <main className={`main-content ${isHome ? 'main-content-home' : 'main-content-internal'}`}>
         {children}
       </main>
       <Footer />

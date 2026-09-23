@@ -231,14 +231,22 @@ body {
   flex-direction: column;
 }
 
-/* Offset content below the fixed header on non-hero pages */
+/* Offset content below the fixed header */
 .main-content {
-  padding-top: 80px;
+  padding-top: 72px;
 }
 
 @media (min-width: 1024px) {
   .main-content {
+    padding-top: 76px;
+  }
+
+  .main-content-home {
     padding-top: 120px;
+  }
+
+  .main-content-internal {
+    padding-top: 76px;
   }
 }
 
