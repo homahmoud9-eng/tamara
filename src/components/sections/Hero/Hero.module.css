@@ -3,7 +3,7 @@
   min-height: 100vh;
   /* Pull hero above the fixed-header content offset so bg starts at viewport top */
   margin-top: -80px;
-  background-color: var(--bg-main);
+  background-color: #0a1410;
   overflow: hidden;
   padding-top: 8rem; /* Mobile spacing: pt-32 so content and images drop below header */
 }
@@ -21,12 +21,15 @@
   height: 45vh;
   flex-shrink: 0;
   z-index: 1;
+  background-color: #0a1410;
 }
 
 .imageGallery {
   position: relative;
   width: 100%;
   height: 100%;
+  mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
 }
 
 .heroImage {
@@ -37,9 +40,9 @@
   height: 100%;
   opacity: 0;
   transition: opacity 1.2s ease-in-out;
-  /* Feather / Blend Effect: fade bottom edges into dark bg */
-  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  /* Feather / Blend Effect: radial fade into #0a1410 bg */
+  mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
 }
 
 .heroImage.active {
@@ -49,6 +52,8 @@
 .imageElement {
   object-fit: cover;
   object-position: center 10%; /* Show top of food images */
+  mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
 }
 
 /* RTL Focal Points */
@@ -60,6 +65,8 @@ html[dir="rtl"] .imageElement {
 @media (min-width: 1024px) {
   .imageElement {
     object-position: center 45%;
+    mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
   }
   
   html[dir="rtl"] .imageElement {
@@ -67,13 +74,13 @@ html[dir="rtl"] .imageElement {
   }
   
   .heroImage {
-    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
   }
   
   html[dir="rtl"] .heroImage {
-    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 65%, transparent 100%);
   }
 }
 
@@ -84,8 +91,10 @@ html[dir="rtl"] .imageElement {
   width: 100%;
   height: 100%;
   z-index: 4;
-  /* Bottom fade to seamlessly transition into content area */
-  background: linear-gradient(to bottom, transparent 65%, var(--bg-main) 100%);
+  /* Seamless blend into #0a1410 background without harsh lines */
+  background: 
+    radial-gradient(ellipse at center, transparent 60%, #0a1410 100%),
+    linear-gradient(to bottom, transparent 60%, #0a1410 100%);
   pointer-events: none;
 }
 
@@ -202,6 +211,7 @@ html[dir="rtl"] .imageElement {
     min-height: 85vh;
     margin-top: -120px;
     padding-top: 12rem; /* lg:pt-48: desktop spacing pushing content & slider down */
+    background-color: #0a1410;
   }
   
   .layoutWrapper {
@@ -217,6 +227,7 @@ html[dir="rtl"] .imageElement {
     height: 100%;
     margin-top: 0;
     padding-top: 0;
+    background-color: #0a1410;
   }
   
   html[dir="rtl"] .visualHalf {
@@ -226,14 +237,16 @@ html[dir="rtl"] .imageElement {
   
   .overlay {
     background: 
-      linear-gradient(to bottom, transparent 65%, var(--bg-main) 100%),
-      radial-gradient(ellipse at 70% 50%, transparent 20%, var(--bg-main) 80%);
+      linear-gradient(to right, #0a1410 0%, transparent 35%),
+      linear-gradient(to bottom, transparent 60%, #0a1410 100%),
+      radial-gradient(ellipse at center, transparent 55%, #0a1410 100%);
   }
   
   html[dir="rtl"] .overlay {
     background: 
-      linear-gradient(to bottom, transparent 65%, var(--bg-main) 100%),
-      radial-gradient(ellipse at 30% 50%, transparent 20%, var(--bg-main) 80%);
+      linear-gradient(to left, #0a1410 0%, transparent 35%),
+      linear-gradient(to bottom, transparent 60%, #0a1410 100%),
+      radial-gradient(ellipse at center, transparent 55%, #0a1410 100%);
   }
 
   .contentHalf {

@@ -75,6 +75,10 @@ export function Hero({
               <div 
                 key={slide.id} 
                 className={`${styles.heroImage} ${index === activeIndex ? styles.active : ''}`}
+                style={{
+                  maskImage: 'radial-gradient(ellipse at center, black 65%, transparent 100%)',
+                  WebkitMaskImage: 'radial-gradient(ellipse at center, black 65%, transparent 100%)'
+                }}
               >
                 <SafeImage
                   src={slide.desktopImg}
@@ -83,6 +87,10 @@ export function Hero({
                   priority={index === 0}
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className={styles.imageElement}
+                  style={{
+                    maskImage: 'radial-gradient(ellipse at center, black 65%, transparent 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 65%, transparent 100%)'
+                  }}
                 />
               </div>
             ))}
