@@ -39,16 +39,14 @@ export function Hero({
 
   const fallbackContent = {
     ar: {
-      headline: 'Tamara\nKitchen',
-      brandDetail: 'مطبخ تمارا',
+      headline: 'مطبخ تمارا',
       subtitle: 'تمارا....طعم يقرب المسافة',
       primaryCta: 'اطلب الآن',
       secondaryCta: 'تصفح المنيو',
       badge: heroAnnouncement?.ar || (freeDeliveryThreshold ? `التوصيل مجاني للطلبات فوق ${freeDeliveryThreshold} درهم` : 'التوصيل مجاني للطلبات فوق 500 درهم')
     },
     en: {
-      headline: 'Tamara\nKitchen',
-      brandDetail: 'مطبخ تمارا',
+      headline: 'Tamara Kitchen',
       subtitle: 'Tamara.... A taste that brings us closer',
       primaryCta: 'Order Now',
       secondaryCta: 'View Menu',
@@ -59,7 +57,6 @@ export function Hero({
   const text = hasSlides 
     ? {
         headline: activeSlide.title[language] || fallbackContent[language].headline,
-        brandDetail: fallbackContent[language].brandDetail,
         subtitle: activeSlide.subtitle[language] || fallbackContent[language].subtitle,
         primaryCta: activeSlide.ctaText[language] || fallbackContent[language].primaryCta,
         secondaryCta: fallbackContent[language].secondaryCta,
@@ -67,16 +64,11 @@ export function Hero({
       }
     : fallbackContent[language];
 
-  // Ensure headline shows "Tamara \n Kitchen" as requested if default/Arabic
-  const headlineText = text.headline.includes('\n') 
-    ? text.headline 
-    : (text.headline === 'مطبخ تمارا' ? 'Tamara\nKitchen' : text.headline);
-
   return (
     <section className={styles.hero}>
       <div className={styles.layoutWrapper}>
         
-        {/* Visual Half (Food Scene on Right) */}
+        {/* Visual Half (Food scene: LEFT in Arabic RTL, RIGHT in English LTR) */}
         <div className={styles.visualHalf}>
           <div className={styles.imageGallery}>
             {(hasSlides ? slides : fallbackImages.map((src, i) => ({ desktopImg: src, id: i }))).map((slide, index) => (
@@ -97,16 +89,13 @@ export function Hero({
           </div>
         </div>
 
-        {/* Content Half (Left Side: Badge, Brand Detail, Headline, Tagline, CTAs) */}
+        {/* Content Half (Text content: RIGHT in Arabic RTL, LEFT in English LTR) */}
         <div className={`container ${styles.contentHalf}`}>
           <div className={styles.textContent}>
-            <div className={styles.metaRow}>
-              <div className={styles.badge}>{text.badge}</div>
-              <span className={styles.arabicBrandBadge}>مطبخ تمارا</span>
-            </div>
+            <div className={styles.badge}>{text.badge}</div>
 
-            <h1 className={`${styles.headline} ${styles.englishHeadline}`}>
-              {headlineText.split('\n').map((line: string, i: number) => (
+            <h1 className={`${styles.headline} ${language === 'en' ? styles.englishHeadline : styles.arabicHeadline}`}>
+              {text.headline.split('\n').map((line: string, i: number) => (
                 <span key={i} className={styles.headlineLine}>{line}</span>
               ))}
             </h1>

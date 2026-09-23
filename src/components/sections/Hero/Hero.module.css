@@ -86,53 +86,32 @@ html[dir="rtl"] .imageElement {
   width: 100%;
 }
 
-.metaRow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-3);
-  margin-bottom: var(--spacing-6);
-}
-
 .badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 14px;
+  display: inline-block;
+  padding: 4px 12px;
   border-radius: 20px;
   background-color: var(--bg-surface-elevated);
   color: var(--brand-accent);
   border: 1px solid var(--border-subtle);
   font-size: 13px;
   font-weight: 700;
+  margin-bottom: var(--spacing-6);
   box-shadow: var(--shadow-sm);
 }
 
-.arabicBrandBadge {
-  font-family: var(--font-foda);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-gold);
-  letter-spacing: normal;
-  padding: 4px 12px;
-  background-color: rgba(198, 154, 82, 0.1);
-  border: 1px solid rgba(198, 154, 82, 0.25);
-  border-radius: 16px;
-  display: inline-flex;
-  align-items: center;
-}
-
 .headline {
-  font-family: var(--font-tactic);
-  font-weight: 900 !important;
-  font-style: italic;
-  letter-spacing: 0.02em !important;
-  font-size: clamp(48px, 9vw, 68px);
-  line-height: 0.95;
+  font-family: var(--font-foda);
+  font-size: clamp(38px, 11vw, 56px);
+  font-weight: 400 !important; /* Regular weight (400) for Arabic Foda Kufi */
+  font-synthesis: none; /* Prevent synthetic faux bolding by browsers */
+  line-height: 1.05;
   margin-bottom: var(--spacing-4);
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  word-break: keep-all;
+  letter-spacing: normal !important; /* Preserves cursive Arabic connections */
 }
 
 .arabicHeadline,
@@ -195,28 +174,27 @@ html[dir="rtl"] .imageElement {
   width: 100%;
 }
 
-/* Desktop Asymmetric Layout: Text on LEFT, Large Food Photo on RIGHT */
+/* Desktop Asymmetric Layout */
 @media (min-width: 1024px) {
   .hero {
     min-height: 85vh;
-    margin-top: -100px;
+    margin-top: -120px;
     background-color: transparent;
   }
   
   .layoutWrapper {
     flex-direction: row;
     min-height: 85vh;
-    align-items: center;
   }
 
-  /* Food photography on the RIGHT */
+  /* In Arabic (RTL): Image on LEFT; In English (LTR): Image on RIGHT */
   .visualHalf {
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 0 !important;
-    left: auto !important;
-    width: 62%;
+    left: 0;
+    right: auto;
+    width: 65%;
     height: 100%;
     margin-top: 0;
     padding-top: 0;
@@ -227,47 +205,73 @@ html[dir="rtl"] .imageElement {
     mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 82%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 82%, transparent 100%);
   }
+  
+  html[dir="ltr"] .visualHalf {
+    left: auto;
+    right: 0;
+  }
 
-  /* Left fade into the text area */
+  /* Soft fade on the edge facing the content (in RTL: fade to right; in LTR: fade to left) */
   .imageGallery {
-    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 12%, black 32%, black 96%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 12%, black 32%, black 96%, transparent 100%);
+    mask-image: linear-gradient(to right, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
+  }
+  
+  html[dir="ltr"] .imageGallery {
+    mask-image: linear-gradient(to left, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
   }
 
-  /* Image sits lower to blend with header area */
+  /* Food image sits slightly lower to blend naturally with dark header */
   .imageElement {
-    object-position: center 55% !important;
+    object-position: center 50%;
+  }
+  
+  html[dir="rtl"] .imageElement {
+    object-position: 65% 50%;
   }
 
-  /* Text area on the LEFT */
+  /* Content area: RIGHT in RTL, LEFT in LTR */
   .contentHalf {
     position: relative;
     z-index: 3;
-    width: 50%;
+    width: 55%;
     margin-top: 0;
-    padding-top: 6.5rem;
+    /* Proper padding so text clears the fixed transparent header with elegant breathing room */
+    padding-top: 8rem;
     padding-bottom: var(--spacing-16);
     justify-content: center;
-    margin-left: 0 !important;
-    margin-right: auto !important;
-    padding-left: max(var(--spacing-6), calc((100vw - var(--max-width)) / 2)) !important;
-    padding-right: var(--spacing-8) !important;
+    padding-inline-end: var(--spacing-12);
+    /* Align with the inline-start container edge (RIGHT in RTL, LEFT in LTR) */
+    margin-inline: 0 auto;
+    padding-inline-start: max(var(--spacing-6), calc((100vw - var(--max-width)) / 2));
+    /* Soft ambient vignette behind Arabic text: no hard vertical lines, subtle localized contrast */
+    background: radial-gradient(ellipse at 85% 50%, rgba(21, 25, 22, 0.7) 0%, rgba(21, 25, 22, 0.35) 50%, transparent 80%);
+  }
+
+  html[dir="ltr"] .contentHalf {
+    background: radial-gradient(ellipse at 15% 50%, rgba(21, 25, 22, 0.7) 0%, rgba(21, 25, 22, 0.35) 50%, transparent 80%);
   }
 
   .textContent {
-    max-width: 620px;
+    max-width: 850px;
   }
 
   .headline {
-    font-size: clamp(68px, 6vw, 98px);
-    line-height: 0.95;
+    font-size: clamp(88px, 9vw, 125px);
+    line-height: 0.98;
     margin-bottom: var(--spacing-6);
   }
 
+  .englishHeadline {
+    font-size: clamp(68px, 6.5vw, 98px);
+    line-height: 0.95;
+  }
+
   .subtitle {
-    font-size: clamp(1.35rem, 1.6vw, 1.55rem);
+    font-size: clamp(1.5rem, 1.8vw, 1.75rem);
     line-height: 1.45;
-    max-width: 560px;
+    max-width: 620px;
     margin-bottom: var(--spacing-8);
   }
 
@@ -278,18 +282,36 @@ html[dir="rtl"] .imageElement {
 
   .primaryBtn, .secondaryBtn {
     width: auto;
-    min-width: 190px;
+    min-width: 200px;
   }
 }
 
+/* Large screens: 140px-150px Headline with text-3xl Subtitle */
 @media (min-width: 1280px) {
+  .contentHalf {
+    width: 60%;
+  }
+
+  .textContent {
+    max-width: 950px;
+  }
+
   .headline {
+    font-size: 150px;
+    line-height: 0.95;
+    margin-bottom: var(--spacing-6);
+  }
+
+  .englishHeadline {
     font-size: 104px;
     line-height: 0.92;
   }
-  
-  .visualHalf {
-    width: 64%;
+
+  .subtitle {
+    font-size: 1.875rem; /* text-3xl */
+    line-height: 1.4;
+    max-width: 720px;
+    margin-bottom: var(--spacing-8);
   }
 }
 
