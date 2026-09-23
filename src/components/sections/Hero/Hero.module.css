@@ -5,9 +5,11 @@
   margin-top: -80px;
   background-color: var(--bg-main);
   overflow: hidden;
+  padding-top: 8rem; /* Mobile spacing: pt-32 so content and images drop below header */
 }
 
 .layoutWrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -35,15 +37,9 @@
   height: 100%;
   opacity: 0;
   transition: opacity 1.2s ease-in-out;
-  /* Feather / vignette: fade ALL edges into the dark bg */
-  mask-image:
-    linear-gradient(to bottom, transparent 0%, black 12%, black 80%, transparent 100%),
-    linear-gradient(to right,  transparent 0%, black 8%,  black 92%, transparent 100%);
-  -webkit-mask-image:
-    linear-gradient(to bottom, transparent 0%, black 12%, black 80%, transparent 100%),
-    linear-gradient(to right,  transparent 0%, black 8%,  black 92%, transparent 100%);
-  mask-composite: intersect;
-  -webkit-mask-composite: source-in;
+  /* Feather / Blend Effect: fade bottom edges into dark bg */
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
 }
 
 .heroImage.active {
@@ -52,7 +48,7 @@
 
 .imageElement {
   object-fit: cover;
-  object-position: center 35%; /* Shifted down */
+  object-position: center 10%; /* Show top of food images */
 }
 
 /* RTL Focal Points */
@@ -71,25 +67,13 @@ html[dir="rtl"] .imageElement {
   }
   
   .heroImage {
-    mask-image:
-      linear-gradient(to bottom, transparent 0%, black 10%, black 75%, transparent 100%),
-      linear-gradient(to right,  transparent 0%, black 6%,  black 94%, transparent 100%);
-    -webkit-mask-image:
-      linear-gradient(to bottom, transparent 0%, black 10%, black 75%, transparent 100%),
-      linear-gradient(to right,  transparent 0%, black 6%,  black 94%, transparent 100%);
-    mask-composite: intersect;
-    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
   }
   
   html[dir="rtl"] .heroImage {
-    mask-image:
-      linear-gradient(to bottom, transparent 0%, black 10%, black 75%, transparent 100%),
-      linear-gradient(to left,   transparent 0%, black 6%,  black 94%, transparent 100%);
-    -webkit-mask-image:
-      linear-gradient(to bottom, transparent 0%, black 10%, black 75%, transparent 100%),
-      linear-gradient(to left,   transparent 0%, black 6%,  black 94%, transparent 100%);
-    mask-composite: intersect;
-    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
   }
 }
 
@@ -101,7 +85,7 @@ html[dir="rtl"] .imageElement {
   height: 100%;
   z-index: 4;
   /* Bottom fade to seamlessly transition into content area */
-  background: linear-gradient(to top, var(--bg-main) 0%, rgba(0,0,0,0.1) 40%, transparent 100%);
+  background: linear-gradient(to bottom, transparent 65%, var(--bg-main) 100%);
   pointer-events: none;
 }
 
@@ -217,11 +201,12 @@ html[dir="rtl"] .imageElement {
   .hero {
     min-height: 85vh;
     margin-top: -120px;
+    padding-top: 12rem; /* lg:pt-48: desktop spacing pushing content & slider down */
   }
   
   .layoutWrapper {
     flex-direction: row;
-    min-height: 85vh;
+    min-height: calc(85vh - 12rem);
   }
 
   .visualHalf {
@@ -231,6 +216,7 @@ html[dir="rtl"] .imageElement {
     width: 60%;
     height: 100%;
     margin-top: 0;
+    padding-top: 0;
   }
   
   html[dir="rtl"] .visualHalf {
@@ -239,18 +225,22 @@ html[dir="rtl"] .imageElement {
   }
   
   .overlay {
-    background: radial-gradient(ellipse at 70% 50%, transparent 20%, var(--bg-main) 80%);
+    background: 
+      linear-gradient(to bottom, transparent 65%, var(--bg-main) 100%),
+      radial-gradient(ellipse at 70% 50%, transparent 20%, var(--bg-main) 80%);
   }
   
   html[dir="rtl"] .overlay {
-    background: radial-gradient(ellipse at 30% 50%, transparent 20%, var(--bg-main) 80%);
+    background: 
+      linear-gradient(to bottom, transparent 65%, var(--bg-main) 100%),
+      radial-gradient(ellipse at 30% 50%, transparent 20%, var(--bg-main) 80%);
   }
 
   .contentHalf {
     width: 55%;
     margin-top: 0;
-    /* Extra top padding so text clears the fixed transparent header on desktop */
-    padding-top: 10rem;
+    /* Aligned nicely below header with hero padding */
+    padding-top: 2rem;
     padding-bottom: var(--spacing-16);
     justify-content: center;
     padding-inline-end: var(--spacing-12);

@@ -65,7 +65,7 @@ export function Hero({
     : fallbackContent[language];
 
   return (
-    <section className={styles.hero}>
+    <section className={`${styles.hero} pt-32 lg:pt-48`}>
       <div className={styles.layoutWrapper}>
         
         {/* Visual Half (Single Image Rotation) */}

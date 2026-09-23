@@ -10,27 +10,17 @@ export function Footer() {
   const { language } = useApp();
 
   return (
-    <footer className={styles.footer}>
-      {/* Background image as <img> tag for guaranteed rendering */}
-      <img
-        src="/assets/images/blog/foter.jpg"
-        alt=""
-        aria-hidden="true"
-        className={styles.bgImage}
-        onError={(e) => {
-          // Fallback to .png if .jpg fails
-          const target = e.target as HTMLImageElement;
-          if (target.src.endsWith('.jpg')) {
-            target.src = '/assets/images/blog/foter.png';
-          }
-        }}
+    <footer className={`${styles.footer} relative overflow-hidden`}>
+      <img 
+        src="/assets/images/blog/foter.webp" 
+        alt="Footer Background" 
+        className="absolute inset-0 w-full h-full object-cover z-0" 
       />
+      <div className="absolute inset-0 bg-[#0a1410] bg-opacity-80 z-10"></div>
 
-      {/* Dark overlay for readability */}
-      <div className={styles.overlay} />
-
-      <div className={`container ${styles.container}`}>
-        <div className={styles.top}>
+      <div className="relative z-20">
+        <div className={`container ${styles.container}`}>
+          <div className={styles.top}>
           {/* Left: Logo only */}
           <div className={styles.brand}>
             <SafeImage 
@@ -103,6 +93,8 @@ export function Footer() {
           </div>
         </div>
       </div>
+      </div>
     </footer>
   );
 }
+
