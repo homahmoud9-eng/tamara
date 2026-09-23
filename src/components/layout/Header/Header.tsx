@@ -73,8 +73,8 @@ export function Header({ announcement }: { announcement?: any }) {
   };
 
   // Route detection: Only the homepage gets the large hero header variant
-  const normalizedPath = pathname?.replace(/\/$/, '') || '';
-  const isHomePage = normalizedPath === '';
+  const cleanPath = pathname?.replace(/\/$/, '') || '';
+  const isHomePage = !pathname || cleanPath === '' || cleanPath === '/index' || cleanPath === 'index';
 
   // Scroll logic: Strictly for homepage only
   // Deterministic initialization: Homepage starts at top (false) unless scrolled.
@@ -87,7 +87,7 @@ export function Header({ announcement }: { announcement?: any }) {
 
     const checkScroll = () => {
       const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
-      setIsScrolled(scrollY > 50);
+      setIsScrolled(scrollY > 60);
     };
 
     // Immediate check to synchronize state deterministically without waiting for a scroll event
@@ -104,15 +104,10 @@ export function Header({ announcement }: { announcement?: any }) {
   // Dynamic logo: on homepage, white at top and colored when scrolled; on internal pages, always colored brand logo
   const headerLogo = isHomePage ? (isScrolled ? LOGO_DEFAULT : LOGO_WHITE) : LOGO_DEFAULT;
 
-  const isProductPage = pathname?.startsWith('/product/');
   const positionClass = styles.headerFixed;
 
-  if (isProductPage) {
-    return null;
-  }
-
   // Variant and scrolled classes:
-  // - Homepage: variantHero. If scrolled > 50px, also receives scrolled class for compact transition.
+  // - Homepage: variantHero. If scrolled > 60px, also receives scrolled class for compact transition.
   // - Internal pages: ALWAYS variantCompact. NEVER receives scrolled class.
   const isHeroVariant = isHomePage;
   const showCompactHome = isHomePage && isScrolled;

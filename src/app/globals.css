@@ -234,11 +234,11 @@ body {
 /* Offset content below the fixed header */
 /* Content top offset below fixed header */
 .main-content {
-  padding-top: 72px;
+  padding-top: 64px;
 }
 
 .main-content-internal {
-  padding-top: 72px;
+  padding-top: 64px;
 }
 
 .main-content-home {
@@ -247,7 +247,7 @@ body {
 
 @media (min-width: 1024px) {
   .main-content {
-    padding-top: 76px;
+    padding-top: 72px;
   }
 
   .main-content-home {
@@ -255,7 +255,7 @@ body {
   }
 
   .main-content-internal {
-    padding-top: 76px;
+    padding-top: 72px;
   }
 }
 

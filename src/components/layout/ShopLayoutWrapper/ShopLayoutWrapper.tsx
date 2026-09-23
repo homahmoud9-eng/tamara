@@ -23,8 +23,8 @@ export function ShopLayoutWrapper({
     return <>{children}</>;
   }
 
-  const normalizedPath = pathname?.replace(/\/$/, '') || '';
-  const isHome = normalizedPath === '';
+  const cleanPath = pathname?.replace(/\/$/, '') || '';
+  const isHome = !pathname || cleanPath === '' || cleanPath === '/index' || cleanPath === 'index';
 
   return (
     <div className="app-container">
