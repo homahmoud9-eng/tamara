@@ -64,13 +64,23 @@ export function Hero({
       }
     : fallbackContent[language];
 
+  const maskGradient = language === 'en'
+    ? "linear-gradient(to left, black 50%, transparent 100%)"
+    : "linear-gradient(to right, black 50%, transparent 100%)";
+
   return (
     <section className={`${styles.hero} pt-32 lg:pt-48`}>
       <div className={styles.layoutWrapper}>
         
         {/* Visual Half (Single Image Rotation) */}
         <div className={`${styles.visualHalf} relative`}>
-          <div className={`${styles.imageGallery} relative`}>
+          <div 
+            className={`${styles.imageGallery} relative`}
+            style={{
+              WebkitMaskImage: maskGradient,
+              maskImage: maskGradient
+            }}
+          >
             {(hasSlides ? slides : fallbackImages.map((src, i) => ({ desktopImg: src, id: i }))).map((slide, index) => (
               <div 
                 key={slide.id} 
@@ -86,11 +96,6 @@ export function Hero({
                 />
               </div>
             ))}
-
-            {/* Side blending overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0a1410]/60 to-[#0a1410] z-10 pointer-events-none"></div>
-            {/* Bottom edge blending overlay */}
-            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0a1410] to-transparent z-10 pointer-events-none"></div>
           </div>
         </div>
 
