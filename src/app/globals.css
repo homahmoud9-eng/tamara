@@ -232,8 +232,17 @@ body {
 }
 
 /* Offset content below the fixed header */
+/* Content top offset below fixed header */
 .main-content {
   padding-top: 72px;
+}
+
+.main-content-internal {
+  padding-top: 72px;
+}
+
+.main-content-home {
+  padding-top: 0;
 }
 
 @media (min-width: 1024px) {

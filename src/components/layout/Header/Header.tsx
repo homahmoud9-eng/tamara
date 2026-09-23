@@ -72,23 +72,34 @@ export function Header({ announcement }: { announcement?: any }) {
     }
   };
 
+  // Route detection: Only the homepage gets the large hero header variant
+  const normalizedPath = pathname?.replace(/\/$/, '') || '';
+  const isHomePage = normalizedPath === '';
+
+  // Scroll logic: Strictly for homepage only
+  // Deterministic initialization: Homepage starts at top (false) unless scrolled.
+  // Internal pages NEVER participate in scroll-to-compact logic.
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    if (!isHomePage) {
+      setIsScrolled(false);
+      return;
+    }
+
+    const checkScroll = () => {
+      const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      setIsScrolled(scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    // Immediate check to synchronize state deterministically without waiting for a scroll event
+    checkScroll();
+
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    return () => window.removeEventListener('scroll', checkScroll);
+  }, [isHomePage, pathname]);
 
   const toggleLanguage = () => {
     setLanguage(language === 'ar' ? 'en' : 'ar');
   };
-
-  // Route detection: Only the homepage gets the large hero header variant
-  const normalizedPath = pathname?.replace(/\/$/, '') || '';
-  const isHomePage = normalizedPath === '';
-  const variantClass = isHomePage ? styles.variantHero : styles.variantCompact;
 
   // Dynamic logo: on homepage, white at top and colored when scrolled; on internal pages, always colored brand logo
   const headerLogo = isHomePage ? (isScrolled ? LOGO_DEFAULT : LOGO_WHITE) : LOGO_DEFAULT;
@@ -99,6 +110,13 @@ export function Header({ announcement }: { announcement?: any }) {
   if (isProductPage) {
     return null;
   }
+
+  // Variant and scrolled classes:
+  // - Homepage: variantHero. If scrolled > 50px, also receives scrolled class for compact transition.
+  // - Internal pages: ALWAYS variantCompact. NEVER receives scrolled class.
+  const isHeroVariant = isHomePage;
+  const showCompactHome = isHomePage && isScrolled;
+  const headerClassName = `${styles.header} ${isHeroVariant ? styles.variantHero : styles.variantCompact} ${positionClass} ${showCompactHome ? styles.scrolled : ''}`;
 
   return (
     <>
@@ -113,7 +131,7 @@ export function Header({ announcement }: { announcement?: any }) {
           />
         </div>
       )}
-      <header className={`${styles.header} ${variantClass} ${positionClass} ${isScrolled ? styles.scrolled : ''}`}>
+      <header className={headerClassName}>
         <div className={styles.headerContainer}>
         <div className={`container ${styles.headerInner}`}>
           
