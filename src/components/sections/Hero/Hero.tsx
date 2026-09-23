@@ -64,23 +64,13 @@ export function Hero({
       }
     : fallbackContent[language];
 
-  const maskGradient = language === 'en'
-    ? "linear-gradient(to left, black 50%, transparent 100%)"
-    : "linear-gradient(to right, black 50%, transparent 100%)";
-
   return (
-    <section className={`${styles.hero} pt-32 lg:pt-48`}>
+    <section className={styles.hero}>
       <div className={styles.layoutWrapper}>
         
         {/* Visual Half (Single Image Rotation) */}
-        <div className={`${styles.visualHalf} relative`}>
-          <div 
-            className={`${styles.imageGallery} relative`}
-            style={{
-              WebkitMaskImage: maskGradient,
-              maskImage: maskGradient
-            }}
-          >
+        <div className={styles.visualHalf}>
+          <div className={styles.imageGallery}>
             {(hasSlides ? slides : fallbackImages.map((src, i) => ({ desktopImg: src, id: i }))).map((slide, index) => (
               <div 
                 key={slide.id} 

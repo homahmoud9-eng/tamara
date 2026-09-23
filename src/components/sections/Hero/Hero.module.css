@@ -3,9 +3,8 @@
   min-height: 100vh;
   /* Pull hero above the fixed-header content offset so bg starts at viewport top */
   margin-top: -80px;
-  background-color: #0a1410;
+  background-color: transparent;
   overflow: hidden;
-  padding-top: 8rem; /* Mobile spacing: pt-32 so content and images drop below header */
 }
 
 .layoutWrapper {
@@ -18,10 +17,13 @@
 .visualHalf {
   position: relative;
   width: 100%;
-  height: 45vh;
+  height: 50vh;
   flex-shrink: 0;
   z-index: 1;
-  background-color: #0a1410;
+  background-color: transparent;
+  /* Soft bottom feather on mobile to naturally melt into content */
+  mask-image: linear-gradient(to bottom, black 78%, rgba(0,0,0,0.5) 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 78%, rgba(0,0,0,0.5) 92%, transparent 100%);
 }
 
 .imageGallery {
@@ -177,42 +179,71 @@ html[dir="rtl"] .imageElement {
   .hero {
     min-height: 85vh;
     margin-top: -120px;
-    padding-top: 12rem; /* lg:pt-48: desktop spacing pushing content & slider down */
-    background-color: #0a1410;
+    background-color: transparent;
   }
   
   .layoutWrapper {
     flex-direction: row;
-    min-height: calc(85vh - 12rem);
+    min-height: 85vh;
   }
 
   .visualHalf {
     position: absolute;
     top: 0;
-    right: 0;
-    width: 60%;
+    bottom: 0;
+    left: 0;
+    width: 65%;
     height: 100%;
     margin-top: 0;
     padding-top: 0;
-    background-color: #0a1410;
+    background-color: transparent;
+    pointer-events: none;
+    /* Soft bottom fade to melt seamlessly into the next section below */
+    mask-image: linear-gradient(to bottom, black 82%, rgba(0,0,0,0.6) 93%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 82%, rgba(0,0,0,0.6) 93%, transparent 100%);
   }
   
-  html[dir="rtl"] .visualHalf {
-    right: auto;
-    left: 0;
+  html[dir="ltr"] .visualHalf {
+    left: auto;
+    right: 0;
+  }
+
+  /* Soft fade on the edge facing the content (in RTL: fade to right; in LTR: fade to left) */
+  .imageGallery {
+    mask-image: linear-gradient(to right, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
+  }
+  
+  html[dir="ltr"] .imageGallery {
+    mask-image: linear-gradient(to left, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, black 55%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
+  }
+
+  .imageElement {
+    object-position: center 40%;
+  }
+  
+  html[dir="rtl"] .imageElement {
+    object-position: 65% 40%;
   }
 
   .contentHalf {
     width: 55%;
     margin-top: 0;
-    /* Aligned nicely below header with hero padding */
-    padding-top: 2rem;
+    /* Proper padding so text clears the fixed transparent header with elegant breathing room */
+    padding-top: 8rem;
     padding-bottom: var(--spacing-16);
     justify-content: center;
     padding-inline-end: var(--spacing-12);
     /* Align with the main container edge instead of centering in the 50% width */
     margin-inline: 0 auto; /* Overrides the .container's margin-inline: auto */
     padding-inline-start: max(var(--spacing-6), calc((100vw - var(--max-width)) / 2));
+    /* Soft ambient vignette behind Arabic text: no hard vertical lines, subtle localized contrast */
+    background: radial-gradient(ellipse at 85% 50%, rgba(21, 25, 22, 0.7) 0%, rgba(21, 25, 22, 0.35) 50%, transparent 80%);
+  }
+
+  html[dir="ltr"] .contentHalf {
+    background: radial-gradient(ellipse at 15% 50%, rgba(21, 25, 22, 0.7) 0%, rgba(21, 25, 22, 0.35) 50%, transparent 80%);
   }
 
   .textContent {
