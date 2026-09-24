@@ -9,7 +9,7 @@
 }
 
 @font-face {
-  font-family: 'Foda Kufi';
+  font-family: 'Tamara Hero Arabic';
   src: url('/fonts/Foda Kufi Regular- Premium.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
@@ -17,10 +17,10 @@
 }
 
 @font-face {
-  font-family: 'Tactic Sans Extended';
+  font-family: 'Tamara Hero English';
   src: url('/fonts/TacticSansExd-UltIt.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
+  font-weight: 900;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -40,11 +40,11 @@
   --font-foda: 'Foda Kufi', 'STC', 'Cairo', sans-serif;
   --font-tactic: 'Tactic Sans Extended', 'Impact', 'Arial Black', sans-serif;
   --font-stc: 'STC', sans-serif;
-  --font-arabic-display: 'Foda Kufi', sans-serif;
-  --font-arabic-heading: 'Foda Kufi', sans-serif;
-  --font-arabic-body: 'Foda Kufi', sans-serif;
-  --font-english-display: 'Tactic Sans Extended', sans-serif;
-  --font-english-body: 'Tactic Sans Extended', sans-serif;
+  --font-arabic-display: 'Cairo', sans-serif;
+  --font-arabic-heading: 'STC', sans-serif;
+  --font-arabic-body: 'Cairo', sans-serif;
+  --font-english-display: 'STC', sans-serif;
+  --font-english-body: 'Cairo', sans-serif;
 
   /* Fluid Typography Scale */
   /* Fluid range: 360px to 1440px viewport */

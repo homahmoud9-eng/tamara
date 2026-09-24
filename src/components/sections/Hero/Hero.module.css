@@ -99,7 +99,7 @@ html[dir="rtl"] .imageElement {
 }
 
 .headline {
-  font-family: var(--font-foda);
+  font-family: "Tamara Hero Arabic", sans-serif;
   font-size: clamp(38px, 11vw, 56px);
   font-weight: 400 !important; /* Regular weight (400) for Arabic Foda Kufi */
   font-synthesis: none; /* Prevent synthetic faux bolding by browsers */
@@ -116,7 +116,7 @@ html[dir="rtl"] .imageElement {
 .arabicHeadline,
 :global([lang="ar"]) .headline,
 :global(html[dir="rtl"]) .headline {
-  font-family: var(--font-foda);
+  font-family: "Tamara Hero Arabic", sans-serif;
   font-weight: 400 !important;
   font-synthesis: none;
   letter-spacing: normal !important;
@@ -125,7 +125,7 @@ html[dir="rtl"] .imageElement {
 :global([lang="en"]) .headline,
 :global(html[dir="ltr"]) .headline,
 .englishHeadline {
-  font-family: var(--font-tactic);
+  font-family: "Tamara Hero English", sans-serif;
   font-weight: 900 !important;
   font-style: italic;
   letter-spacing: 0.02em !important; /* Slight positive breathing room for Tactic Sans Extended */
