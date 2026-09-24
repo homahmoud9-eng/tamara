@@ -21,6 +21,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
     ];
   }
   if (catFilter) where.categoryId = catFilter;
+  if (resolvedSearchParams?.status === 'active') where.isActive = true;
+  if (resolvedSearchParams?.status === 'inactive') where.isActive = false;
 
   const [products, totalCount, categories] = await Promise.all([
     prisma.product.findMany({
@@ -56,6 +58,11 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
           </form>
           <div className="admin-table-filters">
             <form action="/dashboard/catalog/products" method="GET" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <select name="status" className="admin-select" style={{ width: '150px' }} defaultValue={resolvedSearchParams?.status || ''}>
+                <option value="">{lang === 'ar' ? 'كل الحالات' : 'All Status'}</option>
+                <option value="active">{lang === 'ar' ? 'نشط' : 'Active'}</option>
+                <option value="inactive">{lang === 'ar' ? 'معطل (للمراجعة)' : 'Inactive (Review)'}</option>
+              </select>
               <select name="cat" className="admin-select" style={{ width: '180px' }} defaultValue={catFilter || ''}>
                 <option value="">{lang === 'ar' ? 'جميع الأقسام' : 'All Categories'}</option>
                 {categories.map(c => (
@@ -136,8 +143,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
           <div className="admin-table-footer">
             <span>{lang === 'ar' ? `صفحة ${page} من ${totalPages}` : `Page ${page} of ${totalPages}`}</span>
             <div className="admin-pagination">
-              {page > 1 && <Link href={`/dashboard/catalog/products?page=${page - 1}${q ? `&q=${q}` : ''}${catFilter ? `&cat=${catFilter}` : ''}`}><button>{lang === 'ar' ? 'السابق' : 'Prev'}</button></Link>}
-              {page < totalPages && <Link href={`/dashboard/catalog/products?page=${page + 1}${q ? `&q=${q}` : ''}${catFilter ? `&cat=${catFilter}` : ''}`}><button>{lang === 'ar' ? 'التالي' : 'Next'}</button></Link>}
+              {page > 1 && <Link href={`/dashboard/catalog/products?page=${page - 1}${q ? `&q=${q}` : ''}${catFilter ? `&cat=${catFilter}` : ''}${resolvedSearchParams?.status ? `&status=${resolvedSearchParams.status}` : ''}`}><button>{lang === 'ar' ? 'السابق' : 'Prev'}</button></Link>}
+              {page < totalPages && <Link href={`/dashboard/catalog/products?page=${page + 1}${q ? `&q=${q}` : ''}${catFilter ? `&cat=${catFilter}` : ''}${resolvedSearchParams?.status ? `&status=${resolvedSearchParams.status}` : ''}`}><button>{lang === 'ar' ? 'التالي' : 'Next'}</button></Link>}
             </div>
           </div>
         )}

@@ -55,7 +55,7 @@ const NAV_SECTIONS: NavSection[] = [
       { nameEn: 'Categories', nameAr: 'الأقسام', href: '/dashboard/catalog/categories', icon: Layers, isImplemented: true },
       { nameEn: 'Variants', nameAr: 'المتغيرات', href: '/dashboard/catalog/variants', icon: Tag, isImplemented: true },
       { nameEn: 'Add-ons', nameAr: 'الإضافات', href: '/dashboard/catalog/addons', icon: Zap, isImplemented: true },
-      { nameEn: 'Packages', nameAr: 'الباقات', href: '/dashboard/catalog/packages', icon: Package, isImplemented: false },
+      { nameEn: 'Packages', nameAr: 'الباقات', href: '/dashboard/catalog/packages', icon: Package, isImplemented: true },
     ]
   },
   {
