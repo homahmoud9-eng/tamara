@@ -21,7 +21,7 @@ export function QuickCategories({ categories }: QuickCategoriesProps) {
         
         <div className={styles.categoriesGrid}>
           {categories.map((category) => (
-            <Link href={`/menu#${category.slug}`} key={category.id} className={styles.categoryCard}>
+            <Link href={`/menu/${category.slug}`} key={category.id} className={styles.categoryCard}>
               <div className={styles.imageWrapper}>
                 <Image 
                   src={category.image} 

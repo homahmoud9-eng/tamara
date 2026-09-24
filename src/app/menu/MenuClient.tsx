@@ -74,7 +74,7 @@ export function MenuClient({ categories, products: allProducts }: MenuClientProp
           if (products.length === 0) return null;
 
           return (
-            <section key={category.id} id={`category-${category.id}`} className={styles.categorySection}>
+            <section key={category.id} id={category.slug} className={styles.categorySection}>
               <h2 className={styles.categoryTitle}>
                 {language === "ar" ? category.name.ar : category.name.en}
               </h2>
