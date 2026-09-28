@@ -2,22 +2,32 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useApp } from "@/components/providers/AppProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { useFavorites } from "@/components/providers/FavoritesProvider";
-import { mockReviews } from "@/models/mock/data";
 import { SafeImage } from "@/components/ui/SafeImage/SafeImage";
 import { PackageCustomizer } from "@/components/ui/PackageCustomizer/PackageCustomizer";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import styles from "./product.module.css";
 import { Product } from "@/models/types";
+
+export interface ProductReview {
+  id: string;
+  rating: number;
+  reviewText: string | null;
+  customerName: string;
+  createdAt: string;
+}
 
 interface ProductClientProps {
   product: Product;
   mealProducts: Product[];
+  initialReviews?: ProductReview[];
 }
 
-export function ProductClient({ product, mealProducts }: ProductClientProps) {
+export function ProductClient({ product, mealProducts, initialReviews = [] }: ProductClientProps) {
   const router = useRouter();
   const { language } = useApp();
   const { addItem } = useCart();
@@ -35,6 +45,57 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
   const audioChunksRef = useRef<Blob[]>([]);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Reviews State
+  const { data: session } = useSession();
+  const [reviews] = useState<ProductReview[]>(initialReviews);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewMessage, setReviewMessage] = useState<{ text: string; isError?: boolean } | null>(null);
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!session?.user) {
+      router.push(`/login?callbackUrl=/product/${product.id}`);
+      return;
+    }
+    setIsSubmittingReview(true);
+    setReviewMessage(null);
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product.id,
+          rating: reviewRating,
+          reviewText: reviewComment,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setReviewMessage({
+          text: language === "ar"
+            ? "شكراً لك! تم إرسال تقييمك بنجاح وسيظهر بعد مراجعة الإدارة."
+            : "Thank you! Your review was submitted and will appear once approved."
+        });
+        setReviewComment("");
+        setReviewRating(5);
+      } else {
+        setReviewMessage({
+          text: data.message || (language === "ar" ? "تعذر إرسال التقييم" : "Failed to submit review"),
+          isError: true,
+        });
+      }
+    } catch {
+      setReviewMessage({
+        text: language === "ar" ? "حدث خطأ في الاتصال" : "Connection error",
+        isError: true,
+      });
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
 
   const [isMounted, setIsMounted] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -290,7 +351,7 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
           <span style={{ color: '#fbbf24', fontSize: '18px' }}>★</span>
           <span style={{ fontWeight: '600', marginLeft: '4px', marginRight: '4px' }}>{product.ratingAggregate}</span>
           <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-            ({mockReviews.length} {language === "ar" ? "تقييم" : "reviews"})
+            ({reviews.length || product.reviewsCount || 0} {language === "ar" ? "تقييم" : "reviews"})
           </span>
         </div>
 
@@ -460,6 +521,147 @@ export function ProductClient({ product, mealProducts }: ProductClientProps) {
                   🗑
                 </button>
               </div>
+            )}
+          </div>
+        </div>
+
+        {/* Customer Reviews Section */}
+        <div className={styles.section} style={{ marginTop: '32px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <h2 className={styles.sectionTitle} style={{ marginBottom: 0 }}>
+              {language === "ar" ? "تقييمات العملاء" : "Customer Reviews"}
+            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#E4A853', fontWeight: 700, fontSize: '15px' }}>
+              <Star size={18} fill="#E4A853" />
+              <span>{product.ratingAggregate ? product.ratingAggregate.toFixed(1) : "5.0"}</span>
+              <span style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>
+                ({reviews.length || product.reviewsCount || 0})
+              </span>
+            </div>
+          </div>
+
+          {/* Review Submission Form */}
+          <div className={styles.reviewBox}>
+            <h3 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '8px', color: 'var(--text-primary)' }}>
+              {language === "ar" ? "أضف تقييمك لهذا الطبق" : "Rate & Review this dish"}
+            </h3>
+
+            {session?.user ? (
+              <form onSubmit={handleSubmitReview}>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                    {language === "ar" ? "حدد عدد النجوم:" : "Select rating:"}
+                  </label>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        type="button"
+                        key={star}
+                        onClick={() => setReviewRating(star)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '2px',
+                          color: star <= reviewRating ? '#E4A853' : 'rgba(255,255,255,0.2)',
+                          transition: 'transform 0.15s ease'
+                        }}
+                        aria-label={`${star} stars`}
+                      >
+                        <Star size={24} fill={star <= reviewRating ? '#E4A853' : 'none'} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '12px' }}>
+                  <textarea
+                    rows={3}
+                    className={styles.notesInput}
+                    placeholder={language === "ar" ? "اكتب رأيك الصادق في الطعم والجودة..." : "Write your thoughts on taste and quality..."}
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {reviewMessage && (
+                  <div style={{
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    marginBottom: '12px',
+                    fontSize: '13px',
+                    background: reviewMessage.isError ? 'rgba(239, 68, 68, 0.12)' : 'rgba(34, 197, 94, 0.12)',
+                    color: reviewMessage.isError ? '#ef4444' : '#22c55e',
+                    border: `1px solid ${reviewMessage.isError ? 'rgba(239,68,68,0.25)' : 'rgba(34,197,94,0.25)'}`
+                  }}>
+                    {reviewMessage.text}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isSubmittingReview}
+                  className={styles.submitReviewBtn}
+                >
+                  {isSubmittingReview
+                    ? (language === "ar" ? "جاري الإرسال..." : "Submitting...")
+                    : (language === "ar" ? "إرسال التقييم" : "Submit Review")}
+                </button>
+              </form>
+            ) : (
+              <div style={{ padding: '14px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', textAlign: 'center' }}>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                  {language === "ar" ? "يجب تسجيل الدخول لمشاركة تقييمك مع العملاء" : "Please log in to share your review"}
+                </p>
+                <Link
+                  href={`/login?callbackUrl=/product/${product.id}`}
+                  style={{
+                    display: 'inline-block',
+                    padding: '6px 16px',
+                    borderRadius: '8px',
+                    background: 'var(--brand-primary)',
+                    color: '#fff',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    textDecoration: 'none'
+                  }}
+                >
+                  {language === "ar" ? "تسجيل الدخول الآن" : "Login Now"}
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Approved Reviews List */}
+          <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {reviews.length === 0 ? (
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', textAlign: 'center', margin: '20px 0' }}>
+                {language === "ar" ? "لا توجد تقييمات منشورة لهذا الطبق بعد. كن أول من يقيّم!" : "No reviews for this dish yet. Be the first to review!"}
+              </p>
+            ) : (
+              reviews.map((r) => (
+                <div key={r.id} className={styles.reviewItemCard}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                    <span style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)' }}>
+                      {r.customerName}
+                    </span>
+                    <div style={{ display: 'flex', gap: '2px', color: '#E4A853' }}>
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={14} fill={i < r.rating ? '#E4A853' : 'none'} />
+                      ))}
+                    </div>
+                  </div>
+                  {r.reviewText && (
+                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                      {r.reviewText}
+                    </p>
+                  )}
+                  <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '6px', display: 'block' }}>
+                    {new Date(r.createdAt).toLocaleDateString(language === 'ar' ? 'ar-AE' : 'en-US')}
+                  </span>
+                </div>
+              ))
             )}
           </div>
         </div>

@@ -91,6 +91,18 @@
   }
 }
 
+/* Small Laptop & Medium Desktop screens (1024px - 1366px) */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .variantHero .headerInner {
+    padding: 1rem 2rem;
+  }
+
+  .variantHero .logoImage {
+    height: 76px;
+    max-height: 84px;
+  }
+}
+
 /* Scrolled state on Homepage: floating pill shape with REAL premium glassmorphism */
 .variantHero.scrolled .headerContainer {
   background: linear-gradient(

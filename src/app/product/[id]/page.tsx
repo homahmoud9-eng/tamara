@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 
+import prisma from "@/lib/prisma";
+
 type Props = {
   params: Promise<{ id: string }>;
 };
@@ -69,10 +71,28 @@ export default async function ProductPage({ params }: Props) {
     };
   }
 
+  const approvedReviews = await prisma.review.findMany({
+    where: { productId: id, status: "APPROVED" },
+    include: { customer: { select: { name: true } } },
+    orderBy: { createdAt: "desc" }
+  });
+
+  const formattedReviews = approvedReviews.map(r => ({
+    id: r.id,
+    rating: r.rating,
+    reviewText: r.reviewText,
+    customerName: r.customer?.name || "عميل تمارا",
+    createdAt: r.createdAt.toISOString()
+  }));
+
   return (
     <>
       <JsonLd schema={productSchema} />
-      <ProductClient product={product} mealProducts={mealProducts} />
+      <ProductClient 
+        product={product} 
+        mealProducts={mealProducts} 
+        initialReviews={formattedReviews}
+      />
     </>
   );
 }

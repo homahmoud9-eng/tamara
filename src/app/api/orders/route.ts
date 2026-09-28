@@ -14,32 +14,34 @@ export async function POST(req: Request) {
     let customer = null;
     let authUser = null;
 
-    if (session?.user?.email) {
-      authUser = await prisma.user.findUnique({
-        where: { email: session.user.email },
-        include: { customer: true }
-      });
-      if (authUser?.customer) {
-        customer = authUser.customer;
-      }
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { success: false, message: "يجب تسجيل الدخول لإتمام الطلب" },
+        { status: 401 }
+      );
     }
 
-    // Guest checkout fallback
-    if (!customer) {
-      if (!body.customerPhone || !body.customerName) {
-        return NextResponse.json({ success: false, message: "Name and phone are required for guest checkout" }, { status: 400 });
-      }
-      customer = await prisma.customer.findUnique({
-        where: { phone: body.customerPhone }
+    authUser = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include: { customer: true }
+    });
+
+    if (authUser?.customer) {
+      customer = authUser.customer;
+    } else if (authUser) {
+      // Create customer profile if not linked yet
+      customer = await prisma.customer.create({
+        data: {
+          name: body.customerName || authUser.name || "Customer",
+          phone: body.customerPhone || `USER_${authUser.id.slice(0, 8)}`,
+          email: authUser.email,
+          userId: authUser.id
+        }
       });
-      if (!customer) {
-        customer = await prisma.customer.create({
-          data: {
-            name: body.customerName,
-            phone: body.customerPhone,
-          }
-        });
-      }
+    }
+
+    if (!customer) {
+      return NextResponse.json({ success: false, message: "تعذر العثور على حساب العميل" }, { status: 400 });
     }
 
     // 2. Validate Address

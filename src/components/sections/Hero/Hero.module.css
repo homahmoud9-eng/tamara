@@ -80,6 +80,13 @@ html[dir="rtl"] .imageElement {
   margin-top: -5vh; /* Smooth overlap over the mask */
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+  .contentHalf {
+    padding-top: 5.5rem;
+    margin-top: 0;
+  }
+}
+
 .textContent {
   max-width: 600px;
   width: 100%;
@@ -235,9 +242,8 @@ html[dir="rtl"] .imageElement {
     position: relative;
     z-index: 3;
     width: 55%;
-    margin-top: 0;
-    /* Proper padding so text clears the fixed transparent header with elegant breathing room */
-    padding-top: 8rem;
+    /* Proper padding so text clears the fixed transparent header with elegant breathing room on laptops & desktops */
+    padding-top: clamp(10.5rem, 15vh, 13rem);
     padding-bottom: var(--spacing-16);
     justify-content: center;
     padding-inline-end: var(--spacing-12);

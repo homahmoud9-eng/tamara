@@ -484,3 +484,41 @@
   color: var(--text-secondary);
   cursor: not-allowed;
 }
+
+/* ── Reviews System Styles ── */
+.reviewBox {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+.submitReviewBtn {
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.submitReviewBtn:hover {
+  opacity: 0.9;
+}
+
+.submitReviewBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.reviewItemCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: var(--spacing-4);
+}
+

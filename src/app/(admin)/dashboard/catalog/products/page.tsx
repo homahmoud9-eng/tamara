@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Plus, Edit2, Trash2, Star, Search, Eye } from 'lucide-react';
 import { deleteProduct } from './actions';
 
-export default async function ProductsPage({ searchParams }: { searchParams: Promise<{ q?: string; cat?: string; page?: string }> }) {
+export default async function ProductsPage({ searchParams }: { searchParams: Promise<{ q?: string; cat?: string; page?: string; status?: string }> }) {
   const lang = await getAdminLang();
   const resolvedSearchParams = await searchParams;
   const q = resolvedSearchParams?.q;

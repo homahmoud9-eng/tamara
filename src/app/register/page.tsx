@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useApp } from "@/components/providers/AppProvider";
 import styles from "../login/login.module.css"; // Reuse login styles
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/account";
   const { language } = useApp();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -46,7 +48,7 @@ export default function RegisterPage() {
         setError(language === "ar" ? "حدث خطأ أثناء تسجيل الدخول التلقائي" : "Error during auto-login");
         setLoading(false);
       } else {
-        router.push("/account");
+        router.push(callbackUrl);
         router.refresh();
       }
     } catch (err: any) {
@@ -56,7 +58,7 @@ export default function RegisterPage() {
   };
 
   const handleGoogleLogin = () => {
-    signIn("google", { callbackUrl: "/account" });
+    signIn("google", { callbackUrl });
   };
 
   return (
@@ -130,11 +132,19 @@ export default function RegisterPage() {
 
         <p className={styles.registerLink}>
           {language === "ar" ? "لديك حساب بالفعل؟" : "Already have an account?"}{" "}
-          <Link href="/login">
+          <Link href={`/login${callbackUrl !== '/account' ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ''}`}>
             {language === "ar" ? "تسجيل الدخول" : "Login"}
           </Link>
         </p>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
   );
 }

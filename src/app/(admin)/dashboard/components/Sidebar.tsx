@@ -74,7 +74,7 @@ const NAV_SECTIONS: NavSection[] = [
       { nameEn: 'Hero', nameAr: 'البانر الرئيسي', href: '/dashboard/website/hero', icon: Monitor, isImplemented: true },
       { nameEn: 'Announcement', nameAr: 'شريط الإعلانات', href: '/dashboard/website/announcement', icon: Type, isImplemented: true },
       { nameEn: 'Navigation', nameAr: 'التنقل', href: '/dashboard/website/navigation', icon: Navigation, isImplemented: false },
-      { nameEn: 'Reviews', nameAr: 'التقييمات', href: '/dashboard/website/reviews', icon: Star, isImplemented: false },
+      { nameEn: 'Reviews', nameAr: 'التقييمات', href: '/dashboard/website/reviews', icon: Star, isImplemented: true },
       { nameEn: 'Media Library', nameAr: 'مكتبة الوسائط', href: '/dashboard/website/media', icon: ImageIcon, isImplemented: false },
       { nameEn: 'Blog', nameAr: 'المدونة', href: '/dashboard/website/blog', icon: FileText, isImplemented: true },
     ]

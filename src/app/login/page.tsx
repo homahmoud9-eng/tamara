@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useApp } from "@/components/providers/AppProvider";
 import styles from "./login.module.css";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/account";
   const { language } = useApp();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,13 +32,13 @@ export default function LoginPage() {
       setError(language === "ar" ? "البريد الإلكتروني أو كلمة المرور غير صحيحة" : "Invalid email or password");
       setLoading(false);
     } else {
-      router.push("/account");
+      router.push(callbackUrl);
       router.refresh();
     }
   };
 
   const handleGoogleLogin = () => {
-    signIn("google", { callbackUrl: "/account" });
+    signIn("google", { callbackUrl });
   };
 
   return (
@@ -89,11 +91,19 @@ export default function LoginPage() {
 
         <p className={styles.registerLink}>
           {language === "ar" ? "ليس لديك حساب؟" : "Don't have an account?"}{" "}
-          <Link href="/register">
+          <Link href={`/register${callbackUrl !== '/account' ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ''}`}>
             {language === "ar" ? "إنشاء حساب جديد" : "Create new account"}
           </Link>
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }
