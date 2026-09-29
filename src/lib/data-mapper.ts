@@ -247,3 +247,50 @@ export async function getFrontendReviews() {
     date: r.createdAt.toLocaleDateString()
   }));
 }
+
+export async function getFrontendPromoSection() {
+  try {
+    let promo = await prisma.promoSection.findUnique({
+      where: { id: '1' }
+    });
+
+    if (!promo) {
+      promo = await prisma.promoSection.create({
+        data: {
+          id: '1',
+          isEnabled: true,
+          badgeTextAr: 'جديد تمارا',
+          badgeTextEn: 'New from Tamara',
+          titleAr: 'باقات توفير الغداء',
+          titleEn: 'Lunch Saver Packages',
+          descriptionAr: 'اشترك في باقات تمارا للغداء ووفر وقتك ومجهودك. أكل بيتي صحي ومتنوع بيوصلك كل يوم في ميعاد غداك، وبأسعار أقل بكتير من الطلبات اليومية.',
+          descriptionEn: "Subscribe to Tamara's lunch packages and save time and effort. Healthy, varied homemade food delivered every day at your lunch break, at much lower prices than daily orders.",
+          featuresAr: [
+            'توفير يصل إلى ٢٠٪',
+            'توصيل مجاني يومياً',
+            'تغيير الوجبات براحتك',
+            'توقيف مؤقت للاشتراك'
+          ],
+          featuresEn: [
+            'Save up to 20%',
+            'Free daily delivery',
+            'Change meals easily',
+            'Pause subscription anytime'
+          ],
+          buttonTextAr: 'شاهد الباقات',
+          buttonTextEn: 'View Packages',
+          buttonLink: '/packages',
+          imageUrl: '/assets/images/tamara_package_lunch_saver.jpg',
+          floatingBadgeTextAr: '20% توفير',
+          floatingBadgeTextEn: '20% Off'
+        }
+      });
+    }
+
+    return promo;
+  } catch (err) {
+    console.error('Error fetching promo section:', err);
+    return null;
+  }
+}
+

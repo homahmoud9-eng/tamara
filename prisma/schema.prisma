@@ -434,6 +434,27 @@ model AnnouncementBar {
   endDate     DateTime?
 }
 
+model PromoSection {
+  id                  String   @id @default("1")
+  isEnabled           Boolean  @default(true)
+  badgeTextAr         String?  @default("جديد تمارا")
+  badgeTextEn         String?  @default("New from Tamara")
+  titleAr             String   @default("باقات توفير الغداء")
+  titleEn             String   @default("Lunch Saver Packages")
+  descriptionAr       String   @default("اشترك في باقات تمارا للغداء ووفر وقتك ومجهودك. أكل بيتي صحي ومتنوع بيوصلك كل يوم في ميعاد غداك، وبأسعار أقل بكتير من الطلبات اليومية.")
+  descriptionEn       String   @default("Subscribe to Tamara's lunch packages and save time and effort. Healthy, varied homemade food delivered every day at your lunch break, at much lower prices than daily orders.")
+  featuresAr          Json?
+  featuresEn          Json?
+  buttonTextAr        String   @default("شاهد الباقات")
+  buttonTextEn        String   @default("View Packages")
+  buttonLink          String   @default("/packages")
+  imageUrl            String?  @default("/assets/images/tamara_package_lunch_saver.jpg")
+  floatingBadgeTextAr String?  @default("20% توفير")
+  floatingBadgeTextEn String?  @default("20% Off")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
 model NavigationItem {
   id          String   @id @default(cuid())
   location    String   // HEADER, CATEGORY, FOOTER

@@ -8,7 +8,7 @@ import {
   Gift, Ticket, Percent, Truck, Globe, Palette, Search as SearchIcon,
   Share2, MessageCircle, Bell, Smartphone, BarChart3, Shield, Activity,
   Clock, CreditCard, MapPin, Star, FileText, Megaphone, UserCog, Lock,
-  Home, Navigation, Type, Monitor, Zap, TrendingUp, ShoppingCart, UserCheck
+  Home, Navigation, Type, Monitor, Zap, TrendingUp, ShoppingCart, UserCheck, Sparkles
 } from 'lucide-react';
 import { logoutAction } from '../../vision-login/actions';
 import { useApp } from '@/components/providers/AppProvider';
@@ -72,6 +72,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { nameEn: 'Homepage', nameAr: 'الصفحة الرئيسية', href: '/dashboard/website/homepage', icon: Home, isImplemented: true },
       { nameEn: 'Hero', nameAr: 'البانر الرئيسي', href: '/dashboard/website/hero', icon: Monitor, isImplemented: true },
+      { nameEn: 'Promo Section', nameAr: 'القسم الترويجي', href: '/dashboard/website/promo', icon: Sparkles, isImplemented: true },
       { nameEn: 'Announcement', nameAr: 'شريط الإعلانات', href: '/dashboard/website/announcement', icon: Type, isImplemented: true },
       { nameEn: 'Navigation', nameAr: 'التنقل', href: '/dashboard/website/navigation', icon: Navigation, isImplemented: false },
       { nameEn: 'Reviews', nameAr: 'التقييمات', href: '/dashboard/website/reviews', icon: Star, isImplemented: true },

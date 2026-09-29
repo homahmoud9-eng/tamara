@@ -5,7 +5,7 @@ import { CuratedCategories } from "@/components/sections/CuratedCategories/Curat
 import { PackageStorytelling } from "@/components/sections/PackageStorytelling/PackageStorytelling";
 import { FreezerSection } from "@/components/sections/FreezerSection/FreezerSection";
 import { TrustReviews } from "@/components/sections/TrustReviews/TrustReviews";
-import { getFrontendCategories, getFrontendProducts, getFrontendOffers, getFrontendReviews, getFrontendHeroSlides, getFrontendHomepageSections } from "@/lib/data-mapper";
+import { getFrontendCategories, getFrontendProducts, getFrontendOffers, getFrontendReviews, getFrontendHeroSlides, getFrontendHomepageSections, getFrontendPromoSection } from "@/lib/data-mapper";
 import prisma from "@/lib/prisma";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Metadata } from "next";
@@ -25,6 +25,7 @@ export default async function Home() {
   const reviews = await getFrontendReviews();
   const heroSlides = await getFrontendHeroSlides();
   const sections = await getFrontendHomepageSections();
+  const promoSection = await getFrontendPromoSection();
   
   const deliveryConfig = await prisma.deliveryConfig.findUnique({ where: { id: "1" } });
   const heroAnnouncement = {
@@ -63,7 +64,9 @@ export default async function Home() {
       <OfferRail offers={offers} />
       <QuickCategories categories={categories} />
       <CuratedCategories categories={categories} products={products} />
-      {(!storytellingSection || storytellingSection.isEnabled) && <PackageStorytelling section={storytellingSection} />}
+      {(!storytellingSection || storytellingSection.isEnabled) && (!promoSection || promoSection.isEnabled) && (
+        <PackageStorytelling section={storytellingSection} promoData={promoSection} />
+      )}
       {(!freezerSection || freezerSection.isEnabled) && <FreezerSection section={freezerSection} />}
       {reviews && reviews.length > 0 && <TrustReviews reviews={reviews} />}
     </>
