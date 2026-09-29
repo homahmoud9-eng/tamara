@@ -1,7 +1,8 @@
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { decrypt } from '@/lib/auth';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
-import { requireAdminSession } from '@/lib/auth';
-import { redirect } from 'next/navigation';
 import '../admin.css';
 
 export default async function DashboardLayout({
@@ -9,9 +10,15 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  try {
-    await requireAdminSession();
-  } catch {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get('admin_session')?.value;
+
+  if (!sessionToken) {
+    redirect('/vision-login');
+  }
+
+  const session = await decrypt(sessionToken);
+  if (!session || !session.adminId) {
     redirect('/vision-login');
   }
 

@@ -1,5 +1,4 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 import { checkRateLimit } from '@/lib/rate-limit';
 
@@ -35,7 +34,7 @@ function applySecurityHeaders(response: NextResponse): NextResponse {
   return response;
 }
 
-export default async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const ip = getClientIp(request);
 
@@ -51,7 +50,7 @@ export default async function proxy(request: NextRequest) {
 
   // 2. Rate Limiting Protection
   if (pathname.startsWith('/api/auth/register') || pathname === '/vision-login') {
-    const rate = checkRateLimit(`auth:${ip}`, 10, 60000); // 10 attempts per minute
+    const rate = checkRateLimit(`auth:${ip}`, 10, 60000);
     if (!rate.success) {
       return applySecurityHeaders(
         NextResponse.json(
@@ -61,7 +60,7 @@ export default async function proxy(request: NextRequest) {
       );
     }
   } else if (pathname.startsWith('/api/')) {
-    const rate = checkRateLimit(`api:${ip}`, 120, 60000); // 120 requests per minute
+    const rate = checkRateLimit(`api:${ip}`, 120, 60000);
     if (!rate.success) {
       return applySecurityHeaders(
         NextResponse.json(
@@ -72,19 +71,21 @@ export default async function proxy(request: NextRequest) {
     }
   }
 
-  // 3. Admin Dashboard Guard (Full Cryptographic Verification)
+  // 3. Strict Admin Dashboard Guard (HTTP-level interception)
   const isDashboardPath = pathname === '/dashboard' || pathname.startsWith('/dashboard/');
   const adminCookie = request.cookies.get('admin_session')?.value;
 
   if (isDashboardPath) {
+    if (!adminCookie) {
+      const loginUrl = new URL('/vision-login', request.url);
+      return applySecurityHeaders(NextResponse.redirect(loginUrl));
+    }
+
     const isValidAdmin = await verifyAdminToken(adminCookie);
     if (!isValidAdmin) {
       const loginUrl = new URL('/vision-login', request.url);
       const redirectResponse = NextResponse.redirect(loginUrl);
-      // Clean invalid cookie if present
-      if (adminCookie) {
-        redirectResponse.cookies.delete('admin_session');
-      }
+      redirectResponse.cookies.delete('admin_session');
       return applySecurityHeaders(redirectResponse);
     }
   }
@@ -97,7 +98,7 @@ export default async function proxy(request: NextRequest) {
     }
   }
 
-  // 5. Checkout Customer Auth Guard (Mandatory login before checkout)
+  // 5. Checkout Customer Auth Guard
   if (pathname === '/checkout' || pathname.startsWith('/checkout/')) {
     const customerSession =
       request.cookies.get('next-auth.session-token')?.value ||
@@ -110,7 +111,6 @@ export default async function proxy(request: NextRequest) {
     }
   }
 
-  // 6. Normal Request with Applied Security Headers
   const response = NextResponse.next();
   if (pathname.startsWith('/api')) {
     response.headers.set('Access-Control-Allow-Origin', '*');
