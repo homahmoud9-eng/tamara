@@ -4,11 +4,14 @@ import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { uploadImage } from '@/lib/upload';
+import { requireAdminSession } from '@/lib/auth';
 
 export async function createOffer(prevState: any, formData: FormData) {
   try {
-    const titleAr = formData.get('titleAr') as string;
-    const titleEn = formData.get('titleEn') as string;
+    await requireAdminSession();
+
+    const titleAr = (formData.get('titleAr') as string)?.trim();
+    const titleEn = (formData.get('titleEn') as string)?.trim();
     if (!titleAr || !titleEn) {
       return { error: 'Titles are required' };
     }
@@ -21,10 +24,10 @@ export async function createOffer(prevState: any, formData: FormData) {
       data: {
         titleAr,
         titleEn,
-        descriptionAr: formData.get('descriptionAr') as string || null,
-        descriptionEn: formData.get('descriptionEn') as string || null,
-        discountType: formData.get('discountType') as string,
-        discountValue: parseFloat(formData.get('discountValue') as string),
+        descriptionAr: (formData.get('descriptionAr') as string)?.trim() || null,
+        descriptionEn: (formData.get('descriptionEn') as string)?.trim() || null,
+        discountType: (formData.get('discountType') as string) || 'PERCENTAGE',
+        discountValue: parseFloat(formData.get('discountValue') as string) || 0,
         minOrder: minOrder ? parseFloat(minOrder) : null,
         image: await uploadImage(formData.get('image') as File | null),
         isActive: formData.get('isActive') === 'on',
@@ -43,8 +46,10 @@ export async function createOffer(prevState: any, formData: FormData) {
 
 export async function updateOffer(id: string, prevState: any, formData: FormData) {
   try {
-    const titleAr = formData.get('titleAr') as string;
-    const titleEn = formData.get('titleEn') as string;
+    await requireAdminSession();
+
+    const titleAr = (formData.get('titleAr') as string)?.trim();
+    const titleEn = (formData.get('titleEn') as string)?.trim();
     if (!titleAr || !titleEn) {
       return { error: 'Titles are required' };
     }
@@ -67,10 +72,10 @@ export async function updateOffer(id: string, prevState: any, formData: FormData
       data: {
         titleAr,
         titleEn,
-        descriptionAr: formData.get('descriptionAr') as string || null,
-        descriptionEn: formData.get('descriptionEn') as string || null,
-        discountType: formData.get('discountType') as string,
-        discountValue: parseFloat(formData.get('discountValue') as string),
+        descriptionAr: (formData.get('descriptionAr') as string)?.trim() || null,
+        descriptionEn: (formData.get('descriptionEn') as string)?.trim() || null,
+        discountType: (formData.get('discountType') as string) || 'PERCENTAGE',
+        discountValue: parseFloat(formData.get('discountValue') as string) || 0,
         minOrder: minOrder ? parseFloat(minOrder) : null,
         image,
         isActive: formData.get('isActive') === 'on',
@@ -88,6 +93,7 @@ export async function updateOffer(id: string, prevState: any, formData: FormData
 }
 
 export async function toggleOfferStatus(id: string, isActive: boolean) {
+  await requireAdminSession();
   await prisma.offer.update({
     where: { id },
     data: { isActive }
@@ -96,6 +102,7 @@ export async function toggleOfferStatus(id: string, isActive: boolean) {
 }
 
 export async function deleteOffer(id: string) {
+  await requireAdminSession();
   await prisma.offer.delete({ where: { id } });
   revalidatePath('/', 'layout');
 }

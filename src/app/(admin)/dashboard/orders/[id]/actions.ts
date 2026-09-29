@@ -3,14 +3,36 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import webpush from 'web-push';
+import { requireAdminSession } from '@/lib/auth';
 
-webpush.setVapidDetails(
-  'mailto:admin@tamara.com',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '',
-  process.env.VAPID_PRIVATE_KEY || ''
-);
+const ALLOWED_ORDER_STATUSES = [
+  'RECEIVED',
+  'CONFIRMED',
+  'PREPARING',
+  'OUT_FOR_DELIVERY',
+  'DELIVERED',
+  'CANCELLED'
+];
+
+if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  try {
+    webpush.setVapidDetails(
+      process.env.VAPID_SUBJECT || 'mailto:admin@tamara.com',
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+  } catch (e) {
+    console.error('VAPID configuration error:', e);
+  }
+}
 
 export async function updateOrderStatus(orderId: string, status: string) {
+  await requireAdminSession();
+
+  if (!ALLOWED_ORDER_STATUSES.includes(status)) {
+    throw new Error('Invalid order status');
+  }
+
   const order = await prisma.order.update({
     where: { id: orderId },
     data: { status },
@@ -18,31 +40,29 @@ export async function updateOrderStatus(orderId: string, status: string) {
   });
 
   revalidatePath('/', 'layout');
-  revalidatePath('/', 'layout');
-  revalidatePath('/', 'layout');
 
   // Try to send push notification and create DB notification
   if (order.customer?.userId) {
     try {
-      const getStatusText = (status: string) => {
-        switch (status) {
+      const getStatusText = (s: string) => {
+        switch (s) {
           case 'CONFIRMED': return 'تم تأكيد طلبك وجاري تحضيره';
           case 'PREPARING': return 'طلبك الآن في المطبخ للتحضير';
           case 'OUT_FOR_DELIVERY': return 'طلبك خرج للتوصيل وهو في الطريق إليك';
           case 'DELIVERED': return 'تم توصيل طلبك بنجاح، صحتين وعافية!';
           case 'CANCELLED': return 'تم إلغاء الطلب';
-          default: return `تم تحديث حالة الطلب إلى ${status}`;
+          default: return `تم تحديث حالة الطلب إلى ${s}`;
         }
       };
       
-      const getStatusTextEn = (status: string) => {
-        switch (status) {
+      const getStatusTextEn = (s: string) => {
+        switch (s) {
           case 'CONFIRMED': return 'Your order is confirmed and being prepared';
           case 'PREPARING': return 'Your order is now in the kitchen being prepared';
           case 'OUT_FOR_DELIVERY': return 'Your order is out for delivery and on its way';
           case 'DELIVERED': return 'Your order has been delivered successfully, enjoy!';
           case 'CANCELLED': return 'Your order has been cancelled';
-          default: return `Your order status has been updated to ${status}`;
+          default: return `Your order status has been updated to ${s}`;
         }
       };
 
@@ -64,31 +84,30 @@ export async function updateOrderStatus(orderId: string, status: string) {
         }
       });
 
-      const subscriptions = await prisma.pushSubscription.findMany({
-        where: { userId: order.customer.userId }
-      });
+      if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+        const subscriptions = await prisma.pushSubscription.findMany({
+          where: { userId: order.customer.userId }
+        });
 
-      const payload = JSON.stringify({
-        title: titleAr,
-        body: messageAr,
-        url: `/orders/${order.id}`,
-      });
+        const payload = JSON.stringify({
+          title: titleAr,
+          body: messageAr,
+          url: `/orders/${order.id}`,
+        });
 
-      for (const sub of subscriptions) {
-        try {
-          await webpush.sendNotification({
-            endpoint: sub.endpoint,
-            keys: {
-              auth: sub.auth,
-              p256dh: sub.p256dh
+        for (const sub of subscriptions) {
+          try {
+            await webpush.sendNotification({
+              endpoint: sub.endpoint,
+              keys: {
+                auth: sub.auth,
+                p256dh: sub.p256dh
+              }
+            }, payload);
+          } catch (e: any) {
+            if (e.statusCode === 410 || e.statusCode === 404) {
+              await prisma.pushSubscription.delete({ where: { id: sub.id } });
             }
-          }, payload);
-        } catch (e: any) {
-          if (e.statusCode === 410 || e.statusCode === 404) {
-            // Subscription expired or invalid
-            await prisma.pushSubscription.delete({ where: { id: sub.id } });
-          } else {
-            console.error("Failed to send push:", e);
           }
         }
       }
@@ -96,4 +115,6 @@ export async function updateOrderStatus(orderId: string, status: string) {
       console.error("Push Notification Error:", err);
     }
   }
+
+  return { success: true };
 }

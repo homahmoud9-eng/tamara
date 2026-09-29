@@ -4,26 +4,30 @@ import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { put } from '@vercel/blob';
+import { requireAdminSession } from '@/lib/auth';
 
 async function uploadImage(file: any): Promise<string | null> {
   if (!file || typeof file === 'string' || !file.arrayBuffer || typeof file.size !== 'number' || file.size === 0) return null;
   
   try {
-    const ext = file.name ? file.name.split('.').pop() || 'png' : 'png';
+    const rawExt = file.name ? file.name.split('.').pop() || 'png' : 'png';
+    const ext = rawExt.toLowerCase().replace(/[^a-z0-9]/g, '');
     const filename = `products/${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
     
     const blob = await put(filename, file, { access: 'public' });
     return blob.url;
   } catch (err: any) {
     console.error('Image upload error:', err);
-    throw new Error(`Image upload failed: ${err.message || String(err)}`);
+    throw new Error('Image upload failed');
   }
 }
 
 export async function createProduct(formData: FormData) {
   try {
-    const nameEn = formData.get('nameEn') as string;
-    const nameAr = formData.get('nameAr') as string;
+    await requireAdminSession();
+
+    const nameEn = (formData.get('nameEn') as string)?.trim();
+    const nameAr = (formData.get('nameAr') as string)?.trim();
     const categoryId = formData.get('categoryId') as string;
     
     if (!nameEn || !nameAr || !categoryId) {
@@ -61,8 +65,8 @@ export async function createProduct(formData: FormData) {
     const data: any = {
       nameEn,
       nameAr,
-      descriptionEn: formData.get('descriptionEn') as string || null,
-      descriptionAr: formData.get('descriptionAr') as string || null,
+      descriptionEn: (formData.get('descriptionEn') as string)?.trim() || null,
+      descriptionAr: (formData.get('descriptionAr') as string)?.trim() || null,
       categoryId,
       basePrice,
       isActive: formData.get('isActive') === 'on',
@@ -72,10 +76,10 @@ export async function createProduct(formData: FormData) {
       prepTime: formData.get('prepTime') ? parseInt(formData.get('prepTime') as string) : null,
       primaryImage,
       sortOrder: parseInt(formData.get('sortOrder') as string) || 0,
-      seoTitleEn: formData.get('seoTitleEn') as string || null,
-      seoTitleAr: formData.get('seoTitleAr') as string || null,
-      seoDescEn: formData.get('seoDescEn') as string || null,
-      seoDescAr: formData.get('seoDescAr') as string || null,
+      seoTitleEn: (formData.get('seoTitleEn') as string)?.trim() || null,
+      seoTitleAr: (formData.get('seoTitleAr') as string)?.trim() || null,
+      seoDescEn: (formData.get('seoDescEn') as string)?.trim() || null,
+      seoDescAr: (formData.get('seoDescAr') as string)?.trim() || null,
       gallery: {
         create: uploadedGalleryPaths.map((image, index) => ({
           image,
@@ -101,14 +105,16 @@ export async function createProduct(formData: FormData) {
     return { success: true };
   } catch (err: any) {
     console.error('Create Product Error:', err);
-    return { success: false, error: err.message || 'Database error occurred' };
+    return { success: false, error: 'Database error occurred' };
   }
 }
 
 export async function updateProduct(id: string, formData: FormData) {
   try {
-    const nameEn = formData.get('nameEn') as string;
-    const nameAr = formData.get('nameAr') as string;
+    await requireAdminSession();
+
+    const nameEn = (formData.get('nameEn') as string)?.trim();
+    const nameAr = (formData.get('nameAr') as string)?.trim();
     const categoryId = formData.get('categoryId') as string;
     
     if (!nameEn || !nameAr || !categoryId) {
@@ -116,13 +122,6 @@ export async function updateProduct(id: string, formData: FormData) {
     }
 
     const primaryImageFile = formData.get('primaryImage');
-    console.log('--- SERVER ACTION updateProduct ---');
-    console.log('ID:', id);
-    console.log('Name:', nameEn);
-    console.log('primaryImage File:', primaryImageFile);
-    console.log('removePrimaryImage:', formData.get('removePrimaryImage'));
-    console.log('-----------------------------------');
-
     const newPrimaryImage = await uploadImage(primaryImageFile);
     const removePrimary = formData.get('removePrimaryImage') === 'true';
 
@@ -152,8 +151,8 @@ export async function updateProduct(id: string, formData: FormData) {
     const data: any = {
       nameEn,
       nameAr,
-      descriptionEn: formData.get('descriptionEn') as string || null,
-      descriptionAr: formData.get('descriptionAr') as string || null,
+      descriptionEn: (formData.get('descriptionEn') as string)?.trim() || null,
+      descriptionAr: (formData.get('descriptionAr') as string)?.trim() || null,
       categoryId,
       basePrice,
       isActive: formData.get('isActive') === 'on',
@@ -162,10 +161,10 @@ export async function updateProduct(id: string, formData: FormData) {
       availability: (formData.get('availability') as string) || 'AVAILABLE',
       prepTime: formData.get('prepTime') ? parseInt(formData.get('prepTime') as string) : null,
       sortOrder: parseInt(formData.get('sortOrder') as string) || 0,
-      seoTitleEn: formData.get('seoTitleEn') as string || null,
-      seoTitleAr: formData.get('seoTitleAr') as string || null,
-      seoDescEn: formData.get('seoDescEn') as string || null,
-      seoDescAr: formData.get('seoDescAr') as string || null,
+      seoTitleEn: (formData.get('seoTitleEn') as string)?.trim() || null,
+      seoTitleAr: (formData.get('seoTitleAr') as string)?.trim() || null,
+      seoDescEn: (formData.get('seoDescEn') as string)?.trim() || null,
+      seoDescAr: (formData.get('seoDescAr') as string)?.trim() || null,
     };
 
     if (newPrimaryImage) {
@@ -226,18 +225,19 @@ export async function updateProduct(id: string, formData: FormData) {
     return { success: true };
   } catch (err: any) {
     console.error('Update Product Error:', err);
-    return { success: false, error: err.message || 'Database error occurred' };
+    return { success: false, error: 'Database error occurred' };
   }
 }
 
 export async function deleteGalleryImage(id: string, productId: string) {
+  await requireAdminSession();
   await prisma.productGallery.delete({ where: { id } });
-  revalidatePath('/', 'layout');
   revalidatePath('/', 'layout');
   redirect(`/dashboard/catalog/products/${productId}/edit`);
 }
 
 export async function deleteProduct(id: string) {
+  await requireAdminSession();
   const [orderItems, packageItems, reviews] = await Promise.all([
     prisma.orderItem.findFirst({ where: { productId: id } }),
     prisma.packageItem.findFirst({ where: { productId: id } }),
@@ -259,10 +259,10 @@ export async function deleteProduct(id: string) {
 }
 
 export async function toggleProductAvailability(id: string, availability: string) {
+  await requireAdminSession();
   await prisma.product.update({
     where: { id },
     data: { availability },
   });
-  revalidatePath('/', 'layout');
   revalidatePath('/', 'layout');
 }

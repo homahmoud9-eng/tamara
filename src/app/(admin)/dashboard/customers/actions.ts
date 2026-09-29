@@ -2,9 +2,11 @@
 
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { requireAdminSession } from '@/lib/auth';
 
 export async function deactivateCustomer(id: string) {
   try {
+    await requireAdminSession();
     await prisma.customer.update({
       where: { id },
       data: { status: 'DISABLED' },
@@ -14,12 +16,13 @@ export async function deactivateCustomer(id: string) {
     return { success: true };
   } catch (error: any) {
     console.error('Failed to deactivate customer:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: 'Failed to deactivate customer.' };
   }
 }
 
 export async function activateCustomer(id: string) {
   try {
+    await requireAdminSession();
     await prisma.customer.update({
       where: { id },
       data: { status: 'ACTIVE' },
@@ -29,12 +32,13 @@ export async function activateCustomer(id: string) {
     return { success: true };
   } catch (error: any) {
     console.error('Failed to activate customer:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: 'Failed to activate customer.' };
   }
 }
 
 export async function deleteCustomer(id: string) {
   try {
+    await requireAdminSession();
     const customer = await prisma.customer.findUnique({
       where: { id },
       include: { orders: true, user: true },
@@ -51,18 +55,10 @@ export async function deleteCustomer(id: string) {
       };
     }
 
-    // Safe to delete. We use transaction to delete associated user account if it exists.
     await prisma.$transaction(async (tx) => {
-      // Address cascade deletes because of onDelete: Cascade in schema
-      // Reviews don't cascade, so we must delete them
       await tx.review.deleteMany({ where: { customerId: id } });
-      
       const userId = customer.userId;
-      
-      // Delete customer
       await tx.customer.delete({ where: { id } });
-      
-      // Delete user if linked
       if (userId) {
         await tx.user.delete({ where: { id: userId } });
       }
@@ -72,6 +68,6 @@ export async function deleteCustomer(id: string) {
     return { success: true };
   } catch (error: any) {
     console.error('Failed to delete customer:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: 'Failed to delete customer.' };
   }
 }

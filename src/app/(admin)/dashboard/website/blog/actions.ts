@@ -1,28 +1,30 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { requireAdminSession } from '@/lib/auth';
 
 export async function createBlogPost(formData: FormData) {
+  await requireAdminSession();
   const isActive = formData.get('status') === 'PUBLISHED';
   
-  const post = await prisma.blogPost.create({
+  await prisma.blogPost.create({
     data: {
-      titleAr: formData.get('titleAr') as string,
-      titleEn: formData.get('titleEn') as string || null,
-      slug: (formData.get('slug') as string) || (formData.get('titleEn') as string).toLowerCase().replace(/\s+/g, '-'),
-      contentAr: formData.get('contentAr') as string,
-      contentEn: formData.get('contentEn') as string || null,
-      excerptAr: formData.get('excerptAr') as string || null,
-      excerptEn: formData.get('excerptEn') as string || null,
-      image: formData.get('image') as string || null,
-      author: formData.get('author') as string || 'Tamara Kitchen',
+      titleAr: (formData.get('titleAr') as string)?.trim() || '',
+      titleEn: (formData.get('titleEn') as string)?.trim() || null,
+      slug: (formData.get('slug') as string)?.trim() || (formData.get('titleEn') as string)?.trim().toLowerCase().replace(/\s+/g, '-'),
+      contentAr: (formData.get('contentAr') as string)?.trim() || '',
+      contentEn: (formData.get('contentEn') as string)?.trim() || null,
+      excerptAr: (formData.get('excerptAr') as string)?.trim() || null,
+      excerptEn: (formData.get('excerptEn') as string)?.trim() || null,
+      image: (formData.get('image') as string)?.trim() || null,
+      author: (formData.get('author') as string)?.trim() || 'Tamara Kitchen',
       isActive,
-      seoTitleAr: formData.get('seoTitleAr') as string || null,
-      seoTitleEn: formData.get('seoTitleEn') as string || null,
-      seoDescAr: formData.get('seoDescAr') as string || null,
-      seoDescEn: formData.get('seoDescEn') as string || null,
+      seoTitleAr: (formData.get('seoTitleAr') as string)?.trim() || null,
+      seoTitleEn: (formData.get('seoTitleEn') as string)?.trim() || null,
+      seoDescAr: (formData.get('seoDescAr') as string)?.trim() || null,
+      seoDescEn: (formData.get('seoDescEn') as string)?.trim() || null,
     },
   });
 
@@ -32,25 +34,26 @@ export async function createBlogPost(formData: FormData) {
 }
 
 export async function updateBlogPost(id: string, formData: FormData) {
+  await requireAdminSession();
   const isActive = formData.get('status') === 'PUBLISHED';
   
   const post = await prisma.blogPost.update({
     where: { id },
     data: {
-      titleAr: formData.get('titleAr') as string,
-      titleEn: formData.get('titleEn') as string || null,
-      slug: formData.get('slug') as string,
-      contentAr: formData.get('contentAr') as string,
-      contentEn: formData.get('contentEn') as string || null,
-      excerptAr: formData.get('excerptAr') as string || null,
-      excerptEn: formData.get('excerptEn') as string || null,
-      image: formData.get('image') as string || null,
-      author: formData.get('author') as string || 'Tamara Kitchen',
+      titleAr: (formData.get('titleAr') as string)?.trim() || '',
+      titleEn: (formData.get('titleEn') as string)?.trim() || null,
+      slug: (formData.get('slug') as string)?.trim(),
+      contentAr: (formData.get('contentAr') as string)?.trim() || '',
+      contentEn: (formData.get('contentEn') as string)?.trim() || null,
+      excerptAr: (formData.get('excerptAr') as string)?.trim() || null,
+      excerptEn: (formData.get('excerptEn') as string)?.trim() || null,
+      image: (formData.get('image') as string)?.trim() || null,
+      author: (formData.get('author') as string)?.trim() || 'Tamara Kitchen',
       isActive,
-      seoTitleAr: formData.get('seoTitleAr') as string || null,
-      seoTitleEn: formData.get('seoTitleEn') as string || null,
-      seoDescAr: formData.get('seoDescAr') as string || null,
-      seoDescEn: formData.get('seoDescEn') as string || null,
+      seoTitleAr: (formData.get('seoTitleAr') as string)?.trim() || null,
+      seoTitleEn: (formData.get('seoTitleEn') as string)?.trim() || null,
+      seoDescAr: (formData.get('seoDescAr') as string)?.trim() || null,
+      seoDescEn: (formData.get('seoDescEn') as string)?.trim() || null,
     },
   });
 
@@ -62,6 +65,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
 
 export async function toggleBlogPost(id: string, isEnabled: boolean) {
   try {
+    await requireAdminSession();
     const post = await prisma.blogPost.update({
       where: { id },
       data: { isActive: isEnabled },
@@ -77,6 +81,7 @@ export async function toggleBlogPost(id: string, isEnabled: boolean) {
 
 export async function deleteBlogPost(id: string) {
   try {
+    await requireAdminSession();
     const existing = await prisma.blogPost.findUnique({ where: { id }});
     await prisma.blogPost.delete({
       where: { id },

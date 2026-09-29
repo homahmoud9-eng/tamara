@@ -2,8 +2,15 @@
 
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { requireAdminSession } from '@/lib/auth';
 
 export async function updateReviewStatus(reviewId: string, status: 'APPROVED' | 'REJECTED' | 'PENDING') {
+  await requireAdminSession();
+
+  if (!['APPROVED', 'REJECTED', 'PENDING'].includes(status)) {
+    throw new Error('Invalid review status');
+  }
+
   const updatedReview = await prisma.review.update({
     where: { id: reviewId },
     data: { status }
@@ -33,15 +40,19 @@ export async function updateReviewStatus(reviewId: string, status: 'APPROVED' | 
 }
 
 export async function toggleFeaturedReview(reviewId: string, isFeatured: boolean) {
+  await requireAdminSession();
+
   await prisma.review.update({
     where: { id: reviewId },
-    data: { isFeatured }
+    data: { isFeatured: !!isFeatured }
   });
   revalidatePath('/dashboard/website/reviews');
   revalidatePath('/');
 }
 
 export async function deleteReview(reviewId: string) {
+  await requireAdminSession();
+
   const review = await prisma.review.findUnique({ where: { id: reviewId } });
   if (!review) return;
 

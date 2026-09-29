@@ -2,33 +2,36 @@
 
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import { put } from '@vercel/blob';
+import { requireAdminSession } from '@/lib/auth';
 
 async function uploadImage(file: any, folder: string = 'media'): Promise<string | null> {
   if (!file || typeof file === 'string' || !file.arrayBuffer || typeof file.size !== 'number' || file.size === 0) return null;
   
   try {
-    const ext = file.name ? file.name.split('.').pop() || 'png' : 'png';
+    const rawExt = file.name ? file.name.split('.').pop() || 'png' : 'png';
+    const ext = rawExt.toLowerCase().replace(/[^a-z0-9]/g, '');
     const filename = `${folder}/${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
     
     const blob = await put(filename, file, { access: 'public' });
     return blob.url;
   } catch (err: any) {
     console.error('Image upload error:', err);
-    throw new Error(`Image upload failed: ${err.message || 'Check Vercel Blob configuration'}`);
+    throw new Error('Image upload failed. Please verify storage configuration.');
   }
 }
 
 export async function createCategory(formData: FormData) {
   try {
-    const nameEn = formData.get('nameEn') as string;
-    const nameAr = formData.get('nameAr') as string;
+    await requireAdminSession();
+
+    const nameEn = (formData.get('nameEn') as string)?.trim();
+    const nameAr = (formData.get('nameAr') as string)?.trim();
     if (!nameEn || !nameAr) return { success: false, error: 'Category names are required.' };
 
-    const slug = formData.get('slug') as string;
-    const descriptionEn = formData.get('descriptionEn') as string;
-    const descriptionAr = formData.get('descriptionAr') as string;
+    const slug = (formData.get('slug') as string)?.trim();
+    const descriptionEn = (formData.get('descriptionEn') as string)?.trim();
+    const descriptionAr = (formData.get('descriptionAr') as string)?.trim();
     const isActive = formData.get('isActive') === 'on';
     const isFeatured = formData.get('isFeatured') === 'on';
     const sortOrder = parseInt(formData.get('sortOrder') as string) || 0;
@@ -67,28 +70,30 @@ export async function createCategory(formData: FormData) {
     return { success: true };
   } catch (err: any) {
     console.error('Create Category Error:', err);
-    require('fs').appendFileSync('c:/Users/pc/Desktop/جديد تمارا/action-error.log', err.stack + '\n');
-    return { success: false, error: err.message || 'Database error occurred' };
+    return { success: false, error: 'Failed to create category. Please check inputs and try again.' };
   }
 }
 
 export async function deleteCategory(id: string) {
+  await requireAdminSession();
   await prisma.category.delete({ where: { id } });
   revalidatePath('/', 'layout');
 }
 
 export async function createProduct(formData: FormData) {
   try {
-    const nameEn = formData.get('nameEn') as string;
-    const nameAr = formData.get('nameAr') as string;
+    await requireAdminSession();
+
+    const nameEn = (formData.get('nameEn') as string)?.trim();
+    const nameAr = (formData.get('nameAr') as string)?.trim();
     const categoryId = formData.get('categoryId') as string;
     
     if (!nameEn || !nameAr || !categoryId) {
       return { success: false, error: 'Name and Category are required.' };
     }
 
-    const descriptionEn = formData.get('descriptionEn') as string;
-    const descriptionAr = formData.get('descriptionAr') as string;
+    const descriptionEn = (formData.get('descriptionEn') as string)?.trim();
+    const descriptionAr = (formData.get('descriptionAr') as string)?.trim();
     
     const basePrice = parseFloat(formData.get('basePrice') as string) || 0;
     const isActive = formData.get('isActive') === 'on';
@@ -101,7 +106,6 @@ export async function createProduct(formData: FormData) {
     
     const primaryImage = await uploadImage(formData.get('primaryImage'), 'products');
 
-    // Handle gallery images
     const galleryImages = formData.getAll('galleryImages');
     const uploadedGalleryPaths: string[] = [];
     
@@ -138,19 +142,21 @@ export async function createProduct(formData: FormData) {
     return { success: true };
   } catch (err: any) {
     console.error('Create Product Error:', err);
-    return { success: false, error: err.message || 'Database error occurred' };
+    return { success: false, error: 'Failed to create product. Please try again.' };
   }
 }
 
 export async function updateCategory(id: string, formData: FormData) {
   try {
-    const nameEn = formData.get('nameEn') as string;
-    const nameAr = formData.get('nameAr') as string;
+    await requireAdminSession();
+
+    const nameEn = (formData.get('nameEn') as string)?.trim();
+    const nameAr = (formData.get('nameAr') as string)?.trim();
     if (!nameEn || !nameAr) return { success: false, error: 'Category names are required.' };
 
-    const slug = formData.get('slug') as string;
-    const descriptionEn = formData.get('descriptionEn') as string;
-    const descriptionAr = formData.get('descriptionAr') as string;
+    const slug = (formData.get('slug') as string)?.trim();
+    const descriptionEn = (formData.get('descriptionEn') as string)?.trim();
+    const descriptionAr = (formData.get('descriptionAr') as string)?.trim();
     const isActive = formData.get('isActive') === 'on';
     const isFeatured = formData.get('isFeatured') === 'on';
     const sortOrder = parseInt(formData.get('sortOrder') as string) || 0;
@@ -196,27 +202,30 @@ export async function updateCategory(id: string, formData: FormData) {
     return { success: true };
   } catch (err: any) {
     console.error('Update Category Error:', err);
-    return { success: false, error: err.message || 'Database error occurred' };
+    return { success: false, error: 'Failed to update category.' };
   }
 }
 
 export async function deleteProduct(id: string) {
+  await requireAdminSession();
   await prisma.product.delete({ where: { id } });
   revalidatePath('/', 'layout');
 }
 
 export async function updateProduct(id: string, formData: FormData) {
   try {
-    const nameEn = formData.get('nameEn') as string;
-    const nameAr = formData.get('nameAr') as string;
+    await requireAdminSession();
+
+    const nameEn = (formData.get('nameEn') as string)?.trim();
+    const nameAr = (formData.get('nameAr') as string)?.trim();
     const categoryId = formData.get('categoryId') as string;
     
     if (!nameEn || !nameAr || !categoryId) {
       return { success: false, error: 'Name and Category are required.' };
     }
 
-    const descriptionEn = formData.get('descriptionEn') as string;
-    const descriptionAr = formData.get('descriptionAr') as string;
+    const descriptionEn = (formData.get('descriptionEn') as string)?.trim();
+    const descriptionAr = (formData.get('descriptionAr') as string)?.trim();
     
     const basePrice = parseFloat(formData.get('basePrice') as string) || 0;
     const isActive = formData.get('isActive') === 'on';
@@ -238,7 +247,6 @@ export async function updateProduct(id: string, formData: FormData) {
       dataToUpdate.primaryImage = newPrimaryImage;
     }
 
-    // Handle new gallery images
     const galleryImages = formData.getAll('galleryImages');
     const uploadedGalleryPaths: string[] = [];
     
@@ -255,7 +263,7 @@ export async function updateProduct(id: string, formData: FormData) {
           gallery: {
             create: uploadedGalleryPaths.map((image, index) => ({
               image,
-              sortOrder: index // You might want to get the max sortOrder first in a real app
+              sortOrder: index
             }))
           }
         })
@@ -266,6 +274,6 @@ export async function updateProduct(id: string, formData: FormData) {
     return { success: true };
   } catch (err: any) {
     console.error('Update Product Error:', err);
-    return { success: false, error: err.message || 'Database error occurred' };
+    return { success: false, error: 'Failed to update product.' };
   }
 }

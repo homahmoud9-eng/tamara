@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/nextauth";
+import { sanitizeText } from "@/lib/sanitize";
 
 // GET /api/reviews?productId=xxx
 export async function GET(req: Request) {
@@ -9,7 +10,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const productId = searchParams.get("productId");
 
-    if (!productId) {
+    if (!productId || typeof productId !== 'string') {
       return NextResponse.json({ success: false, message: "Missing productId" }, { status: 400 });
     }
 
@@ -18,7 +19,11 @@ export async function GET(req: Request) {
         productId,
         status: "APPROVED"
       },
-      include: {
+      select: {
+        id: true,
+        rating: true,
+        reviewText: true,
+        createdAt: true,
         customer: {
           select: {
             id: true,
@@ -29,7 +34,8 @@ export async function GET(req: Request) {
       },
       orderBy: {
         createdAt: "desc"
-      }
+      },
+      take: 50,
     });
 
     return NextResponse.json({ success: true, reviews });
@@ -51,13 +57,26 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { productId, rating, reviewText } = body;
+    const productId = typeof body?.productId === 'string' ? body.productId.trim() : null;
+    const rating = typeof body?.rating === 'number' ? Math.round(body.rating) : null;
+    const rawReviewText = typeof body?.reviewText === 'string' ? body.reviewText : null;
+    const cleanReviewText = rawReviewText ? sanitizeText(rawReviewText) : null;
 
-    if (!productId || typeof rating !== "number" || rating < 1 || rating > 5) {
+    if (!productId || rating === null || rating < 1 || rating > 5) {
       return NextResponse.json(
         { success: false, message: "يرجى تحديد تقييم صالح بين 1 و 5 نجوم" },
         { status: 400 }
       );
+    }
+
+    // Verify product exists
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      select: { id: true }
+    });
+
+    if (!product) {
+      return NextResponse.json({ success: false, message: "المنتج غير موجود" }, { status: 404 });
     }
 
     // Resolve Customer
@@ -86,11 +105,16 @@ export async function POST(req: Request) {
       data: {
         customerId: customer.id,
         productId,
-        rating: Math.round(rating),
-        reviewText: reviewText?.trim() || null,
+        rating,
+        reviewText: cleanReviewText,
         status: "PENDING" // Requires admin approval
       },
-      include: {
+      select: {
+        id: true,
+        rating: true,
+        reviewText: true,
+        createdAt: true,
+        status: true,
         customer: {
           select: {
             name: true

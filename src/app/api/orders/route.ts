@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/nextauth";
-
-const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     const body = await req.json();
+
+    if (!body?.items || !Array.isArray(body.items) || body.items.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "السلة فارغة أو غير صالحة" },
+        { status: 400 }
+      );
+    }
     
     // 1. Resolve Customer Identity
     let customer = null;

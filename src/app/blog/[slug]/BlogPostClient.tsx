@@ -90,7 +90,11 @@ export function BlogPostClient({ post, relatedProducts = [] }: Props) {
           <div 
             className={styles.bodyText}
             dangerouslySetInnerHTML={{ 
-              __html: (language === 'ar' ? post.contentAr : (post.contentEn || post.contentAr)).replace(/\n/g, '<br/>') 
+              __html: (language === 'ar' ? post.contentAr : (post.contentEn || post.contentAr))
+                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+                .replace(/javascript:/gi, '')
+                .replace(/\n/g, '<br/>') 
             }}
           />
         </div>

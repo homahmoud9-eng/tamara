@@ -3,10 +3,13 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { requireAdminSession } from '@/lib/auth';
 
 export async function createCoupon(prevState: any, formData: FormData) {
   try {
-    const code = (formData.get('code') as string)?.toUpperCase().replace(/\s+/g, '');
+    await requireAdminSession();
+
+    const code = (formData.get('code') as string)?.toUpperCase().replace(/[^A-Z0-9_-]/g, '');
     if (!code) {
       return { error: 'Coupon code is required' };
     }
@@ -25,8 +28,8 @@ export async function createCoupon(prevState: any, formData: FormData) {
     await prisma.coupon.create({
       data: {
         code,
-        discountType: formData.get('discountType') as string,
-        discountValue: parseFloat(formData.get('discountValue') as string),
+        discountType: (formData.get('discountType') as string) || 'PERCENTAGE',
+        discountValue: parseFloat(formData.get('discountValue') as string) || 0,
         minOrder: minOrder ? parseFloat(minOrder) : null,
         maxDiscount: maxDiscount ? parseFloat(maxDiscount) : null,
         usageLimit: usageLimit ? parseInt(usageLimit) : null,
@@ -46,7 +49,9 @@ export async function createCoupon(prevState: any, formData: FormData) {
 
 export async function updateCoupon(id: string, prevState: any, formData: FormData) {
   try {
-    const code = (formData.get('code') as string)?.toUpperCase().replace(/\s+/g, '');
+    await requireAdminSession();
+
+    const code = (formData.get('code') as string)?.toUpperCase().replace(/[^A-Z0-9_-]/g, '');
     if (!code) {
       return { error: 'Coupon code is required' };
     }
@@ -66,8 +71,8 @@ export async function updateCoupon(id: string, prevState: any, formData: FormDat
       where: { id },
       data: {
         code,
-        discountType: formData.get('discountType') as string,
-        discountValue: parseFloat(formData.get('discountValue') as string),
+        discountType: (formData.get('discountType') as string) || 'PERCENTAGE',
+        discountValue: parseFloat(formData.get('discountValue') as string) || 0,
         minOrder: minOrder ? parseFloat(minOrder) : null,
         maxDiscount: maxDiscount ? parseFloat(maxDiscount) : null,
         usageLimit: usageLimit ? parseInt(usageLimit) : null,
@@ -86,6 +91,7 @@ export async function updateCoupon(id: string, prevState: any, formData: FormDat
 }
 
 export async function toggleCouponStatus(id: string, isActive: boolean) {
+  await requireAdminSession();
   await prisma.coupon.update({
     where: { id },
     data: { isActive }
@@ -94,6 +100,7 @@ export async function toggleCouponStatus(id: string, isActive: boolean) {
 }
 
 export async function deleteCoupon(id: string) {
+  await requireAdminSession();
   await prisma.coupon.delete({ where: { id } });
   revalidatePath('/', 'layout');
 }

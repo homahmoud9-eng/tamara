@@ -48,7 +48,12 @@ export default async function PublicPage({ params }: { params: Promise<{ slug: s
         <div 
           className="page-content" 
           style={{ lineHeight: '1.8', fontSize: '16px', color: 'var(--text-muted)' }}
-          dangerouslySetInnerHTML={{ __html: (lang === 'ar' ? page.contentAr : page.contentEn) || '' }} 
+          dangerouslySetInnerHTML={{ 
+            __html: ((lang === 'ar' ? page.contentAr : page.contentEn) || '')
+              .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+              .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+              .replace(/javascript:/gi, '')
+          }} 
         />
       </div>
     </div>

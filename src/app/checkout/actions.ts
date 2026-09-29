@@ -4,12 +4,21 @@ import prisma from '@/lib/prisma';
 
 export async function validateCoupon(code: string, subtotal: number) {
   try {
+    if (!code || typeof code !== 'string' || typeof subtotal !== 'number' || isNaN(subtotal) || subtotal < 0) {
+      return { error: 'invalid' };
+    }
+
+    const cleanCode = code.toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+    if (!cleanCode) {
+      return { error: 'invalid' };
+    }
+
     const coupon = await prisma.coupon.findUnique({
-      where: { code: code.toUpperCase().replace(/\s+/g, '') }
+      where: { code: cleanCode }
     });
 
     if (!coupon) {
-      return { error: 'invalid' }; // Invalid or not found
+      return { error: 'invalid' };
     }
 
     if (!coupon.isActive) {
@@ -22,19 +31,14 @@ export async function validateCoupon(code: string, subtotal: number) {
     }
 
     if (coupon.startDate && coupon.startDate > now) {
-      return { error: 'invalid' }; // Not started yet
+      return { error: 'invalid' };
     }
 
     if (coupon.minOrder && subtotal < coupon.minOrder) {
       return { error: 'min_order', minOrder: coupon.minOrder };
     }
 
-    // TODO: usage limit check would require tracking usage, which might not be fully implemented yet.
-    // If we have usage limits, we'd need to check total uses.
-    // For now, if usageLimit exists, we just allow it unless we had a mechanism to count. 
-    // Wait, the spec says "view usage" but we don't have an order<->coupon relationship established yet. We'll do that in Order Integration.
-
-    // Calculate discount
+    // Calculate discount securely
     let discountAmount = 0;
     if (coupon.discountType === 'PERCENTAGE') {
       discountAmount = (subtotal * coupon.discountValue) / 100;
@@ -46,7 +50,7 @@ export async function validateCoupon(code: string, subtotal: number) {
     }
 
     // Never discount more than subtotal
-    discountAmount = Math.min(discountAmount, subtotal);
+    discountAmount = Math.max(0, Math.min(discountAmount, subtotal));
 
     return {
       success: true,

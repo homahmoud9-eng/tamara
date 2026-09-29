@@ -3,23 +3,28 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/nextauth";
 import prisma from "@/lib/prisma";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    const { searchParams } = new URL(req.url);
-    const phone = searchParams.get('phone');
+
+    if (!session?.user) {
+      return NextResponse.json({ orders: [], message: "Unauthorized" }, { status: 401 });
+    }
+
+    const userId = (session.user as any)?.id;
+    const userEmail = session.user?.email;
 
     let customer = null;
 
-    if (session && session.user && (session.user as any).id) {
-      const userId = (session.user as any).id;
+    if (userId) {
       customer = await prisma.customer.findUnique({
-        where: { userId: userId },
+        where: { userId },
       });
-    } else if (phone) {
-      // Fallback for guest users tracking by phone
+    }
+
+    if (!customer && userEmail) {
       customer = await prisma.customer.findUnique({
-        where: { phone: phone },
+        where: { email: userEmail },
       });
     }
 
@@ -27,13 +32,14 @@ export async function GET(req: Request) {
       return NextResponse.json({ orders: [] }, { status: 200 });
     }
 
-    // Fetch orders for this customer
+    // Fetch orders belonging strictly to this authenticated customer
     const orders = await prisma.order.findMany({
       where: { customerId: customer.id },
       include: {
         items: true,
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
+      take: 50,
     });
 
     return NextResponse.json({ orders }, { status: 200 });
