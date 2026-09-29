@@ -49,8 +49,10 @@ export function OfferRail({ offers }: OfferRailProps) {
       
       <div className={styles.railWrapper}>
         <div className={styles.rail} ref={scrollRef}>
-          {offers.map((offer) => (
-            <Link href={offer.ctaLink} key={offer.id} className={styles.offerCard}>
+          {offers.map((offer) => {
+            const destinationUrl = offer.targetUrl || offer.ctaLink || `/offers/${offer.id}`;
+            return (
+              <Link href={destinationUrl} key={offer.id} className={styles.offerCard}>
               <div className={styles.badge}>
                 {language === 'ar' ? (
                   <span>{t('discount')} {offer.discountValue}{offer.discountType === 'percentage' ? '%' : ' د.إ'}</span>
@@ -78,7 +80,8 @@ export function OfferRail({ offers }: OfferRailProps) {
                 </p>
               </div>
             </Link>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

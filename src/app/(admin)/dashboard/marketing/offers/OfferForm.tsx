@@ -84,6 +84,17 @@ export default function OfferForm({
             </div>
           </div>
 
+          <div className="admin-form-group">
+            <label className="admin-form-label">{lang === 'ar' ? 'رابط التوجيه (اختياري)' : 'Target URL (Optional)'}</label>
+            <input 
+              type="text" 
+              name="targetUrl" 
+              defaultValue={initialData?.targetUrl || ''} 
+              placeholder={lang === 'ar' ? 'مثال: /menu أو /packages أو /product/...' : 'e.g. /menu, /packages, or /product/...'} 
+              className="admin-input" 
+            />
+          </div>
+
           <div className="admin-form-row">
             <div className="admin-form-group">
               <label className="admin-form-label">{lang === 'ar' ? 'نوع الخصم *' : 'Discount Type *'}</label>

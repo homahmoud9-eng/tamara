@@ -107,6 +107,7 @@ export interface Offer {
   discountValue: number;
   ctaText: LocalizedString;
   ctaLink: string;
+  targetUrl?: string | null;
   active: boolean;
 }
 

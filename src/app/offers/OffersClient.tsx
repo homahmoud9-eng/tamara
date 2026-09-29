@@ -44,7 +44,7 @@ export function OffersClient({ offerProducts, offers }: OffersClientProps) {
         {offers.length > 0 && (
           <div className={styles.promos}>
             {offers.filter(o => o.active).map(offer => (
-              <Link href={offer.ctaLink || "#"} key={offer.id} className={styles.promoCard}>
+              <Link href={offer.targetUrl || offer.ctaLink || "#"} key={offer.id} className={styles.promoCard}>
                 <SafeImage
                   src={offer.image}
                   alt={language === 'ar' ? offer.title.ar : offer.title.en}

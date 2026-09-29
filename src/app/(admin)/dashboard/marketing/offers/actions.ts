@@ -19,6 +19,7 @@ export async function createOffer(prevState: any, formData: FormData) {
     const minOrder = formData.get('minOrder') as string;
     const startDate = formData.get('startDate') as string;
     const endDate = formData.get('endDate') as string;
+    const targetUrl = (formData.get('targetUrl') as string)?.trim() || null;
     const imageFile = formData.get('image');
 
     const imageUrl = await uploadImage(imageFile, 'offers');
@@ -29,6 +30,7 @@ export async function createOffer(prevState: any, formData: FormData) {
         titleEn,
         descriptionAr: (formData.get('descriptionAr') as string)?.trim() || null,
         descriptionEn: (formData.get('descriptionEn') as string)?.trim() || null,
+        targetUrl,
         discountType: (formData.get('discountType') as string) || 'PERCENTAGE',
         discountValue: parseFloat(formData.get('discountValue') as string) || 0,
         minOrder: minOrder ? parseFloat(minOrder) : null,
@@ -62,6 +64,7 @@ export async function updateOffer(id: string, prevState: any, formData: FormData
     const minOrder = formData.get('minOrder') as string;
     const startDate = formData.get('startDate') as string;
     const endDate = formData.get('endDate') as string;
+    const targetUrl = (formData.get('targetUrl') as string)?.trim() || null;
 
     const existing = await prisma.offer.findUnique({ where: { id } });
     if (!existing) return { error: 'Offer not found' };
@@ -88,6 +91,7 @@ export async function updateOffer(id: string, prevState: any, formData: FormData
         titleEn,
         descriptionAr: (formData.get('descriptionAr') as string)?.trim() || null,
         descriptionEn: (formData.get('descriptionEn') as string)?.trim() || null,
+        targetUrl,
         discountType: (formData.get('discountType') as string) || 'PERCENTAGE',
         discountValue: parseFloat(formData.get('discountValue') as string) || 0,
         minOrder: minOrder ? parseFloat(minOrder) : null,

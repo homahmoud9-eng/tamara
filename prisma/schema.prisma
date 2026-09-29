@@ -230,6 +230,7 @@ model Offer {
   ctaTextAr     String?
   ctaTextEn     String?
   ctaLink       String?
+  targetUrl     String?
   
   startDate     DateTime?
   endDate       DateTime?

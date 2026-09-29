@@ -220,10 +220,11 @@ export async function getFrontendOffers() {
     title: { ar: o.titleAr, en: o.titleEn },
     subtitle: { ar: o.descriptionAr || '', en: o.descriptionEn || '' },
     image: o.image || '/assets/images/placeholder.png',
+    targetUrl: o.targetUrl || null,
     discountType: (o.discountType.toLowerCase() === 'percentage' ? 'percentage' : (o.discountType.toLowerCase() === 'fixed' ? 'fixed' : 'free_delivery')) as 'percentage' | 'fixed' | 'free_delivery',
     discountValue: o.discountValue,
     ctaText: { ar: o.ctaTextAr || 'تسوق الآن', en: o.ctaTextEn || 'Shop Now' },
-    ctaLink: o.ctaLink || `/offers/${o.id}`,
+    ctaLink: o.targetUrl || o.ctaLink || `/offers/${o.id}`,
     active: o.isActive
   }));
 }
