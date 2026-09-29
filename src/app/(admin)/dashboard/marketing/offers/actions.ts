@@ -19,6 +19,9 @@ export async function createOffer(prevState: any, formData: FormData) {
     const minOrder = formData.get('minOrder') as string;
     const startDate = formData.get('startDate') as string;
     const endDate = formData.get('endDate') as string;
+    const imageFile = formData.get('image');
+
+    const imageUrl = await uploadImage(imageFile, 'offers');
 
     await prisma.offer.create({
       data: {
@@ -29,7 +32,7 @@ export async function createOffer(prevState: any, formData: FormData) {
         discountType: (formData.get('discountType') as string) || 'PERCENTAGE',
         discountValue: parseFloat(formData.get('discountValue') as string) || 0,
         minOrder: minOrder ? parseFloat(minOrder) : null,
-        image: await uploadImage(formData.get('image') as File | null),
+        image: imageUrl,
         isActive: formData.get('isActive') === 'on',
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
@@ -37,10 +40,12 @@ export async function createOffer(prevState: any, formData: FormData) {
     });
 
   } catch (error) {
+    console.error('Failed to create offer:', error);
     return { error: 'Failed to create offer' };
   }
   
   revalidatePath('/', 'layout');
+  revalidatePath('/offers');
   redirect('/dashboard/marketing/offers');
 }
 
@@ -62,9 +67,18 @@ export async function updateOffer(id: string, prevState: any, formData: FormData
     if (!existing) return { error: 'Offer not found' };
 
     let image = existing.image;
-    const file = formData.get('image') as File | null;
-    if (file && file.size > 0) {
-      image = await uploadImage(file);
+    const removeImage = formData.get('removeImage') === 'true';
+
+    if (removeImage) {
+      image = null;
+    } else {
+      const file = formData.get('image');
+      if (file && typeof file !== 'string' && (file as any).size > 0) {
+        const uploaded = await uploadImage(file, 'offers');
+        if (uploaded) {
+          image = uploaded;
+        }
+      }
     }
 
     await prisma.offer.update({
@@ -85,10 +99,12 @@ export async function updateOffer(id: string, prevState: any, formData: FormData
     });
 
   } catch (error) {
+    console.error('Failed to update offer:', error);
     return { error: 'Failed to update offer' };
   }
   
   revalidatePath('/', 'layout');
+  revalidatePath('/offers');
   redirect('/dashboard/marketing/offers');
 }
 
@@ -99,10 +115,12 @@ export async function toggleOfferStatus(id: string, isActive: boolean) {
     data: { isActive }
   });
   revalidatePath('/', 'layout');
+  revalidatePath('/offers');
 }
 
 export async function deleteOffer(id: string) {
   await requireAdminSession();
   await prisma.offer.delete({ where: { id } });
   revalidatePath('/', 'layout');
+  revalidatePath('/offers');
 }
