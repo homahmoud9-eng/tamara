@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || 'tamara_k1tch3n_jwt_s3cur1ty_pr0t0c0l_2026_x99',
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,

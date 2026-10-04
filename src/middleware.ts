@@ -41,9 +41,15 @@ export async function middleware(request: NextRequest) {
   // 1. CORS Preflight Handling for API
   if (pathname.startsWith('/api') && request.method === 'OPTIONS') {
     const preflight = new NextResponse(null, { status: 204 });
-    preflight.headers.set('Access-Control-Allow-Origin', '*');
+    const origin = request.headers.get('origin');
+    if (origin) {
+      preflight.headers.set('Access-Control-Allow-Origin', origin);
+      preflight.headers.set('Access-Control-Allow-Credentials', 'true');
+    } else {
+      preflight.headers.set('Access-Control-Allow-Origin', '*');
+    }
     preflight.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    preflight.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    preflight.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
     preflight.headers.set('Access-Control-Max-Age', '86400');
     return applySecurityHeaders(preflight);
   }
@@ -59,7 +65,13 @@ export async function middleware(request: NextRequest) {
         )
       );
     }
-  } else if (pathname.startsWith('/api/')) {
+  } else if (
+    pathname.startsWith('/api/') &&
+    !pathname.startsWith('/api/auth/session') &&
+    !pathname.startsWith('/api/auth/_log') &&
+    !pathname.startsWith('/api/auth/providers') &&
+    !pathname.startsWith('/api/auth/csrf')
+  ) {
     const rate = checkRateLimit(`api:${ip}`, 120, 60000);
     if (!rate.success) {
       return applySecurityHeaders(
@@ -112,9 +124,6 @@ export async function middleware(request: NextRequest) {
   }
 
   const response = NextResponse.next();
-  if (pathname.startsWith('/api')) {
-    response.headers.set('Access-Control-Allow-Origin', '*');
-  }
   return applySecurityHeaders(response);
 }
 

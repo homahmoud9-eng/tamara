@@ -38,3 +38,22 @@ self.addEventListener("notificationclick", (event) => {
     );
   }
 });
+
+// Purge outdated/poisoned caches from previous builds upon activation
+self.addEventListener("activate", (event) => {
+  const allowedCaches = [
+    "google-fonts-webfonts",
+    "google-fonts-stylesheets",
+    "static-font-assets",
+  ];
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames
+          .filter((name) => !allowedCaches.includes(name))
+          .map((name) => caches.delete(name))
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+

@@ -92,15 +92,38 @@ export default async function RootLayout({
               }
             } catch (e) {}
 
-            // Register Service Worker for PWA
+            // Service Worker Registration and Safe Recovery for PWA
             if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
               window.addEventListener('load', function() {
+                // Proactively purge old poisoned caches (apis, next-image, pages, pages-rsc)
+                if ('caches' in window) {
+                  var CLEANUP_KEY = 'tamara_sw_cleanup_v2';
+                  if (!localStorage.getItem(CLEANUP_KEY)) {
+                    caches.keys().then(function(names) {
+                      for (var i = 0; i < names.length; i++) {
+                        var name = names[i];
+                        if (
+                          name.indexOf('api') !== -1 ||
+                          name.indexOf('image') !== -1 ||
+                          name.indexOf('page') !== -1 ||
+                          name.indexOf('start-url') !== -1 ||
+                          name.indexOf('next-data') !== -1
+                        ) {
+                          caches.delete(name);
+                        }
+                      }
+                    });
+                    localStorage.setItem(CLEANUP_KEY, 'done');
+                  }
+                }
+
                 navigator.serviceWorker.register('/sw.js').then(
                   function(registration) {
-                    console.log('Service Worker registration successful with scope: ', registration.scope);
+                    // Check for updates to pick up the clean worker immediately
+                    registration.update();
                   },
                   function(err) {
-                    console.log('Service Worker registration failed: ', err);
+                    console.warn('Service Worker registration skipped: ', err);
                   }
                 );
               });

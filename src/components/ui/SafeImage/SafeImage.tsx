@@ -9,7 +9,7 @@ export type SafeImageProps = Omit<ImageProps, 'onError'>;
 export function SafeImage({ alt, className, src, ...props }: SafeImageProps) {
   const [hasError, setHasError] = useState(false);
 
-  if (hasError) {
+  if (hasError || !src) {
     return (
       <div className={`${styles.fallbackContainer} ${className || ''}`}>
         <div className={styles.fallbackInner}>

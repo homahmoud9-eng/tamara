@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 import toast from 'react-hot-toast';
 import { SafeImage } from '@/components/ui/SafeImage/SafeImage';
@@ -24,13 +25,30 @@ export function Header({ announcement }: { announcement?: any }) {
   const { items } = useCart();
   const pathname = usePathname();
   const router = useRouter();
+  const { data: session, status } = useSession();
 
   const cartItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data: notificationData, mutate: mutateNotifications } = useSWR('/api/notifications/unread', fetcher, { 
-    refreshInterval: 10000 
-  });
+  const safeFetcher = async (url: string) => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return { notifications: [] };
+      return await res.json();
+    } catch {
+      return { notifications: [] };
+    }
+  };
+
+  const isAuthenticated = status === 'authenticated' && !!session?.user;
+  const { data: notificationData, mutate: mutateNotifications } = useSWR(
+    isAuthenticated ? '/api/notifications/unread' : null,
+    safeFetcher,
+    { 
+      refreshInterval: 30000,
+      revalidateOnFocus: false,
+      shouldRetryOnError: false 
+    }
+  );
   const unreadNotifications = notificationData?.notifications || [];
   const unreadCount = unreadNotifications.length;
 
